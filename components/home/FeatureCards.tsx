@@ -1,26 +1,26 @@
-import Link from "next/link";
-import { ArrowRightLeft, MapPin, TrainFront } from "lucide-react";
+import Link from 'next/link';
+import { ArrowRightLeft, MapPin, TrainFront } from 'lucide-react';
 
 const features = [
   {
-    title: "Train Search",
-    description: "Search trains by number",
+    title: 'Train Search',
+    description: 'Search trains by number',
     icon: TrainFront,
-    href: "/",
+    href: '/',
     disabled: true,
   },
   {
-    title: "Between Stations",
-    description: "Find trains between two stations",
+    title: 'Between Stations',
+    description: 'Find trains between two stations',
     icon: ArrowRightLeft,
-    href: "/journeys",
+    href: '/journeys',
     disabled: false,
   },
   {
-    title: "Station Search",
-    description: "Coming soon",
+    title: 'Station Search',
+    description: 'Coming soon',
     icon: MapPin,
-    href: "#",
+    href: '#',
     disabled: true,
   },
 ];
@@ -28,9 +28,7 @@ const features = [
 export default function FeatureCards() {
   return (
     <section className="mt-12">
-      <h2 className="mb-6 text-2xl font-bold text-slate-900">
-        Explore More
-      </h2>
+      <h2 className="mb-6 text-2xl font-bold text-slate-900">Explore More</h2>
 
       <div className="grid gap-4 md:grid-cols-3">
         {features.map((feature) => {
@@ -40,15 +38,13 @@ export default function FeatureCards() {
             <div
               className={`rounded-xl border bg-white p-6 transition ${
                 feature.disabled
-                  ? "cursor-not-allowed opacity-60"
-                  : "hover:border-blue-500 hover:shadow-md"
+                  ? 'cursor-not-allowed opacity-60'
+                  : 'hover:border-blue-500 hover:shadow-md'
               }`}
             >
               <Icon className="mb-4 h-8 w-8 text-blue-600" />
 
-              <h3 className="font-semibold text-slate-900">
-                {feature.title}
-              </h3>
+              <h3 className="font-semibold text-slate-900">{feature.title}</h3>
 
               <p className="mt-2 text-sm text-slate-500">
                 {feature.description}

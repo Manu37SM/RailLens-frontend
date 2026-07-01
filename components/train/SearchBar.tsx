@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Search } from "lucide-react";
+import { Search } from 'lucide-react';
 
 interface SearchBarProps {
   query: string;
@@ -20,7 +20,7 @@ export default function SearchBar({
       <div className="relative flex-1">
         <Search
           size={20}
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+          className="absolute top-1/2 left-4 -translate-y-1/2 text-slate-400"
         />
 
         <input
@@ -29,20 +29,20 @@ export default function SearchBar({
           value={query}
           onChange={(e) => onQueryChange(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === 'Enter') {
               onSearch();
             }
           }}
-          className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-12 pr-4 text-base shadow-sm transition-all outline-none placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-blue-100"
+          className="focus:border-primary h-14 w-full rounded-2xl border border-slate-200 bg-white pr-4 pl-12 text-base shadow-sm transition-all outline-none placeholder:text-slate-400 focus:ring-4 focus:ring-blue-100"
         />
       </div>
 
       <button
         onClick={onSearch}
         disabled={loading}
-        className="flex h-14 items-center justify-center rounded-2xl bg-primary px-8 font-semibold text-white shadow-sm transition-all hover:scale-[1.02] hover:bg-blue-700 hover:shadow-md disabled:cursor-not-allowed disabled:bg-slate-400"
+        className="bg-primary flex h-14 items-center justify-center rounded-2xl px-8 font-semibold text-white shadow-sm transition-all hover:scale-[1.02] hover:bg-blue-700 hover:shadow-md disabled:cursor-not-allowed disabled:bg-slate-400"
       >
-        {loading ? "Searching..." : "Search"}
+        {loading ? 'Searching...' : 'Search'}
       </button>
     </div>
   );

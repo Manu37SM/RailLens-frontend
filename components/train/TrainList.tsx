@@ -1,5 +1,5 @@
-import TrainCard from "./TrainCard";
-import { TrainSearchResponse } from "@/types/train";
+import TrainCard from './TrainCard';
+import { TrainSearchResponse } from '@/types/train';
 
 interface TrainListProps {
   trains: TrainSearchResponse[];
@@ -13,10 +13,7 @@ export default function TrainList({ trains }: TrainListProps) {
   return (
     <div className="mt-8 space-y-4">
       {trains.map((train) => (
-        <TrainCard
-          key={train.trainNumber}
-          train={train}
-        />
+        <TrainCard key={train.trainNumber} train={train} />
       ))}
     </div>
   );

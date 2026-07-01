@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { JourneySearchResponse } from "@/types/journey";
-import { searchJourneys } from "@/services/journeyService";
+import { useState } from 'react';
+import { JourneySearchResponse } from '@/types/journey';
+import { searchJourneys } from '@/services/journeyService';
 
-import JourneySearchForm from "./JourneySearchForm";
-import JourneyResults from "./JourneyResults";
+import JourneySearchForm from './JourneySearchForm';
+import JourneyResults from './JourneyResults';
 
 export default function JourneySearchClient() {
   const [results, setResults] = useState<JourneySearchResponse | null>(null);
@@ -26,10 +26,7 @@ export default function JourneySearchClient() {
     <div className="space-y-6">
       <JourneySearchForm onSearch={handleSearch} />
 
-      <JourneyResults
-        results={results}
-        loading={loading}
-      />
+      <JourneyResults results={results} loading={loading} />
     </div>
   );
 }

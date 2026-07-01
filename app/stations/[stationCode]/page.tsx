@@ -1,6 +1,6 @@
-import Container from "@/components/layout/Container";
-import StationDetailsClient from "@/components/station/StationDetailsClient";
-import { getStation } from "@/services/stationService";
+import Container from '@/components/layout/Container';
+import StationDetailsClient from '@/components/station/StationDetailsClient';
+import { getStation } from '@/services/stationService';
 
 interface StationPageProps {
   params: Promise<{
@@ -8,9 +8,7 @@ interface StationPageProps {
   }>;
 }
 
-export default async function StationPage({
-  params,
-}: StationPageProps) {
+export default async function StationPage({ params }: StationPageProps) {
   const { stationCode } = await params;
 
   const station = await getStation(stationCode);

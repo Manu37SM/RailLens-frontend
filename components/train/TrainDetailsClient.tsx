@@ -1,20 +1,18 @@
-"use client";
+'use client';
 
-import { useMemo, useState } from "react";
+import { useMemo, useState } from 'react';
 
-import { TrainDetailsResponse } from "@/types/train";
+import { TrainDetailsResponse } from '@/types/train';
 
-import TrainHeader from "./TrainHeader";
-import JourneyTable from "./JourneyStop";
+import TrainHeader from './TrainHeader';
+import JourneyTable from './JourneyStop';
 
 interface Props {
   train: TrainDetailsResponse;
 }
 
-export default function TrainDetailsClient({
-  train,
-}: Props) {
-  const [search, setSearch] = useState("");
+export default function TrainDetailsClient({ train }: Props) {
+  const [search, setSearch] = useState('');
 
   const filteredRoute = useMemo(() => {
     if (!search.trim()) {

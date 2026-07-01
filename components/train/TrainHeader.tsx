@@ -29,39 +29,29 @@ export default function TrainHeader({
 }: TrainHeaderProps) {
   return (
     <section className="rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
-
       <div className="flex items-center gap-3">
+        <span className="text-base font-semibold text-blue-600">
+          {trainNumber}
+        </span>
 
-          <span className="text-base font-semibold text-blue-600">
-              {trainNumber}
-          </span>
+        <div className="h-1 w-1 rounded-full bg-slate-300" />
 
-          <div className="h-1 w-1 rounded-full bg-slate-300" />
-
-          <h1 className="text-xl font-bold tracking-tight text-slate-900">
-              {trainName}
-          </h1>
-
+        <h1 className="text-xl font-bold tracking-tight text-slate-900">
+          {trainName}
+        </h1>
       </div>
 
       <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-600">
+        <span className="font-medium text-slate-900">{sourceStationName}</span>
 
-        <span className="font-medium text-slate-900">
-          {sourceStationName}
-        </span>
-
-        <span className="text-blue-600">
-          →
-        </span>
+        <span className="text-blue-600">→</span>
 
         <span className="font-medium text-slate-900">
           {destinationStationName}
         </span>
-
       </div>
 
       <div className="mt-4 flex flex-wrap gap-2">
-
         <span className="rounded-md border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-700">
           Distance
           <span className="ml-2 font-semibold text-slate-900">
@@ -78,9 +68,7 @@ export default function TrainHeader({
 
         <span className="rounded-md border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-700">
           Stops
-          <span className="ml-2 font-semibold text-slate-900">
-            {stops}
-          </span>
+          <span className="ml-2 font-semibold text-slate-900">{stops}</span>
         </span>
 
         <span className="rounded-md border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-700">
@@ -89,9 +77,7 @@ export default function TrainHeader({
             {speed} km/h
           </span>
         </span>
-
       </div>
-
     </section>
   );
 }

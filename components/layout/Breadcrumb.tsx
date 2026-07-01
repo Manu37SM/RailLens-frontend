@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import Link from 'next/link';
+import { ChevronRight } from 'lucide-react';
 
 interface BreadcrumbItem {
   label: string;
@@ -10,9 +10,7 @@ interface BreadcrumbProps {
   items: BreadcrumbItem[];
 }
 
-export default function Breadcrumb({
-  items,
-}: BreadcrumbProps) {
+export default function Breadcrumb({ items }: BreadcrumbProps) {
   return (
     <nav
       aria-label="Breadcrumb"
@@ -22,10 +20,7 @@ export default function Breadcrumb({
         const isLast = index === items.length - 1;
 
         return (
-          <div
-            key={item.label}
-            className="flex items-center gap-2"
-          >
+          <div key={item.label} className="flex items-center gap-2">
             {item.href && !isLast ? (
               <Link
                 href={item.href}
@@ -34,14 +29,10 @@ export default function Breadcrumb({
                 {item.label}
               </Link>
             ) : (
-              <span className="font-medium text-slate-900">
-                {item.label}
-              </span>
+              <span className="font-medium text-slate-900">{item.label}</span>
             )}
 
-            {!isLast && (
-              <ChevronRight className="h-4 w-4" />
-            )}
+            {!isLast && <ChevronRight className="h-4 w-4" />}
           </div>
         );
       })}

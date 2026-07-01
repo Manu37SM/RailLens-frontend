@@ -1,44 +1,37 @@
-import { RouteStopResponse } from "@/types/train";
-import Link from "next/link";
+import { RouteStopResponse } from '@/types/train';
+import Link from 'next/link';
 
 interface JourneyRowProps {
   stop: RouteStopResponse;
 }
 
-export default function JourneyRow({
-  stop,
-}: JourneyRowProps) {
+export default function JourneyRow({ stop }: JourneyRowProps) {
   return (
-    <div className="grid grid-cols-[48px_1fr_80px_80px_56px_70px] items-center border-b border-slate-200 px-5 py-2 hover:bg-slate-50 transition-colors">
-
+    <div className="grid grid-cols-[48px_1fr_80px_80px_56px_70px] items-center border-b border-slate-200 px-5 py-2 transition-colors hover:bg-slate-50">
       {/* Timeline */}
 
       <div className="flex flex-col items-center self-stretch">
-
         <div
-          className={`flex h-7 w-7 items-center justify-center rounded-full border-2 text-[10px] font-bold
-          ${
+          className={`flex h-7 w-7 items-center justify-center rounded-full border-2 text-[10px] font-bold ${
             stop.origin
-              ? "border-green-600 bg-green-600 text-white"
+              ? 'border-green-600 bg-green-600 text-white'
               : stop.destination
-              ? "border-red-600 bg-red-600 text-white"
-              : "border-slate-300 bg-white text-slate-700"
+                ? 'border-red-600 bg-red-600 text-white'
+                : 'border-slate-300 bg-white text-slate-700'
           }`}
         >
           {stop.sequenceNo}
         </div>
 
         {!stop.destination && (
-          <div className="mt-0.5 flex-1 w-0.5 bg-slate-300" />
+          <div className="mt-0.5 w-0.5 flex-1 bg-slate-300" />
         )}
       </div>
 
       {/* Station */}
 
       <div className="min-w-0">
-
         <div className="flex flex-wrap items-center gap-2">
-
           <Link
             href={`/stations/${stop.stationCode}`}
             className="group min-w-0"
@@ -63,24 +56,20 @@ export default function JourneyRow({
               Destination
             </span>
           )}
-
         </div>
 
-        {!stop.origin &&
-          !stop.destination &&
-          stop.haltMinutes > 0 && (
-            <span className="mt-1 inline-flex rounded-md bg-blue-50 px-2 py-0.5 text-[10px] font-medium text-blue-700">
-              Halt {stop.haltMinutes}m
-            </span>
-          )}
-
+        {!stop.origin && !stop.destination && stop.haltMinutes > 0 && (
+          <span className="mt-1 inline-flex rounded-md bg-blue-50 px-2 py-0.5 text-[10px] font-medium text-blue-700">
+            Halt {stop.haltMinutes}m
+          </span>
+        )}
       </div>
 
       {/* Arrival */}
 
       <div className="text-center">
         <p className="font-mono text-[15px] font-semibold">
-          {stop.arrivalTime?.slice(0, 5) ?? "--"}
+          {stop.arrivalTime?.slice(0, 5) ?? '--'}
         </p>
       </div>
 
@@ -88,7 +77,7 @@ export default function JourneyRow({
 
       <div className="text-center">
         <p className="font-mono text-[15px] font-semibold">
-          {stop.departureTime?.slice(0, 5) ?? "--"}
+          {stop.departureTime?.slice(0, 5) ?? '--'}
         </p>
       </div>
 
@@ -107,7 +96,6 @@ export default function JourneyRow({
           {stop.distance}
         </p>
       </div>
-
     </div>
   );
 }

@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { TrainFront } from "lucide-react";
+import { useState } from 'react';
+import { TrainFront } from 'lucide-react';
 
-import Container from "@/components/layout/Container";
-import SearchBar from "@/components/train/SearchBar";
-import TrainList from "@/components/train/TrainList";
-import FeatureCards from "@/components/home/FeatureCards";
+import Container from '@/components/layout/Container';
+import SearchBar from '@/components/train/SearchBar';
+import TrainList from '@/components/train/TrainList';
+import FeatureCards from '@/components/home/FeatureCards';
 
-import { searchTrains } from "@/services/trainService";
-import { TrainSearchResponse } from "@/types/train";
+import { searchTrains } from '@/services/trainService';
+import { TrainSearchResponse } from '@/types/train';
 
 export default function Home() {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
   const [trains, setTrains] = useState<TrainSearchResponse[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -29,10 +29,10 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="bg-background min-h-screen">
       <Container>
         <section className="flex min-h-[70vh] flex-col items-center justify-center py-20 text-center">
-          <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-primary text-white shadow-lg">
+          <div className="bg-primary mb-6 flex h-20 w-20 items-center justify-center rounded-3xl text-white shadow-lg">
             <TrainFront size={40} />
           </div>
 
@@ -64,7 +64,7 @@ export default function Home() {
                 </h2>
 
                 <p className="mt-1 text-slate-500">
-                  {trains.length} train{trains.length !== 1 ? "s" : ""} found
+                  {trains.length} train{trains.length !== 1 ? 's' : ''} found
                 </p>
               </div>
             </div>

@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Search } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Search } from 'lucide-react';
 
-import { searchStations } from "@/services/stationService";
-import { StationSearchResponse } from "@/types/station";
+import { searchStations } from '@/services/stationService';
+import { StationSearchResponse } from '@/types/station';
 
 interface StationAutocompleteProps {
   label: string;
@@ -14,10 +14,10 @@ interface StationAutocompleteProps {
 
 export default function StationAutocomplete({
   label,
-  placeholder = "Search station...",
+  placeholder = 'Search station...',
   onSelect,
 }: StationAutocompleteProps) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
   const [stations, setStations] = useState<StationSearchResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -71,10 +71,10 @@ export default function StationAutocomplete({
       }
     }
 
-    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener('mousedown', handleOutsideClick);
 
     return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener('mousedown', handleOutsideClick);
     };
   }, []);
 
@@ -86,9 +86,7 @@ export default function StationAutocomplete({
     return stations;
   }, [stations, trimmedQuery]);
 
-  const showDropdown =
-    focused &&
-    (loading || visibleStations.length > 0);
+  const showDropdown = focused && (loading || visibleStations.length > 0);
 
   function selectStation(station: StationSearchResponse) {
     setQuery(`${station.stationName} (${station.stationCode})`);
@@ -96,15 +94,13 @@ export default function StationAutocomplete({
     onSelect(station);
   }
 
-  function handleKeyDown(
-    e: React.KeyboardEvent<HTMLInputElement>
-  ) {
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (!showDropdown) {
       return;
     }
 
     switch (e.key) {
-      case "ArrowDown":
+      case 'ArrowDown':
         e.preventDefault();
 
         setSelectedIndex((prev) =>
@@ -113,16 +109,14 @@ export default function StationAutocomplete({
 
         break;
 
-      case "ArrowUp":
+      case 'ArrowUp':
         e.preventDefault();
 
-        setSelectedIndex((prev) =>
-          Math.max(prev - 1, 0)
-        );
+        setSelectedIndex((prev) => Math.max(prev - 1, 0));
 
         break;
 
-      case "Enter":
+      case 'Enter':
         e.preventDefault();
 
         if (selectedIndex >= 0) {
@@ -131,7 +125,7 @@ export default function StationAutocomplete({
 
         break;
 
-      case "Escape":
+      case 'Escape':
         setFocused(false);
         break;
     }
@@ -145,7 +139,7 @@ export default function StationAutocomplete({
 
       <Search
         size={16}
-        className="absolute left-3 top-[42px] -translate-y-1/2 text-slate-400"
+        className="absolute top-[42px] left-3 -translate-y-1/2 text-slate-400"
       />
 
       <input
@@ -156,33 +150,13 @@ export default function StationAutocomplete({
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={handleKeyDown}
         autoComplete="off"
-        className="
-          h-10
-          w-full
-          rounded-lg
-          border
-          border-slate-300
-          bg-slate-50
-          pl-10
-          pr-3
-          text-sm
-          text-slate-900
-          placeholder:text-slate-400
-          transition
-          focus:border-blue-500
-          focus:bg-white
-          focus:outline-none
-          focus:ring-2
-          focus:ring-blue-100
-        "
+        className="h-10 w-full rounded-lg border border-slate-300 bg-slate-50 pr-3 pl-10 text-sm text-slate-900 transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:outline-none"
       />
 
       {showDropdown && (
         <div className="absolute z-50 mt-1 max-h-64 w-full overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-lg">
           {loading ? (
-            <div className="p-3 text-sm text-slate-500">
-              Searching...
-            </div>
+            <div className="p-3 text-sm text-slate-500">Searching...</div>
           ) : (
             visibleStations.map((station, index) => (
               <button
@@ -190,9 +164,7 @@ export default function StationAutocomplete({
                 type="button"
                 onClick={() => selectStation(station)}
                 className={`w-full border-b border-slate-100 px-4 py-3 text-left transition last:border-none ${
-                  selectedIndex === index
-                    ? "bg-blue-50"
-                    : "hover:bg-slate-50"
+                  selectedIndex === index ? 'bg-blue-50' : 'hover:bg-slate-50'
                 }`}
               >
                 <div className="font-medium text-slate-900">

@@ -1,19 +1,17 @@
-import Link from "next/link";
-import { TrainFront } from "lucide-react";
+import Link from 'next/link';
+import { TrainFront } from 'lucide-react';
 
-import { StationTrainResponse } from "@/types/station";
+import { StationTrainResponse } from '@/types/station';
 
 interface Props {
   train: StationTrainResponse;
 }
 
-export default function StationTrainRow({
-  train,
-}: Props) {
+export default function StationTrainRow({ train }: Props) {
   return (
     <Link
       href={`/trains/${train.trainNumber}`}
-      className="block border-b border-slate-100 p-4 transition hover:bg-slate-50 last:border-b-0"
+      className="block border-b border-slate-100 p-4 transition last:border-b-0 hover:bg-slate-50"
     >
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -25,24 +23,18 @@ export default function StationTrainRow({
             </span>
           </div>
 
-          <p className="mt-1 text-sm text-slate-600">
-            {train.trainName}
-          </p>
+          <p className="mt-1 text-sm text-slate-600">{train.trainName}</p>
         </div>
 
         <div className="text-right text-sm">
           <div>
-            <span className="text-slate-500">Arr</span>{" "}
-            <span className="font-medium">
-              {train.arrivalTime ?? "--"}
-            </span>
+            <span className="text-slate-500">Arr</span>{' '}
+            <span className="font-medium">{train.arrivalTime ?? '--'}</span>
           </div>
 
           <div>
-            <span className="text-slate-500">Dep</span>{" "}
-            <span className="font-medium">
-              {train.departureTime ?? "--"}
-            </span>
+            <span className="text-slate-500">Dep</span>{' '}
+            <span className="font-medium">{train.departureTime ?? '--'}</span>
           </div>
         </div>
       </div>

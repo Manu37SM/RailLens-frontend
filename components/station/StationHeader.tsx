@@ -15,12 +15,10 @@ export default function StationHeader({
         {stationCode}
       </div>
 
-      <p className="mt-1 text-lg text-slate-600">
-        {stationName}
-      </p>
+      <p className="mt-1 text-lg text-slate-600">{stationName}</p>
 
       <div className="mt-5 inline-flex rounded-full bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700">
-        {totalTrains} train{totalTrains !== 1 ? "s" : ""} stop here
+        {totalTrains} train{totalTrains !== 1 ? 's' : ''} stop here
       </div>
     </div>
   );

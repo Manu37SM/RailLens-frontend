@@ -1,6 +1,6 @@
-import Container from "@/components/layout/Container";
-import TrainDetailsClient from "@/components/train/TrainDetailsClient";
-import { getTrainDetails } from "@/services/trainService";
+import Container from '@/components/layout/Container';
+import TrainDetailsClient from '@/components/train/TrainDetailsClient';
+import { getTrainDetails } from '@/services/trainService';
 
 interface TrainDetailsPageProps {
   params: Promise<{

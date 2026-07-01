@@ -1,25 +1,20 @@
-"use client";
-import Breadcrumb from "@/components/layout/Breadcrumb";
+'use client';
+import Breadcrumb from '@/components/layout/Breadcrumb';
 
-import { StationResponse } from "@/types/station";
+import { StationResponse } from '@/types/station';
 
-import StationHeader from "./StationHeader";
-import StationTrainList from "./StationTrainList";
+import StationHeader from './StationHeader';
+import StationTrainList from './StationTrainList';
 
 interface Props {
   station: StationResponse;
 }
 
-export default function StationDetailsClient({
-  station,
-}: Props) {
+export default function StationDetailsClient({ station }: Props) {
   return (
-      <>
+    <>
       <Breadcrumb
-        items={[
-          { label: "Home", href: "/" },
-          { label: station.stationCode },
-        ]}
+        items={[{ label: 'Home', href: '/' }, { label: station.stationCode }]}
       />
 
       <StationHeader
