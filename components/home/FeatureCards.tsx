@@ -18,10 +18,9 @@ const features = [
   },
   {
     title: 'Station Search',
-    description: 'Coming soon',
+    description: 'Find railway stations by name or station code.',
+    href: '/stations',
     icon: MapPin,
-    href: '#',
-    disabled: true,
   },
 ];
 

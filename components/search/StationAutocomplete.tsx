@@ -9,7 +9,7 @@ import { StationSearchResponse } from '@/types/station';
 interface StationAutocompleteProps {
   label: string;
   placeholder?: string;
-  onSelect: (station: StationSearchResponse) => void;
+  onSelect: (station: StationSearchResponse | null) => void;
 }
 
 export default function StationAutocomplete({
@@ -24,6 +24,7 @@ export default function StationAutocomplete({
   const [focused, setFocused] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const trimmedQuery = query.trim();
 
@@ -78,6 +79,15 @@ export default function StationAutocomplete({
     };
   }, []);
 
+  useEffect(() => {
+    if (selectedIndex < 0) return;
+
+    optionRefs.current[selectedIndex]?.scrollIntoView({
+      block: 'nearest',
+      behavior: 'smooth',
+    });
+  }, [selectedIndex]);
+
   const visibleStations = useMemo(() => {
     if (trimmedQuery.length < 2) {
       return [];
@@ -102,18 +112,16 @@ export default function StationAutocomplete({
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-
         setSelectedIndex((prev) =>
-          Math.min(prev + 1, visibleStations.length - 1)
+          prev >= visibleStations.length - 1 ? 0 : prev + 1
         );
-
         break;
 
       case 'ArrowUp':
         e.preventDefault();
-
-        setSelectedIndex((prev) => Math.max(prev - 1, 0));
-
+        setSelectedIndex((prev) =>
+          prev <= 0 ? visibleStations.length - 1 : prev - 1
+        );
         break;
 
       case 'Enter':
@@ -147,7 +155,10 @@ export default function StationAutocomplete({
         value={query}
         placeholder={placeholder}
         onFocus={() => setFocused(true)}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={(e) => {
+          setQuery(e.target.value);
+          onSelect(null);
+        }}
         onKeyDown={handleKeyDown}
         autoComplete="off"
         className="h-10 w-full rounded-lg border border-slate-300 bg-slate-50 pr-3 pl-10 text-sm text-slate-900 transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:outline-none"
@@ -161,6 +172,9 @@ export default function StationAutocomplete({
             visibleStations.map((station, index) => (
               <button
                 key={station.stationCode}
+                ref={(el) => {
+                  optionRefs.current[index] = el;
+                }}
                 type="button"
                 onClick={() => selectStation(station)}
                 className={`w-full border-b border-slate-100 px-4 py-3 text-left transition last:border-none ${

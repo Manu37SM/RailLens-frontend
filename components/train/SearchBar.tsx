@@ -39,7 +39,7 @@ export default function SearchBar({
 
       <button
         onClick={onSearch}
-        disabled={loading}
+        disabled={loading || !query.trim()}
         className="bg-primary flex h-14 items-center justify-center rounded-2xl px-8 font-semibold text-white shadow-sm transition-all hover:scale-[1.02] hover:bg-blue-700 hover:shadow-md disabled:cursor-not-allowed disabled:bg-slate-400"
       >
         {loading ? 'Searching...' : 'Search'}
