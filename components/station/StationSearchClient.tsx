@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 
 import Card from '@/components/ui/Card';
 import StationAutocomplete from '@/components/search/StationAutocomplete';
+import { addStationSearch } from '@/services/recentSearchService';
 
 import { StationSearchResponse } from '@/types/station';
 
@@ -27,6 +28,8 @@ export default function StationSearchClient() {
         <button
           onClick={() => {
             if (!station) return;
+
+            addStationSearch(station.stationCode, station.stationName);
 
             router.push(`/stations/${station.stationCode}`);
           }}

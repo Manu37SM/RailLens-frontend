@@ -7,6 +7,7 @@ import Container from '@/components/layout/Container';
 import SearchBar from '@/components/train/SearchBar';
 import TrainList from '@/components/train/TrainList';
 import FeatureCards from '@/components/home/FeatureCards';
+import RecentSearches from '@/components/home/RecentSearches';
 
 import { searchTrains } from '@/services/trainService';
 import { TrainSearchResponse } from '@/types/train';
@@ -52,6 +53,7 @@ export default function Home() {
             onSearch={handleSearch}
             loading={loading}
           />
+          <RecentSearches />
           <FeatureCards />
         </section>
 

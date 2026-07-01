@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ArrowRight, TrainFront } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import { TrainSearchResponse } from '@/types/train';
+import { addTrainSearch } from '@/services/recentSearchService';
 
 interface TrainCardProps {
   train: TrainSearchResponse;
@@ -9,7 +10,11 @@ interface TrainCardProps {
 
 export default function TrainCard({ train }: TrainCardProps) {
   return (
-    <Link href={`/trains/${train.trainNumber}`} className="block">
+    <Link
+      href={`/trains/${train.trainNumber}`}
+      className="block"
+      onClick={() => addTrainSearch(train.trainNumber, train.trainName)}
+    >
       <Card className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
         <div className="flex items-start justify-between">
           <div>
