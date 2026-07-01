@@ -1,36 +1,137 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RailLens Frontend
+
+RailLens Frontend is a modern Next.js application for exploring Indian Railways. It allows users to search trains, browse station information, and discover trains running between two stations through a clean and responsive interface.
+
+## Tech Stack
+
+* Next.js 16
+* React 19
+* TypeScript
+* Tailwind CSS
+* Lucide React
+
+## Features
+
+* Train Search
+* Train Details
+* Station Details
+* Trains Between Stations
+* Station Autocomplete
+* Journey Timeline
+* Responsive UI
+
+## Project Structure
+
+```
+app/
+components/
+services/
+types/
+public/
+```
+
+Key component groups:
+
+```
+components/
+├── home
+├── journey
+├── layout
+├── search
+├── station
+├── train
+└── ui
+```
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+* Node.js 20+
+* npm
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+### Configure Backend
+
+Ensure the Spring Boot backend is running on:
+
+```
+http://localhost:8080
+```
+
+Update the API base URL if required.
+
+### Start Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application will be available at:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Pages
 
-## Learn More
+| Route                     | Description             |
+| ------------------------- | ----------------------- |
+| `/`                       | Home                    |
+| `/trains/[trainNumber]`   | Train Details           |
+| `/stations/[stationCode]` | Station Details         |
+| `/journeys`               | Trains Between Stations |
 
-To learn more about Next.js, take a look at the following resources:
+## UI Components
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Reusable components include:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+* Navbar
+* Container
+* Breadcrumb
+* Card
+* Button
+* StationAutocomplete
 
-## Deploy on Vercel
+Feature-specific components are organized separately for maintainability.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Application Flow
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+Home
+├── Train Search
+│     └── Train Details
+│            └── Station Details
+│
+└── Journey Search
+      └── Matching Trains
+             └── Train Details
+```
+
+## Design Principles
+
+* Railway functionality first
+* Clean and consistent interface
+* Reusable feature-specific components
+* Minimal unnecessary abstraction
+
+## Future Roadmap
+
+* Station Search Page
+* Favorites
+* Recent Searches
+* Dark Mode
+* Shareable Train Links
+* Live Running Status
+* PNR Status
+* Platform Information
+* Seat Availability
+
+## License
+
+This project is intended for learning and personal development.
