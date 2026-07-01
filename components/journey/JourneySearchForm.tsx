@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import StationAutocomplete from '../search/StationAutocomplete';
 import { StationSearchResponse } from '@/types/station';
-import { addJourneySearch } from '@/services/recentSearchService';
+import { addJourneySearch } from '@/components/stores/recentSearchStore';
 
 interface JourneySearchFormProps {
   onSearch: (from: string, to: string) => void;

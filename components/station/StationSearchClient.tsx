@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 
 import Card from '@/components/ui/Card';
 import StationAutocomplete from '@/components/search/StationAutocomplete';
-import { addStationSearch } from '@/services/recentSearchService';
+import { addStationSearch } from '@/components/stores/recentSearchStore';
 
 import { StationSearchResponse } from '@/types/station';
 

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowRight, TrainFront } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import { TrainSearchResponse } from '@/types/train';
-import { addTrainSearch } from '@/services/recentSearchService';
+import { addTrainSearch } from '@/components/stores/recentSearchStore';
 
 interface TrainCardProps {
   train: TrainSearchResponse;

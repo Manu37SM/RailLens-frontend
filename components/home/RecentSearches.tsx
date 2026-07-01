@@ -1,20 +1,14 @@
 'use client';
 
-import { useState } from 'react';
 import { History } from 'lucide-react';
-
 import RecentSearchCard from './RecentSearchCard';
-
 import {
   clearRecentSearches,
-  getRecentSearches,
-} from '@/services/recentSearchService';
-import { RecentSearch } from '@/types/recentSearch';
+  useRecentSearches,
+} from '@/components/stores/recentSearchStore';
 
 export default function RecentSearches() {
-  const [searches, setSearches] = useState<RecentSearch[]>(() =>
-    getRecentSearches().slice(0, 3)
-  );
+  const searches = useRecentSearches().slice(0, 3);
 
   if (searches.length === 0) {
     return null;
@@ -32,10 +26,7 @@ export default function RecentSearches() {
 
         {searches.length > 0 && (
           <button
-            onClick={() => {
-              clearRecentSearches();
-              setSearches([]);
-            }}
+            onClick={clearRecentSearches}
             className="rounded-md px-3 py-1 text-sm font-medium text-slate-500 transition-colors hover:bg-red-50 hover:text-red-600"
           >
             Clear

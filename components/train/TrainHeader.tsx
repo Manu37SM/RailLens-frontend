@@ -1,3 +1,5 @@
+import FavoriteButton from '@/components/common/FavoriteButton';
+
 interface TrainHeaderProps {
   trainNumber: string;
   trainName: string;
@@ -29,16 +31,26 @@ export default function TrainHeader({
 }: TrainHeaderProps) {
   return (
     <section className="rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
-      <div className="flex items-center gap-3">
-        <span className="text-base font-semibold text-blue-600">
-          {trainNumber}
-        </span>
+      <div className="flex items-start justify-between">
+        <div className="flex items-center justify-between gap-4">
+          <span className="text-base font-semibold text-blue-600">
+            {trainNumber}
+          </span>
 
-        <div className="h-1 w-1 rounded-full bg-slate-300" />
+          <div className="h-1 w-1 rounded-full bg-slate-300" />
 
-        <h1 className="text-xl font-bold tracking-tight text-slate-900">
-          {trainName}
-        </h1>
+          <h1 className="text-xl font-bold tracking-tight text-slate-900">
+            {trainName}
+          </h1>
+        </div>
+
+        <FavoriteButton
+          favorite={{
+            type: 'train',
+            trainNumber,
+            trainName,
+          }}
+        />
       </div>
 
       <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-600">
