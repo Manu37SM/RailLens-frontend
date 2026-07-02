@@ -1,6 +1,6 @@
 'use client';
 
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 
 interface SearchBarProps {
   query: string;
@@ -33,8 +33,18 @@ export default function SearchBar({
               onSearch();
             }
           }}
-          className="focus:border-primary h-14 w-full rounded-2xl border border-slate-200 bg-white pr-4 pl-12 text-base shadow-sm transition-all outline-none placeholder:text-slate-400 focus:ring-4 focus:ring-blue-100"
+          className="focus:border-primary h-14 w-full rounded-2xl border border-slate-200 bg-white pr-12 pl-12 text-base shadow-sm transition-all outline-none placeholder:text-slate-400 focus:ring-4 focus:ring-blue-100"
         />
+
+        {query && (
+          <button
+            type="button"
+            onClick={() => onQueryChange('')}
+            className="absolute top-1/2 right-4 -translate-y-1/2 rounded-full p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+          >
+            <X size={18} />
+          </button>
+        )}
       </div>
 
       <button

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import Card from '@/components/ui/Card';
+import Card from '@/components/layout/Card';
 import { JourneyTrainResponse } from '@/types/journey';
 
 interface Props {

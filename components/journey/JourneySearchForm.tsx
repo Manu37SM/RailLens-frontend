@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import StationAutocomplete from '../search/StationAutocomplete';
+import StationAutocomplete from '../common/StationAutocomplete';
 import { StationSearchResponse } from '@/types/station';
-import { addJourneySearch } from '@/components/stores/recentSearchStore';
+import { addJourneySearch } from '@/stores/recentSearchStore';
 
 interface JourneySearchFormProps {
   onSearch: (from: string, to: string) => void;

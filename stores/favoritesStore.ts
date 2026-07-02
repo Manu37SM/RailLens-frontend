@@ -8,16 +8,10 @@ const store = createLocalStorageStore<Favorite[]>('favorites', []);
 function isSameFavorite(a: Favorite, b: Favorite): boolean {
   switch (a.type) {
     case 'train':
-      return (
-        b.type === 'train' &&
-        b.trainNumber === a.trainNumber
-      );
+      return b.type === 'train' && b.trainNumber === a.trainNumber;
 
     case 'station':
-      return (
-        b.type === 'station' &&
-        b.stationCode === a.stationCode
-      );
+      return b.type === 'station' && b.stationCode === a.stationCode;
 
     default:
       return false;
@@ -26,14 +20,10 @@ function isSameFavorite(a: Favorite, b: Favorite): boolean {
 
 export function toggleFavorite(favorite: Favorite) {
   store.update((favorites) => {
-    const exists = favorites.some((item) =>
-      isSameFavorite(favorite, item)
-    );
+    const exists = favorites.some((item) => isSameFavorite(favorite, item));
 
     if (exists) {
-      return favorites.filter(
-        (item) => !isSameFavorite(favorite, item)
-      );
+      return favorites.filter((item) => !isSameFavorite(favorite, item));
     }
 
     return [favorite, ...favorites];
@@ -41,9 +31,7 @@ export function toggleFavorite(favorite: Favorite) {
 }
 
 export function isFavorite(favorite: Favorite) {
-  return store
-    .get()
-    .some((item) => isSameFavorite(favorite, item));
+  return store.get().some((item) => isSameFavorite(favorite, item));
 }
 
 export function clearFavorites() {

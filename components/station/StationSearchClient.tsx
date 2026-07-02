@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import Card from '@/components/ui/Card';
-import StationAutocomplete from '@/components/search/StationAutocomplete';
-import { addStationSearch } from '@/components/stores/recentSearchStore';
+import Card from '@/components/layout/Card';
+import StationAutocomplete from '@/components/common/StationAutocomplete';
+import { addStationSearch } from '@/stores/recentSearchStore';
 
 import { StationSearchResponse } from '@/types/station';
 

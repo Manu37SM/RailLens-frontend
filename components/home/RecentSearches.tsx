@@ -1,47 +1,54 @@
 'use client';
 
-import { History } from 'lucide-react';
-import RecentSearchCard from './RecentSearchCard';
-import {
-  clearRecentSearches,
-  useRecentSearches,
-} from '@/components/stores/recentSearchStore';
+import { Clock3, MapPin, Route, TrainFront } from 'lucide-react';
+
+import QuickAccessCard from './QuickAccessCard';
+
+import { useRecentSearches } from '@/stores/recentSearchStore';
+import { QuickAccessItem } from '@/types/quickAccess';
 
 export default function RecentSearches() {
-  const searches = useRecentSearches().slice(0, 3);
+  const searches = useRecentSearches();
 
-  if (searches.length === 0) {
-    return null;
-  }
+  const items: QuickAccessItem[] = searches.slice(0, 5).map((search) => {
+    switch (search.type) {
+      case 'train':
+        return {
+          key: search.trainNumber,
+          href: `/trains/${search.trainNumber}`,
+          title: search.trainName,
+          subtitle: `Train • ${search.trainNumber}`,
+          icon: TrainFront,
+        };
+
+      case 'station':
+        return {
+          key: search.stationCode,
+          href: `/stations/${search.stationCode}`,
+          title: search.stationName,
+          subtitle: `Station • ${search.stationCode}`,
+          icon: MapPin,
+        };
+
+      case 'journey':
+        return {
+          key: `${search.fromCode}-${search.toCode}`,
+          href: `/journeys?from=${search.fromCode}&to=${search.toCode}`,
+          title: `${search.fromName} → ${search.toName}`,
+          subtitle: `${search.fromCode} → ${search.toCode}`,
+          icon: Route,
+        };
+    }
+  });
 
   return (
-    <section className="mt-10">
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <History className="text-primary" size={20} />
-          <h2 className="text-xl font-semibold text-slate-900">
-            Recent Searches
-          </h2>
-        </div>
-
-        {searches.length > 0 && (
-          <button
-            onClick={clearRecentSearches}
-            className="rounded-md px-3 py-1 text-sm font-medium text-slate-500 transition-colors hover:bg-red-50 hover:text-red-600"
-          >
-            Clear
-          </button>
-        )}
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {searches.map((search) => (
-          <RecentSearchCard
-            key={`${search.type}-${search.timestamp}`}
-            search={search}
-          />
-        ))}
-      </div>
-    </section>
+    <QuickAccessCard
+      title="Recent Searches"
+      description="Continue where you left off."
+      icon={Clock3}
+      items={items}
+      emptyTitle="No recent searches"
+      emptyDescription="Your latest searches will appear here."
+    />
   );
 }

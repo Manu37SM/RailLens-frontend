@@ -4,21 +4,21 @@ RailLens Frontend is a modern Next.js application for exploring Indian Railways.
 
 ## Tech Stack
 
-* Next.js 16
-* React 19
-* TypeScript
-* Tailwind CSS
-* Lucide React
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS
+- Lucide React
 
 ## Features
 
-* Train Search
-* Train Details
-* Station Details
-* Trains Between Stations
-* Station Autocomplete
-* Journey Timeline
-* Responsive UI
+- Train Search
+- Train Details
+- Station Details
+- Trains Between Stations
+- Station Autocomplete
+- Journey Timeline
+- Responsive UI
 
 ## Project Structure
 
@@ -47,8 +47,8 @@ components/
 
 ### Prerequisites
 
-* Node.js 20+
-* npm
+- Node.js 20+
+- npm
 
 ### Install Dependencies
 
@@ -91,12 +91,12 @@ http://localhost:3000
 
 Reusable components include:
 
-* Navbar
-* Container
-* Breadcrumb
-* Card
-* Button
-* StationAutocomplete
+- Navbar
+- Container
+- Breadcrumb
+- Card
+- Button
+- StationAutocomplete
 
 Feature-specific components are organized separately for maintainability.
 
@@ -115,22 +115,22 @@ Home
 
 ## Design Principles
 
-* Railway functionality first
-* Clean and consistent interface
-* Reusable feature-specific components
-* Minimal unnecessary abstraction
+- Railway functionality first
+- Clean and consistent interface
+- Reusable feature-specific components
+- Minimal unnecessary abstraction
 
 ## Future Roadmap
 
-* Station Search Page
-* Favorites
-* Recent Searches
-* Dark Mode
-* Shareable Train Links
-* Live Running Status
-* PNR Status
-* Platform Information
-* Seat Availability
+- Station Search Page
+- Favorites
+- Recent Searches
+- Dark Mode
+- Shareable Train Links
+- Live Running Status
+- PNR Status
+- Platform Information
+- Seat Availability
 
 ## License
 

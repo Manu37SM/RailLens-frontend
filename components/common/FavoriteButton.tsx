@@ -6,15 +6,11 @@ import {
   isFavorite,
   toggleFavorite,
   useFavorites,
-} from '@/components/stores/favoritesStore';
+} from '@/stores/favoritesStore';
 
 import { Favorite } from '@/types/favorite';
 
-export default function FavoriteButton({
-  favorite,
-}: {
-  favorite: Favorite;
-}) {
+export default function FavoriteButton({ favorite }: { favorite: Favorite }) {
   useFavorites();
 
   const favorited = isFavorite(favorite);
@@ -31,10 +27,7 @@ export default function FavoriteButton({
           : 'border-slate-300 bg-white text-slate-600'
       }`}
     >
-      <Star
-        size={18}
-        fill={favorited ? 'currentColor' : 'none'}
-      />
+      <Star size={18} fill={favorited ? 'currentColor' : 'none'} />
     </button>
   );
 }

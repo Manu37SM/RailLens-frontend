@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { ArrowRight, TrainFront } from 'lucide-react';
-import Card from '@/components/ui/Card';
+import Card from '@/components/layout/Card';
 import { TrainSearchResponse } from '@/types/train';
-import { addTrainSearch } from '@/components/stores/recentSearchStore';
+import { addTrainSearch } from '@/stores/recentSearchStore';
 
 interface TrainCardProps {
   train: TrainSearchResponse;

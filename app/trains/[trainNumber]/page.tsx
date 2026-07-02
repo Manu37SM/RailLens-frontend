@@ -20,7 +20,11 @@ export default async function TrainDetailsPage({
     <main className="min-h-screen bg-slate-50 py-5">
       <Container>
         <Breadcrumb
-          items={[{ label: 'Home', href: '/' }, { label: 'Train Search' }]}
+          items={[
+            { label: 'Home', href: '/' },
+            { label: 'Train Search', href: '/trains' },
+            { label: train.trainNumber },
+          ]}
         />
         <TrainDetailsClient train={train} />
       </Container>

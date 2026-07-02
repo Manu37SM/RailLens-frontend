@@ -6,10 +6,7 @@ import { RecentSearch } from '@/types/recentSearch';
 const STORAGE_KEY = 'recent-searches';
 const MAX_RECENT_SEARCHES = 10;
 
-const store = createLocalStorageStore<RecentSearch[]>(
-  STORAGE_KEY,
-  []
-);
+const store = createLocalStorageStore<RecentSearch[]>(STORAGE_KEY, []);
 
 function addSearch(search: RecentSearch) {
   store.update((searches) => {
@@ -17,14 +14,12 @@ function addSearch(search: RecentSearch) {
       switch (search.type) {
         case 'train':
           return !(
-            item.type === 'train' &&
-            item.trainNumber === search.trainNumber
+            item.type === 'train' && item.trainNumber === search.trainNumber
           );
 
         case 'station':
           return !(
-            item.type === 'station' &&
-            item.stationCode === search.stationCode
+            item.type === 'station' && item.stationCode === search.stationCode
           );
 
         case 'journey':
@@ -42,10 +37,7 @@ function addSearch(search: RecentSearch) {
   });
 }
 
-export function addTrainSearch(
-  trainNumber: string,
-  trainName: string
-) {
+export function addTrainSearch(trainNumber: string, trainName: string) {
   addSearch({
     type: 'train',
     trainNumber,
@@ -54,10 +46,7 @@ export function addTrainSearch(
   });
 }
 
-export function addStationSearch(
-  stationCode: string,
-  stationName: string
-) {
+export function addStationSearch(stationCode: string, stationName: string) {
   addSearch({
     type: 'station',
     stationCode,

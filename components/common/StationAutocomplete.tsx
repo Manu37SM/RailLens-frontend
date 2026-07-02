@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 
 import { searchStations } from '@/services/stationService';
 import { StationSearchResponse } from '@/types/station';
@@ -98,6 +98,15 @@ export default function StationAutocomplete({
 
   const showDropdown = focused && (loading || visibleStations.length > 0);
 
+  function clearSelection() {
+    setQuery('');
+    setStations([]);
+    setSelectedIndex(-1);
+    setFocused(false);
+
+    onSelect(null);
+  }
+
   function selectStation(station: StationSearchResponse) {
     setQuery(`${station.stationName} (${station.stationCode})`);
     setFocused(false);
@@ -154,15 +163,30 @@ export default function StationAutocomplete({
         type="text"
         value={query}
         placeholder={placeholder}
-        onFocus={() => setFocused(true)}
+        onFocus={() => {
+          setFocused(true);
+
+          if (trimmedQuery.length >= 2) {
+            setSelectedIndex(-1);
+          }
+        }}
         onChange={(e) => {
           setQuery(e.target.value);
           onSelect(null);
         }}
         onKeyDown={handleKeyDown}
         autoComplete="off"
-        className="h-10 w-full rounded-lg border border-slate-300 bg-slate-50 pr-3 pl-10 text-sm text-slate-900 transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:outline-none"
+        className="h-10 w-full rounded-lg border border-slate-300 bg-slate-50 pr-10 pl-10 text-sm text-slate-900 transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:outline-none"
       />
+      {query && (
+        <button
+          type="button"
+          onClick={clearSelection}
+          className="absolute top-[42px] right-3 -translate-y-1/2 rounded-full p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+        >
+          <X size={16} />
+        </button>
+      )}
 
       {showDropdown && (
         <div className="absolute z-50 mt-1 max-h-64 w-full overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-lg">

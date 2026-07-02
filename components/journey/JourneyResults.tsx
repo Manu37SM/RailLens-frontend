@@ -1,7 +1,7 @@
 import { JourneySearchResponse } from '@/types/journey';
 import JourneyResultRow from './JourneyResultRow';
 import { SearchX } from 'lucide-react';
-import Card from '@/components/ui/Card';
+import Card from '@/components/layout/Card';
 
 interface Props {
   results: JourneySearchResponse | null;

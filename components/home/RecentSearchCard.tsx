@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { TrainFront, MapPinned, Route } from 'lucide-react';
 
-import Card from '@/components/ui/Card';
+import Card from '@/components/layout/Card';
 import { RecentSearch } from '@/types/recentSearch';
 
 interface RecentSearchCardProps {

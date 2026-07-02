@@ -1,0 +1,103 @@
+'use client';
+
+import Link from 'next/link';
+import { Heart, Clock3, TrainFront, Route, MapPinned } from 'lucide-react';
+
+import Container from '@/components/layout/Container';
+
+import { useFavorites } from '@/stores/favoritesStore';
+import { useRecentSearches } from '@/stores/recentSearchStore';
+
+function getGreeting() {
+  const hour = new Date().getHours();
+
+  if (hour < 12) return 'Good Morning';
+  if (hour < 17) return 'Good Afternoon';
+  if (hour < 21) return 'Good Evening';
+
+  return 'Good Night';
+}
+
+export default function DashboardHeader() {
+  const favorites = useFavorites();
+  const recentSearches = useRecentSearches();
+
+  return (
+    <section className="relative overflow-hidden border-b bg-gradient-to-br from-orange-50 via-white to-orange-100">
+      <Container>
+        <div className="py-14 lg:py-20">
+          <span className="inline-flex rounded-full bg-orange-100 px-3 py-1 text-sm font-medium text-orange-700">
+            👋 {getGreeting()}
+          </span>
+
+          <h1 className="mt-5 text-5xl font-bold tracking-tight">RailLens</h1>
+
+          <p className="mt-4 max-w-2xl text-lg leading-8 text-gray-600">
+            Your personal railway dashboard for searching trains, exploring
+            stations and continuing your journeys.
+          </p>
+
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-2xl border bg-white p-5">
+              <div className="flex items-center gap-3">
+                <div className="rounded-xl bg-orange-100 p-3">
+                  <Heart className="h-5 w-5 text-orange-600" />
+                </div>
+
+                <div>
+                  <div className="text-2xl font-bold">{favorites.length}</div>
+
+                  <div className="text-sm text-gray-500">Favorites</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border bg-white p-5">
+              <div className="flex items-center gap-3">
+                <div className="rounded-xl bg-orange-100 p-3">
+                  <Clock3 className="h-5 w-5 text-orange-600" />
+                </div>
+
+                <div>
+                  <div className="text-2xl font-bold">
+                    {recentSearches.length}
+                  </div>
+
+                  <div className="text-sm text-gray-500">Recent Searches</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-10 flex flex-wrap gap-3">
+            <Link
+              href="/trains"
+              className="inline-flex items-center gap-2 rounded-xl bg-orange-600 px-5 py-3 font-medium text-white transition hover:bg-orange-700"
+            >
+              <TrainFront className="h-5 w-5" />
+              Search Trains
+            </Link>
+
+            <Link
+              href="/journeys"
+              className="inline-flex items-center gap-2 rounded-xl border bg-white px-5 py-3 font-medium transition hover:bg-gray-50"
+            >
+              <Route className="h-5 w-5" />
+              Plan Journey
+            </Link>
+
+            <Link
+              href="/stations"
+              className="inline-flex items-center gap-2 rounded-xl border bg-white px-5 py-3 font-medium transition hover:bg-gray-50"
+            >
+              <MapPinned className="h-5 w-5" />
+              Explore Stations
+            </Link>
+          </div>
+        </div>
+      </Container>
+
+      <div className="absolute top-0 -right-24 h-80 w-80 rounded-full bg-orange-200/40 blur-3xl" />
+    </section>
+  );
+}

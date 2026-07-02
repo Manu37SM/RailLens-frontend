@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "format": "prettier --write \"./**/*.{js,jsx,ts,tsx,json,css,md}\""
   },
   "dependencies": {
     "lucide-react": "^1.21.0",
