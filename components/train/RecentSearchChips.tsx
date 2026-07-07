@@ -12,6 +12,10 @@ interface Props {
 export default function RecentSearchChips({ onSelect }: Props) {
   const searches = useRecentSearches();
 
+  const recentSearches = onSelect
+  ? searches.filter((s) => s.type === 'train')
+  : searches;
+
   if (searches.length === 0) return null;
 
   return (
@@ -24,8 +28,8 @@ export default function RecentSearchChips({ onSelect }: Props) {
         </h2>
       </div>
 
-      <div className="flex gap-3 overflow-x-auto pb-2">
-        {searches.slice(0, 8).map((search) => {
+      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
+        {recentSearches.sort((a, b) => b.timestamp - a.timestamp).slice(0, 8).map((search) => {
           switch (search.type) {
             case 'train': {
               const content = (
@@ -50,6 +54,7 @@ export default function RecentSearchChips({ onSelect }: Props) {
                     key={search.trainNumber}
                     onClick={() => onSelect(search.trainNumber)}
                     className="flex-shrink-0"
+                    aria-label={`Search train ${search.trainNumber}`}
                   >
                     {content}
                   </button>

@@ -1,4 +1,5 @@
 import { TrainFront } from 'lucide-react';
+import Breadcrumb from '@/components/layout/Breadcrumb';
 
 import Container from '@/components/layout/Container';
 import TrainSearchClient from '@/components/train/TrainSearchClient';
@@ -6,6 +7,12 @@ import TrainSearchClient from '@/components/train/TrainSearchClient';
 export default function TrainsPage() {
   return (
     <Container>
+      <Breadcrumb
+        items={[
+          { label: 'Home', href: '/' },
+          { label: 'Train Search', href: '/trains' },
+        ]}
+      />
       <section className="py-12">
         <div className="mx-auto mb-12 max-w-3xl text-center">
           <div className="bg-primary mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl text-white">

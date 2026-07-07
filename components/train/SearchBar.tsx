@@ -5,7 +5,7 @@ import { Search, X } from 'lucide-react';
 interface SearchBarProps {
   query: string;
   onQueryChange: (query: string) => void;
-  onSearch: () => void;
+  onSearch: (query?: string) => void | Promise<void>;
   loading: boolean;
 }
 
@@ -30,6 +30,7 @@ export default function SearchBar({
           onChange={(e) => onQueryChange(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
+              e.preventDefault();
               onSearch();
             }
           }}
@@ -48,7 +49,7 @@ export default function SearchBar({
       </div>
 
       <button
-        onClick={onSearch}
+        onClick={() => onSearch()}
         disabled={loading || !query.trim()}
         className="bg-primary flex h-14 items-center justify-center rounded-2xl px-8 font-semibold text-white shadow-sm transition-all hover:scale-[1.02] hover:bg-blue-700 hover:shadow-md disabled:cursor-not-allowed disabled:bg-slate-400"
       >

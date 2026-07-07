@@ -184,7 +184,7 @@ export default function StationAutocomplete({
           onClick={clearSelection}
           className="absolute top-[42px] right-3 -translate-y-1/2 rounded-full p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
         >
-          <X size={16} />
+          <X className="h-4 w-4" />
         </button>
       )}
 

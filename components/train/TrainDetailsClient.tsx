@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { TrainDetailsResponse } from '@/types/train';
 
@@ -27,6 +27,13 @@ export default function TrainDetailsClient({ train }: Props) {
         stop.stationCode.toLowerCase().includes(query)
     );
   }, [search, train.route]);
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'instant',
+    });
+  }, []);
 
   return (
     <>

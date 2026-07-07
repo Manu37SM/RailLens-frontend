@@ -16,12 +16,18 @@ export default function Home() {
   const [trains, setTrains] = useState<TrainSearchResponse[]>([]);
   const [loading, setLoading] = useState(false);
 
-  async function handleSearch(searchQuery = query) {
-    if (!searchQuery.trim()) return;
+  async function handleSearch(searchQuery: string = query) {
+    const trimmed = searchQuery.trim();
+
+    if (!trimmed) return;
+
+    setQuery(trimmed);
 
     try {
       setLoading(true);
-      const results = await searchTrains(searchQuery);
+
+      const results = await searchTrains(trimmed);
+
       setTrains(results);
     } finally {
       setLoading(false);

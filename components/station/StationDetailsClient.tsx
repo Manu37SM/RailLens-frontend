@@ -14,7 +14,7 @@ export default function StationDetailsClient({ station }: Props) {
   return (
     <>
       <Breadcrumb
-        items={[{ label: 'Home', href: '/' }, { label: station.stationCode }]}
+        items={[{ label: 'Home', href: '/' }, { label: 'Station Search', href: '/stations' }, { label: station.stationCode }]}
       />
 
       <StationHeader
