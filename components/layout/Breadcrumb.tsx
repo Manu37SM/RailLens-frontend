@@ -14,7 +14,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
   return (
     <nav
       aria-label="Breadcrumb"
-      className="mb-5 flex items-center gap-2 text-sm text-slate-500"
+      className="mb-4 flex items-center gap-2 text-sm text-slate-500"
     >
       {items.map((item, index) => {
         const isLast = index === items.length - 1;

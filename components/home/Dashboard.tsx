@@ -9,7 +9,7 @@ export default function Dashboard() {
   return (
     <section className="py-10">
       <Container>
-        <div className="space-y-12">
+        <div className="space-y-10">
           <QuickAccess />
 
           <SearchActions />

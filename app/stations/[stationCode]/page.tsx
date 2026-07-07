@@ -14,7 +14,7 @@ export default async function StationPage({ params }: StationPageProps) {
   const station = await getStation(stationCode);
 
   return (
-    <main className="min-h-screen bg-slate-50 py-5">
+    <main className="bg-slate-50 py-5">
       <Container>
         <StationDetailsClient station={station} />
       </Container>

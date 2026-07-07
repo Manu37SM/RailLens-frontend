@@ -37,7 +37,7 @@ export default function Home() {
   return (
     <main className="bg-background min-h-screen">
       <Container>
-        <section className="flex min-h-[70vh] flex-col items-center justify-center py-20 text-center">
+        <section className="flex flex-col items-center py-8 py-20 text-center">
           <SearchBar
             query={query}
             onQueryChange={setQuery}
@@ -54,7 +54,7 @@ export default function Home() {
 
         {trains.length > 0 && (
           <section className="pb-20">
-            <div className="mb-8 flex items-center justify-between">
+            <div className="mb-4 flex items-center justify-between">
               <div>
                 <h2 className="text-3xl font-bold text-slate-900">
                   Search Results

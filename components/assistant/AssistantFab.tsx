@@ -37,7 +37,7 @@ export default function AssistantFab() {
         aria-label={
           open ? 'Close RailLens Assistant' : 'Open RailLens Assistant'
         }
-        className="fixed right-6 bottom-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-orange-600 text-white shadow-lg transition-all duration-200 hover:scale-105 hover:bg-orange-700 active:scale-95"
+        className="fixed right-6 bottom-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-orange-600 text-white shadow-lg transition-colors duration-200 hover:bg-orange-700"
       >
         {open ? <X size={24} /> : <Bot size={24} />}
       </button>

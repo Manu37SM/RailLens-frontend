@@ -18,7 +18,7 @@ export default function StationSearch({ value, onChange }: StationSearchProps) {
         placeholder="Search station..."
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-10 w-full rounded-lg border border-slate-300 bg-slate-50 pr-3 pl-10 text-sm text-slate-900 transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:outline-none"
+        className="h-10 w-full rounded-lg border border-slate-300 bg-slate-50 pr-3 pl-10 text-sm text-slate-900 transition placeholder:text-slate-400 focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-100 focus:outline-none"
       />
     </div>
   );

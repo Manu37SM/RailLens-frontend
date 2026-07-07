@@ -10,9 +10,7 @@ import {
   Train,
 } from 'lucide-react';
 
-import ActionChips, {
-  type ActionChip,
-} from './ActionChips';
+import ActionChips, { type ActionChip } from './ActionChips';
 
 export type QuickAction =
   | 'home'
@@ -83,14 +81,8 @@ const actions: ActionChip[] = [
   },
 ];
 
-export default function QuickActions({
-  onAction,
-}: QuickActionProps) {
+export default function QuickActions({ onAction }: QuickActionProps) {
   return (
-    <ActionChips
-      title="Quick Actions"
-      actions={actions}
-      onAction={onAction}
-    />
+    <ActionChips title="Quick Actions" actions={actions} onAction={onAction} />
   );
 }

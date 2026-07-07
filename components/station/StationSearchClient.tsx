@@ -34,7 +34,7 @@ export default function StationSearchClient() {
             router.push(`/stations/${station.stationCode}`);
           }}
           disabled={!station}
-          className="bg-primary flex h-14 items-center justify-center rounded-2xl px-8 font-semibold text-white shadow-sm transition-all hover:scale-[1.02] hover:bg-blue-700 hover:shadow-md disabled:cursor-not-allowed disabled:bg-slate-400"
+          className="bg-primary flex h-10 items-center justify-center rounded-lg px-6 font-semibold text-white transition-all hover:bg-blue-700 hover:shadow-md disabled:cursor-not-allowed disabled:bg-slate-400"
         >
           Search
         </button>

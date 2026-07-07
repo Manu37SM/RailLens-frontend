@@ -2,13 +2,13 @@ import Container from '@/components/layout/Container';
 
 export default function Loading() {
   return (
-    <main className="min-h-screen bg-slate-50 py-5">
+    <main className="bg-slate-50 py-5">
       <Container>
         {/* Breadcrumb */}
         <div className="mb-6 h-5 w-56 animate-pulse rounded bg-slate-200" />
 
         {/* Train Header */}
-        <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="mb-6 rounded-lg border border-slate-200 bg-white px-5 py-4 shadow-sm">
           <div className="mb-4 h-8 w-64 animate-pulse rounded bg-slate-200" />
 
           <div className="flex flex-wrap gap-3">
@@ -19,10 +19,10 @@ export default function Loading() {
         </div>
 
         {/* Route / Timeline */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="mb-8 h-7 w-40 animate-pulse rounded bg-slate-200" />
+        <div className="rounded-lg border border-slate-200 bg-white px-5 py-4 shadow-sm">
+          <div className="mb-4 h-7 w-40 animate-pulse rounded bg-slate-200" />
 
-          <div className="space-y-6">
+          <div className="space-y-4">
             {[1, 2, 3, 4, 5, 6].map((station) => (
               <div key={station} className="flex items-start gap-5">
                 {/* Timeline dot */}

@@ -9,7 +9,7 @@ export default function QuickAccess() {
       title="Quick Access"
       description="Your saved items and recent activity."
     >
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-5 lg:grid-cols-2">
         <Favorites />
         <RecentSearches />
       </div>

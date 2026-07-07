@@ -13,16 +13,16 @@ export default function TrainsPage() {
           { label: 'Train Search', href: '/trains' },
         ]}
       />
-      <section className="py-12">
-        <div className="mx-auto mb-12 max-w-3xl text-center">
-          <div className="bg-primary mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl text-white">
+      <section className="py-6">
+        <div className="mx-auto mb-6 max-w-3xl text-center">
+          <div className="bg-primary mx-auto mb-6 flex h-10 w-10 items-center justify-center rounded-lg text-white">
             <TrainFront size={32} />
           </div>
 
-          <h1 className="text-4xl font-bold">Train Search</h1>
+          <h1 className="text-2xl font-bold">Train Search</h1>
 
-          <p className="mt-4 text-gray-600">
-            Search Indian Railways by train number or train name.
+          <p className="mt-2 text-gray-600">
+            Search by train number or train name.
           </p>
         </div>
 

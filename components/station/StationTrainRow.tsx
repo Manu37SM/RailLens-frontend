@@ -11,7 +11,7 @@ export default function StationTrainRow({ train }: Props) {
   return (
     <Link
       href={`/trains/${train.trainNumber}`}
-      className="block border-b border-slate-100 p-4 transition last:border-b-0 hover:bg-slate-50"
+      className="block border-b border-slate-100 px-4 py-2.5 transition last:border-b-0 hover:bg-slate-50"
     >
       <div className="flex items-start justify-between gap-4">
         <div>

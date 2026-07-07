@@ -47,15 +47,15 @@ export default function DashboardGrid({
 
         const content = (
           <Card
-            className={`h-full transition-all ${
+            className={`h-full transition-shadow ${
               item.disabled
                 ? 'cursor-not-allowed opacity-70'
-                : 'cursor-pointer hover:-translate-y-1 hover:border-orange-300 hover:shadow-lg'
+                : 'cursor-pointer hover:border-orange-300 hover:shadow-md'
             }`}
           >
             <div className="flex h-full flex-col">
               <div
-                className={`mb-5 flex h-12 w-12 items-center justify-center rounded-xl ${colors.icon}`}
+                className={`mb-4 flex h-10 w-10 items-center justify-center rounded-lg ${colors.icon}`}
               >
                 <Icon className="h-6 w-6" />
               </div>
@@ -76,7 +76,7 @@ export default function DashboardGrid({
               )}
 
               {!item.disabled && item.href && (
-                <div className="mt-5 flex items-center gap-2 text-sm font-medium text-orange-600">
+                <div className="mt-4 flex items-center gap-2 text-sm font-medium text-orange-600">
                   Explore
                   <ArrowRight className="h-4 w-4" />
                 </div>

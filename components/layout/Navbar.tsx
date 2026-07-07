@@ -7,17 +7,14 @@ export default function Navbar() {
       <nav className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6 lg:px-8">
         <Link
           href="/"
-          className="flex items-center gap-3 transition-opacity hover:opacity-90"
+          className="flex items-center gap-2 transition-opacity hover:opacity-90"
         >
-          <div className="bg-primary flex h-9 w-9 items-center justify-center rounded-xl text-white shadow-sm">
+          <div className="bg-primary flex h-9 w-9 items-center justify-center rounded-xl text-white">
             <TrainFront size={20} />
           </div>
 
           <div className="flex flex-col leading-none">
             <span className="text-base font-bold tracking-tight">RailLens</span>
-            <span className="text-muted text-xs">
-              Indian Railway Information
-            </span>
           </div>
         </Link>
 

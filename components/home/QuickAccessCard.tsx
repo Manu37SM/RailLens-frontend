@@ -38,7 +38,7 @@ export default function QuickAccessCard({
 }: QuickAccessCardProps) {
   return (
     <Card>
-      <div className="mb-5 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold">{title}</h3>
 
@@ -49,7 +49,7 @@ export default function QuickAccessCard({
       </div>
 
       {items.length === 0 ? (
-        <div className="py-8 text-center">
+        <div className="py-6 text-center">
           <HeaderIcon className="mx-auto mb-3 h-10 w-10 text-gray-300" />
 
           <p className="font-medium">{emptyTitle}</p>
@@ -59,7 +59,7 @@ export default function QuickAccessCard({
           {emptyHref && emptyHrefLabel && (
             <Link
               href={emptyHref}
-              className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-orange-600 hover:text-orange-700"
+              className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-orange-600 hover:text-orange-700"
             >
               {emptyHrefLabel}
 
@@ -82,7 +82,7 @@ export default function QuickAccessCard({
               <Link
                 key={item.key}
                 href={item.href}
-                className={`group flex items-center justify-between rounded-lg border border-gray-200 p-3 transition-all hover:border-orange-300 hover:bg-orange-50 ${
+                className={`group flex items-center justify-between rounded-lg border border-gray-200 p-3 transition-[background-color,border-color] hover:border-orange-300 hover:bg-orange-50 ${
                   layout === 'horizontal' ? 'min-w-[280px] flex-shrink-0' : ''
                 }`}
               >

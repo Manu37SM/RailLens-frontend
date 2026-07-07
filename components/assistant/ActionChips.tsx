@@ -27,7 +27,7 @@ export default function ActionChips({
 
   return (
     <div className="border-t border-gray-200 bg-white p-3">
-      <p className="mb-3 text-xs font-medium uppercase tracking-wide text-gray-500">
+      <p className="mb-3 text-xs font-medium tracking-wide text-gray-500 uppercase">
         {title}
       </p>
 
@@ -37,7 +37,7 @@ export default function ActionChips({
             key={action}
             type="button"
             onClick={() => onAction(action)}
-            className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 transition-colors hover:border-orange-300 hover:bg-orange-50 hover:text-orange-700"
+            className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 transition-colors hover:border-orange-300 hover:bg-orange-50 hover:text-orange-700"
           >
             <Icon size={16} />
             <span>{label}</span>

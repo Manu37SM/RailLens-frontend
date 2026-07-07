@@ -1,17 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { JourneySearchResponse } from '@/types/journey';
 import { searchJourneys } from '@/services/journeyService';
 
 import JourneySearchForm from './JourneySearchForm';
 import JourneyResults from './JourneyResults';
 
-export default function JourneySearchClient() {
+interface JourneySearchClientProps {
+  initialFrom?: string;
+  initialTo?: string;
+}
+
+export default function JourneySearchClient({
+  initialFrom,
+  initialTo,
+}: JourneySearchClientProps) {
   const [results, setResults] = useState<JourneySearchResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function handleSearch(from: string, to: string) {
+  const handleSearch = useCallback(async (from: string, to: string) => {
     setLoading(true);
 
     try {
@@ -20,11 +28,15 @@ export default function JourneySearchClient() {
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
   return (
-    <div className="space-y-6">
-      <JourneySearchForm onSearch={handleSearch} />
+    <div className="space-y-4">
+      <JourneySearchForm
+        onSearch={handleSearch}
+        initialFrom={initialFrom}
+        initialTo={initialTo}
+      />
 
       <JourneyResults results={results} loading={loading} />
     </div>

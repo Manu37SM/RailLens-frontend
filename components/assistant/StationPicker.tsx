@@ -1,4 +1,4 @@
-import { StationSearchResponse } from "@/types/station";
+import { StationSearchResponse } from '@/types/station';
 
 interface StationPickerProps {
   label: string;

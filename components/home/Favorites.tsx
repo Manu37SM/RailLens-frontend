@@ -33,7 +33,7 @@ export default function Favorites() {
   return (
     <QuickAccessCard
       title="Favorites"
-      description="Your saved trains and stations."
+      description="Quick access to your saved trains and stations."
       icon={Heart}
       items={items}
       emptyTitle="No favorites yet"

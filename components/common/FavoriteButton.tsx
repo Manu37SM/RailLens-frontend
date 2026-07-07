@@ -21,7 +21,7 @@ export default function FavoriteButton({ favorite }: { favorite: Favorite }) {
       onClick={() => toggleFavorite(favorite)}
       title={favorited ? 'Remove from favorites' : 'Add to favorites'}
       aria-label={favorited ? 'Remove from favorites' : 'Add to favorites'}
-      className={`rounded-lg border p-2 transition-all duration-200 hover:scale-105 active:scale-95 ${
+      className={`rounded-lg border p-2 transition-colors ${
         favorited
           ? 'border-yellow-300 bg-yellow-50 text-yellow-700'
           : 'border-slate-300 bg-white text-slate-600'

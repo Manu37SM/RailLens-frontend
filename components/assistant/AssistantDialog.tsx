@@ -114,6 +114,13 @@ export default function AssistantDialog({
 
   const clearSuggestions = () => setSuggestions([]);
 
+  const navigate = (href: string) => {
+    setTimeout(() => {
+      router.push(href);
+      closeAssistant();
+    }, 300);
+  };
+
   const getWelcomeMessage = (): AssistantMessage => ({
     id: crypto.randomUUID(),
     role: 'assistant',
@@ -300,20 +307,6 @@ export default function AssistantDialog({
       };
     }
 
-    if (/favorite/i.test(input)) {
-      return {
-        type: 'unknown',
-        query: 'help:favorites',
-      };
-    }
-
-    if (/recent/i.test(input)) {
-      return {
-        type: 'unknown',
-        query: 'help:recent',
-      };
-    }
-
     if (/raillens/i.test(input)) {
       return {
         type: 'unknown',
@@ -464,53 +457,32 @@ export default function AssistantDialog({
   const executeAction = (action: AssistantAction) => {
     switch (action.type) {
       case 'train':
-        setTimeout(() => {
-          router.push(`/trains/${action.trainNumber}`);
-          closeAssistant();
-        }, 300);
+        navigate(`/trains/${action.trainNumber}`);
         break;
 
       case 'station':
-        setTimeout(() => {
-          router.push(`/stations/${action.stationCode}`);
-          closeAssistant();
-        }, 300);
+        navigate(`/stations/${action.stationCode}`);
         break;
 
       case 'journey':
-        setTimeout(() => {
-          router.push(
-            `/journeys?from=${encodeURIComponent(action.from)}&to=${encodeURIComponent(action.to)}`
-          );
-          closeAssistant();
-        }, 300);
+        navigate(
+          `/journeys?from=${encodeURIComponent(action.from)}&to=${encodeURIComponent(action.to)}`
+        );
         break;
       case 'home':
-        setTimeout(() => {
-          router.push('/');
-          closeAssistant();
-        }, 300);
+        navigate('/');
         break;
 
       case 'trains':
-        setTimeout(() => {
-          router.push('/trains');
-          closeAssistant();
-        }, 300);
+        navigate('/trains');
         break;
 
       case 'stations':
-        setTimeout(() => {
-          router.push('/stations');
-          closeAssistant();
-        }, 300);
+        navigate('/stations');
         break;
 
       case 'journeys':
-        setTimeout(() => {
-          router.push('/journeys');
-          closeAssistant();
-        }, 300);
+        navigate('/journeys');
         break;
 
       case 'favorites':
@@ -560,14 +532,14 @@ export default function AssistantDialog({
     },
   };
 
-  const runImmediateAction = async (action: AssistantAction) => {
+  const runImmediateAction = (action: AssistantAction) => {
     const response = buildAssistantResponse(action);
 
     addAssistantMessage(response.message);
 
     updateSuggestions(action);
 
-    await executeAction(action);
+    executeAction(action);
   };
 
   const handleQuickAction = (action: QuickAction) => {

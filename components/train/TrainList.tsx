@@ -11,7 +11,7 @@ export default function TrainList({ trains }: TrainListProps) {
   }
 
   return (
-    <div className="mt-8 space-y-4">
+    <div className="mt-4 space-y-3">
       {trains.map((train) => (
         <TrainCard key={train.trainNumber} train={train} />
       ))}

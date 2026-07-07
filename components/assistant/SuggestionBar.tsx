@@ -1,8 +1,6 @@
 'use client';
 
-import ActionChips, {
-  type ActionChip,
-} from './ActionChips';
+import ActionChips, { type ActionChip } from './ActionChips';
 import { QuickAction } from './QuickActions';
 
 interface SuggestionBarProps {

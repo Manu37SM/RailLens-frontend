@@ -23,24 +23,24 @@ export default function DashboardHeader() {
   const recentSearches = useRecentSearches();
 
   return (
-    <section className="relative overflow-hidden border-b bg-gradient-to-br from-orange-50 via-white to-orange-100">
+    <section className="border-b bg-gradient-to-br from-orange-50 via-white to-orange-100">
       <Container>
-        <div className="py-14 lg:py-20">
+        <div className="py-10 lg:py-12">
           <span className="inline-flex rounded-full bg-orange-100 px-3 py-1 text-sm font-medium text-orange-700">
             👋 {getGreeting()}
           </span>
 
-          <h1 className="mt-5 text-5xl font-bold tracking-tight">RailLens</h1>
+          <h1 className="mt-5 text-4xl font-bold tracking-tight">RailLens</h1>
 
-          <p className="mt-4 max-w-2xl text-lg leading-8 text-gray-600">
+          <p className="mt-4 max-w-2xl text-base leading-7 text-gray-600">
             Your personal railway dashboard for searching trains, exploring
             stations and continuing your journeys.
           </p>
 
-          <div className="mt-10 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl border bg-white p-5">
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-lg border bg-white p-5">
               <div className="flex items-center gap-3">
-                <div className="rounded-xl bg-orange-100 p-3">
+                <div className="rounded-lg bg-orange-100 p-2.5">
                   <Heart className="h-5 w-5 text-orange-600" />
                 </div>
 
@@ -52,9 +52,9 @@ export default function DashboardHeader() {
               </div>
             </div>
 
-            <div className="rounded-2xl border bg-white p-5">
+            <div className="rounded-lg border bg-white p-5">
               <div className="flex items-center gap-3">
-                <div className="rounded-xl bg-orange-100 p-3">
+                <div className="rounded-lg bg-orange-100 p-2.5">
                   <Clock3 className="h-5 w-5 text-orange-600" />
                 </div>
 
@@ -69,10 +69,10 @@ export default function DashboardHeader() {
             </div>
           </div>
 
-          <div className="mt-10 flex flex-wrap gap-3">
+          <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/trains"
-              className="inline-flex items-center gap-2 rounded-xl bg-orange-600 px-5 py-3 font-medium text-white transition hover:bg-orange-700"
+              className="inline-flex items-center gap-2 rounded-lg bg-orange-600 px-5 py-3 font-medium text-white transition-colors hover:bg-orange-700"
             >
               <TrainFront className="h-5 w-5" />
               Search Trains
@@ -80,7 +80,7 @@ export default function DashboardHeader() {
 
             <Link
               href="/journeys"
-              className="inline-flex items-center gap-2 rounded-xl border bg-white px-5 py-3 font-medium transition hover:bg-gray-50"
+              className="inline-flex items-center gap-2 rounded-lg border bg-white px-5 py-3 font-medium transition-colors hover:bg-gray-50"
             >
               <Route className="h-5 w-5" />
               Plan Journey
@@ -88,7 +88,7 @@ export default function DashboardHeader() {
 
             <Link
               href="/stations"
-              className="inline-flex items-center gap-2 rounded-xl border bg-white px-5 py-3 font-medium transition hover:bg-gray-50"
+              className="inline-flex items-center gap-2 rounded-lg border bg-white px-5 py-3 font-medium transition-colors hover:bg-gray-50"
             >
               <MapPinned className="h-5 w-5" />
               Explore Stations
@@ -96,8 +96,6 @@ export default function DashboardHeader() {
           </div>
         </div>
       </Container>
-
-      <div className="absolute top-0 -right-24 h-80 w-80 rounded-full bg-orange-200/40 blur-3xl" />
     </section>
   );
 }

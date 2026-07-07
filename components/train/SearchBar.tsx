@@ -16,16 +16,16 @@ export default function SearchBar({
   loading,
 }: SearchBarProps) {
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 sm:flex-row">
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-3 sm:flex-row">
       <div className="relative flex-1">
         <Search
-          size={20}
+          size={18}
           className="absolute top-1/2 left-4 -translate-y-1/2 text-slate-400"
         />
 
         <input
           type="text"
-          placeholder="Search by train number or train name..."
+          placeholder="Train number or name"
           value={query}
           onChange={(e) => onQueryChange(e.target.value)}
           onKeyDown={(e) => {
@@ -34,7 +34,7 @@ export default function SearchBar({
               onSearch();
             }
           }}
-          className="focus:border-primary h-14 w-full rounded-2xl border border-slate-200 bg-white pr-12 pl-12 text-base shadow-sm transition-all outline-none placeholder:text-slate-400 focus:ring-4 focus:ring-blue-100"
+          className="h-11 w-full rounded-lg border border-slate-200 bg-white pr-10 pl-10 text-base shadow-sm transition-all outline-none placeholder:text-slate-400 focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
         />
 
         {query && (
@@ -51,7 +51,7 @@ export default function SearchBar({
       <button
         onClick={() => onSearch()}
         disabled={loading || !query.trim()}
-        className="bg-primary flex h-14 items-center justify-center rounded-2xl px-8 font-semibold text-white shadow-sm transition-all hover:scale-[1.02] hover:bg-blue-700 hover:shadow-md disabled:cursor-not-allowed disabled:bg-slate-400"
+        className="bg-primary flex h-11 items-center justify-center rounded-lg px-8 font-semibold text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md disabled:cursor-not-allowed disabled:bg-slate-400"
       >
         {loading ? 'Searching...' : 'Search'}
       </button>

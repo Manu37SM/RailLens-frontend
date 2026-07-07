@@ -14,8 +14,8 @@ export default function Section({
   children,
 }: SectionProps) {
   return (
-    <section className="space-y-5">
-      <div className="flex items-end justify-between">
+    <section className="space-y-4">
+      <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">{title}</h2>
 

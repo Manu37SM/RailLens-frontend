@@ -17,7 +17,7 @@ export default async function TrainDetailsPage({
   const train = await getTrainDetails(trainNumber);
 
   return (
-    <main className="min-h-screen bg-slate-50 py-5">
+    <main className="bg-background py-5">
       <Container>
         <Breadcrumb
           items={[

@@ -30,9 +30,7 @@ export default function AssistantMessages({
         return (
           <div
             key={message.id}
-            className={`flex ${
-              isAssistant ? 'justify-start' : 'justify-end'
-            }`}
+            className={`flex ${isAssistant ? 'justify-start' : 'justify-end'}`}
           >
             <div
               className={`flex max-w-[85%] items-end gap-2 ${
@@ -46,15 +44,11 @@ export default function AssistantMessages({
                     : 'bg-gray-800 text-white'
                 }`}
               >
-                {isAssistant ? (
-                  <Bot size={16} />
-                ) : (
-                  <User size={16} />
-                )}
+                {isAssistant ? <Bot size={16} /> : <User size={16} />}
               </div>
 
               <div
-                className={`rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm ${
+                className={`rounded-2xl px-4 py-3 text-sm leading-6 shadow-sm ${
                   isAssistant
                     ? 'rounded-bl-md bg-white text-gray-900'
                     : 'rounded-br-md bg-orange-600 text-white'

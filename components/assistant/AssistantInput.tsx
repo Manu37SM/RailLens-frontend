@@ -49,7 +49,7 @@ export default function AssistantInput({
           onChange={(event) => setInput(event.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Ask about trains, stations or journeys..."
-          className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm transition-colors outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
+          className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm transition-colors outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
         />
 
         <button
