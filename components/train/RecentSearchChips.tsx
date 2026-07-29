@@ -23,7 +23,7 @@ export default function RecentSearchChips({ onSelect }: Props) {
       <div className="mb-3 flex items-center gap-2">
         <Clock3 className="h-4 w-4 text-orange-600" />
 
-        <h2 className="text-sm font-semibold text-slate-700">
+        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
           Recent Searches
         </h2>
       </div>
@@ -36,7 +36,7 @@ export default function RecentSearchChips({ onSelect }: Props) {
             switch (search.type) {
               case 'train': {
                 const content = (
-                  <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 transition hover:border-orange-300 hover:bg-orange-50">
+                  <div className="flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 transition hover:border-orange-300 hover:bg-orange-50">
                     <TrainFront className="h-4 w-4 text-orange-600" />
 
                     <div className="text-left">
@@ -44,7 +44,7 @@ export default function RecentSearchChips({ onSelect }: Props) {
                         {search.trainNumber}
                       </div>
 
-                      <div className="text-xs text-slate-500">
+                      <div className="text-xs text-slate-500 dark:text-slate-400">
                         {search.trainName}
                       </div>
                     </div>
@@ -82,7 +82,7 @@ export default function RecentSearchChips({ onSelect }: Props) {
                     href={`/stations/${search.stationCode}`}
                     className="flex-shrink-0"
                   >
-                    <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 transition hover:border-orange-300 hover:bg-orange-50">
+                    <div className="flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 transition hover:border-orange-300 hover:bg-orange-50">
                       <MapPin className="h-4 w-4 text-orange-600" />
 
                       <div className="text-left">
@@ -90,7 +90,7 @@ export default function RecentSearchChips({ onSelect }: Props) {
                           {search.stationCode}
                         </div>
 
-                        <div className="text-xs text-slate-500">
+                        <div className="text-xs text-slate-500 dark:text-slate-400">
                           {search.stationName}
                         </div>
                       </div>
@@ -105,7 +105,7 @@ export default function RecentSearchChips({ onSelect }: Props) {
                     href={`/journeys?from=${search.fromCode}&to=${search.toCode}`}
                     className="flex-shrink-0"
                   >
-                    <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 transition hover:border-orange-300 hover:bg-orange-50">
+                    <div className="flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 transition hover:border-orange-300 hover:bg-orange-50">
                       <Route className="h-4 w-4 text-orange-600" />
 
                       <div className="text-left">
@@ -113,7 +113,7 @@ export default function RecentSearchChips({ onSelect }: Props) {
                           {search.fromCode} → {search.toCode}
                         </div>
 
-                        <div className="text-xs text-slate-500">
+                        <div className="text-xs text-slate-500 dark:text-slate-400">
                           {search.fromName} → {search.toName}
                         </div>
                       </div>

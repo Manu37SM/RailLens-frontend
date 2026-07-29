@@ -32,13 +32,13 @@ export default function DashboardHeader() {
 
           <h1 className="mt-5 text-4xl font-bold tracking-tight">RailLens</h1>
 
-          <p className="mt-4 max-w-2xl text-base leading-7 text-gray-600">
+          <p className="mt-4 max-w-2xl text-base leading-7 text-gray-600 dark:text-slate-300">
             Your personal railway dashboard for searching trains, exploring
             stations and continuing your journeys.
           </p>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-lg border bg-white p-5">
+            <div className="rounded-lg border bg-white dark:bg-slate-900 p-5">
               <div className="flex items-center gap-3">
                 <div className="rounded-lg bg-orange-100 p-2.5">
                   <Heart className="h-5 w-5 text-orange-600" />
@@ -47,12 +47,12 @@ export default function DashboardHeader() {
                 <div>
                   <div className="text-2xl font-bold">{favorites.length}</div>
 
-                  <div className="text-sm text-gray-500">Favorites</div>
+                  <div className="text-sm text-gray-500 dark:text-slate-400">Favorites</div>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-lg border bg-white p-5">
+            <div className="rounded-lg border bg-white dark:bg-slate-900 p-5">
               <div className="flex items-center gap-3">
                 <div className="rounded-lg bg-orange-100 p-2.5">
                   <Clock3 className="h-5 w-5 text-orange-600" />
@@ -63,7 +63,7 @@ export default function DashboardHeader() {
                     {recentSearches.length}
                   </div>
 
-                  <div className="text-sm text-gray-500">Recent Searches</div>
+                  <div className="text-sm text-gray-500 dark:text-slate-400">Recent Searches</div>
                 </div>
               </div>
             </div>
@@ -80,7 +80,7 @@ export default function DashboardHeader() {
 
             <Link
               href="/journeys"
-              className="inline-flex items-center gap-2 rounded-lg border bg-white px-5 py-3 font-medium transition-colors hover:bg-gray-50"
+              className="inline-flex items-center gap-2 rounded-lg border bg-white dark:bg-slate-900 px-5 py-3 font-medium transition-colors hover:bg-gray-50 dark:hover:bg-slate-800"
             >
               <Route className="h-5 w-5" />
               Plan Journey
@@ -88,7 +88,7 @@ export default function DashboardHeader() {
 
             <Link
               href="/stations"
-              className="inline-flex items-center gap-2 rounded-lg border bg-white px-5 py-3 font-medium transition-colors hover:bg-gray-50"
+              className="inline-flex items-center gap-2 rounded-lg border bg-white dark:bg-slate-900 px-5 py-3 font-medium transition-colors hover:bg-gray-50 dark:hover:bg-slate-800"
             >
               <MapPinned className="h-5 w-5" />
               Explore Stations

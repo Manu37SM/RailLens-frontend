@@ -12,8 +12,10 @@ export interface RouteStopResponse {
   arrivalTime: string | null;
   departureTime: string | null;
 
-  distance: number;
-  distanceFromPrevious: number;
+  // Source data frequently lacks distance for a stop (see the RailLens
+  // database review) - these are genuinely nullable, not just optional.
+  distance: number | null;
+  distanceFromPrevious: number | null;
 
   haltMinutes: number;
 

@@ -24,7 +24,7 @@ export default function FavoriteButton({ favorite }: { favorite: Favorite }) {
       className={`rounded-lg border p-2 transition-colors ${
         favorited
           ? 'border-yellow-300 bg-yellow-50 text-yellow-700'
-          : 'border-slate-300 bg-white text-slate-600'
+          : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300'
       }`}
     >
       <Star size={18} fill={favorited ? 'currentColor' : 'none'} />

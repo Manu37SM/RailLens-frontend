@@ -28,8 +28,8 @@ export default function DashboardGrid({
       badge: 'bg-green-100 text-green-700',
     },
     gray: {
-      icon: 'bg-gray-100 text-gray-600',
-      badge: 'bg-gray-100 text-gray-700',
+      icon: 'bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-300',
+      badge: 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300',
     },
   };
 
@@ -62,7 +62,7 @@ export default function DashboardGrid({
 
               <h3 className="font-semibold">{item.title}</h3>
 
-              <p className="mt-2 flex-1 text-sm text-gray-500">
+              <p className="mt-2 flex-1 text-sm text-gray-500 dark:text-slate-400">
                 {item.description}
               </p>
 

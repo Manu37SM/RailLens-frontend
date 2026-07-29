@@ -1,5 +1,13 @@
 @import 'tailwindcss';
 
+/*
+ * Class-based dark mode: Tailwind v4 defaults to the `prefers-color-scheme`
+ * media query for `dark:` utilities. RailLens instead toggles a `.dark`
+ * class on <html> so the user's explicit choice (persisted in localStorage)
+ * always wins over OS preference. See components/theme/ThemeToggle.tsx.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   /* Base */
   --background: #f8fafc;
@@ -21,6 +29,29 @@
   /* UI */
   --border: #e2e8f0;
   --muted: #64748b;
+}
+
+.dark {
+  /* Base */
+  --background: #0b1220;
+  --foreground: #e2e8f0;
+
+  /* Surfaces */
+  --card: #0f172a;
+  --card-foreground: #e2e8f0;
+
+  /* Brand (kept close to light so brand identity survives the switch) */
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+
+  /* States */
+  --success: #22c55e;
+  --danger: #ef4444;
+  --warning: #fbbf24;
+
+  /* UI */
+  --border: #1e293b;
+  --muted: #94a3b8;
 }
 
 @theme inline {
@@ -50,10 +81,18 @@
 
 html {
   scroll-behavior: smooth;
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), sans-serif;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }

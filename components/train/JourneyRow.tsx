@@ -7,7 +7,7 @@ interface JourneyRowProps {
 
 export default function JourneyRow({ stop }: JourneyRowProps) {
   return (
-    <div className="grid grid-cols-[48px_1fr_80px_80px_56px_70px] items-center border-b border-slate-200 px-5 py-2 transition-colors hover:bg-slate-50">
+    <div className="grid grid-cols-[48px_1fr_80px_80px_56px_70px] items-center border-b border-slate-200 dark:border-slate-700 px-5 py-2 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800">
       {/* Timeline */}
 
       <div className="flex flex-col items-center self-stretch">
@@ -17,14 +17,14 @@ export default function JourneyRow({ stop }: JourneyRowProps) {
               ? 'border-green-600 bg-green-600 text-white'
               : stop.destination
                 ? 'border-red-600 bg-red-600 text-white'
-                : 'border-slate-300 bg-white text-slate-700'
+                : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300'
           }`}
         >
           {stop.sequenceNo}
         </div>
 
         {!stop.destination && (
-          <div className="mt-0.5 w-0.5 flex-1 bg-slate-300" />
+          <div className="mt-0.5 w-0.5 flex-1 bg-slate-300 dark:bg-slate-600" />
         )}
       </div>
 
@@ -36,11 +36,11 @@ export default function JourneyRow({ stop }: JourneyRowProps) {
             href={`/stations/${stop.stationCode}`}
             className="group min-w-0"
           >
-            <h2 className="text-base font-semibold tracking-wide text-slate-900 transition-colors group-hover:text-blue-600">
+            <h2 className="text-base font-semibold tracking-wide text-slate-900 dark:text-slate-100 transition-colors group-hover:text-blue-600">
               {stop.stationCode}
             </h2>
 
-            <p className="mt-0.5 truncate text-xs text-slate-500 group-hover:text-blue-500">
+            <p className="mt-0.5 truncate text-xs text-slate-500 dark:text-slate-400 group-hover:text-blue-500">
               {stop.stationName}
             </p>
           </Link>
@@ -92,8 +92,8 @@ export default function JourneyRow({ stop }: JourneyRowProps) {
       {/* Distance */}
 
       <div className="text-right">
-        <p className="font-mono text-sm font-medium text-slate-700">
-          {stop.distance}
+        <p className="font-mono text-sm font-medium text-slate-700 dark:text-slate-300">
+          {stop.distance ?? '--'}
         </p>
       </div>
     </div>

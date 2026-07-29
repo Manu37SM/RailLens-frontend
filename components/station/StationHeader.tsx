@@ -12,14 +12,14 @@ export default function StationHeader({
   totalTrains,
 }: StationHeaderProps) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white px-5 py-4 shadow-sm">
+    <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-5 py-4 shadow-sm">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <div className="text-2xl font-bold tracking-tight text-slate-900">
+          <div className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             {stationCode}
           </div>
 
-          <p className="mt-0.5 text-base text-slate-600">{stationName}</p>
+          <p className="mt-0.5 text-base text-slate-600 dark:text-slate-300">{stationName}</p>
         </div>
 
         <FavoriteButton

@@ -23,7 +23,7 @@ export default function AssistantMessages({
   }, [messages]);
 
   return (
-    <div className="flex-1 space-y-4 overflow-y-auto bg-gray-50 p-4">
+    <div className="flex-1 space-y-4 overflow-y-auto bg-gray-50 dark:bg-slate-800 p-4">
       {messages.map((message) => {
         const isAssistant = message.role === 'assistant';
 
@@ -50,7 +50,7 @@ export default function AssistantMessages({
               <div
                 className={`rounded-2xl px-4 py-3 text-sm leading-6 shadow-sm ${
                   isAssistant
-                    ? 'rounded-bl-md bg-white text-gray-900'
+                    ? 'rounded-bl-md bg-white dark:bg-slate-900 text-gray-900 dark:text-slate-100'
                     : 'rounded-br-md bg-orange-600 text-white'
                 }`}
               >
@@ -68,11 +68,11 @@ export default function AssistantMessages({
               <Bot size={16} />
             </div>
 
-            <div className="rounded-2xl rounded-bl-md bg-white px-4 py-3 shadow-sm">
+            <div className="rounded-2xl rounded-bl-md bg-white dark:bg-slate-900 px-4 py-3 shadow-sm">
               <div className="flex gap-1">
-                <span className="h-2 w-2 animate-bounce rounded-full bg-gray-400" />
-                <span className="h-2 w-2 animate-bounce rounded-full bg-gray-400 [animation-delay:120ms]" />
-                <span className="h-2 w-2 animate-bounce rounded-full bg-gray-400 [animation-delay:240ms]" />
+                <span className="h-2 w-2 animate-bounce rounded-full bg-gray-400 dark:bg-slate-600" />
+                <span className="h-2 w-2 animate-bounce rounded-full bg-gray-400 dark:bg-slate-600 [animation-delay:120ms]" />
+                <span className="h-2 w-2 animate-bounce rounded-full bg-gray-400 dark:bg-slate-600 [animation-delay:240ms]" />
               </div>
             </div>
           </div>

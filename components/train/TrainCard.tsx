@@ -16,7 +16,7 @@ export default function TrainCard({ train }: TrainCardProps) {
       onClick={() => addTrainSearch(train.trainNumber, train.trainName)}
       className="block"
     >
-      <Card className="group rounded-lg border border-slate-200 bg-white px-4 py-3 shadow-sm transition-colors hover:border-orange-300 hover:bg-orange-50/30">
+      <Card className="group rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 shadow-sm transition-colors hover:border-orange-300 hover:bg-orange-50/30">
         <div className="flex items-start gap-3">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-orange-100 text-orange-600">
             <TrainFront size={18} />
@@ -27,7 +27,7 @@ export default function TrainCard({ train }: TrainCardProps) {
               {train.trainNumber}
             </p>
 
-            <h2 className="mt-0.5 truncate text-lg font-semibold text-slate-900">
+            <h2 className="mt-0.5 truncate text-lg font-semibold text-slate-900 dark:text-slate-100">
               {train.trainName}
             </h2>
           </div>

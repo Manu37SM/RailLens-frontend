@@ -103,7 +103,7 @@ export default function JourneySearchForm({
   }, [from, to, search]);
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4">
+    <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end">
         <div className="flex-1">
           <StationAutocomplete
@@ -123,7 +123,7 @@ export default function JourneySearchForm({
             onClick={handleSwap}
             disabled={!from && !to}
             aria-label="Swap stations"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-slate-300 bg-white text-slate-600 transition hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 transition hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <ArrowUpDown className="h-4 w-4 rotate-90 lg:rotate-0" />
           </button>
@@ -151,7 +151,7 @@ export default function JourneySearchForm({
           onClick={handleSearch}
           className={`inline-flex h-10 items-center justify-center rounded-md px-5 text-sm font-medium transition ${
             !from || !to
-              ? 'cursor-not-allowed bg-slate-300 text-white'
+              ? 'cursor-not-allowed bg-slate-300 dark:bg-slate-600 text-white'
               : 'bg-orange-500 text-white hover:bg-orange-600'
           }`}
         >

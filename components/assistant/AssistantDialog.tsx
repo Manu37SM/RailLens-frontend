@@ -11,7 +11,7 @@ import { useFavorites } from '@/stores/favoritesStore';
 import { useRecentSearches } from '@/stores/recentSearchStore';
 import SuggestionBar from './SuggestionBar';
 
-import { Train, MapPin, Route, Star, History, Home } from 'lucide-react';
+import { Train, MapPin, Route, Home } from 'lucide-react';
 import { ActionChip } from './ActionChips';
 
 type ConversationState =
@@ -675,7 +675,7 @@ export default function AssistantDialog({
   if (!open) return null;
 
   return (
-    <div className="fixed right-6 bottom-24 z-50 flex h-[600px] w-[380px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl">
+    <div className="fixed right-6 bottom-24 z-50 flex h-[600px] w-[380px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-2xl">
       <AssistantHeader onClose={onClose} />
 
       <AssistantMessages messages={messages} isTyping={isProcessing} />

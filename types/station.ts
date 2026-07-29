@@ -5,7 +5,9 @@ export interface StationTrainResponse {
   arrivalTime: string | null;
   departureTime: string | null;
 
-  distance: number;
+  // Source data frequently lacks distance for a stop (see the RailLens
+  // database review) - genuinely nullable, not just optional.
+  distance: number | null;
   sequenceNo: number;
 
   origin: boolean;

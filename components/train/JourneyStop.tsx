@@ -14,24 +14,24 @@ export default function JourneyTable({
   onSearch,
 }: JourneyTableProps) {
   return (
-    <section className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <section className="mt-6 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm">
       {/* Header */}
 
-      <div className="border-b border-slate-200 px-5 py-4">
-        <h2 className="text-lg font-semibold text-slate-900">
+      <div className="border-b border-slate-200 dark:border-slate-700 px-5 py-4">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
           Journey Timetable
         </h2>
       </div>
 
       {/* Search */}
 
-      <div className="border-b border-slate-200 px-5 py-3">
+      <div className="border-b border-slate-200 dark:border-slate-700 px-5 py-3">
         <StationSearch value={search} onChange={onSearch} />
       </div>
 
       {/* Sticky Column Header */}
 
-      <div className="sticky top-0 z-10 grid grid-cols-[48px_1fr_80px_80px_56px_70px] items-center bg-slate-50 px-5 py-2 text-[11px] font-semibold tracking-wider text-slate-500 uppercase">
+      <div className="sticky top-0 z-10 grid grid-cols-[48px_1fr_80px_80px_56px_70px] items-center bg-slate-50 dark:bg-slate-800 px-5 py-2 text-[11px] font-semibold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
         <div />
 
         <div>Station</div>
@@ -48,7 +48,7 @@ export default function JourneyTable({
       {/* Route */}
 
       <div className="relative">
-        <div className="absolute top-0 bottom-0 left-6 w-0.5 bg-slate-200" />
+        <div className="absolute top-0 bottom-0 left-6 w-0.5 bg-slate-200 dark:bg-slate-700" />
 
         {route.map((stop) => (
           <JourneyRow key={stop.sequenceNo} stop={stop} />

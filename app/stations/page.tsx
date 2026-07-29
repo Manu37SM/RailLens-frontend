@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function StationsPage() {
   return (
-    <main className="bg-slate-50 py-5">
+    <div className="bg-slate-50 dark:bg-slate-800 py-5">
       <Container>
         <Breadcrumb
           items={[{ label: 'Home', href: '/' }, { label: 'Stations' }]}
@@ -17,6 +17,6 @@ export default function StationsPage() {
 
         <StationSearchClient />
       </Container>
-    </main>
+    </div>
   );
 }

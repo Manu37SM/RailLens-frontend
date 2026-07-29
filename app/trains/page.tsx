@@ -21,7 +21,7 @@ export default function TrainsPage() {
 
           <h1 className="text-2xl font-bold">Train Search</h1>
 
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-gray-600 dark:text-slate-300">
             Search by train number or train name.
           </p>
         </div>

@@ -42,7 +42,7 @@ export default function QuickAccessCard({
         <div>
           <h3 className="text-lg font-semibold">{title}</h3>
 
-          <p className="text-sm text-gray-500">{description}</p>
+          <p className="text-sm text-gray-500 dark:text-slate-400">{description}</p>
         </div>
 
         <HeaderIcon className="h-5 w-5 text-orange-500" />
@@ -50,11 +50,11 @@ export default function QuickAccessCard({
 
       {items.length === 0 ? (
         <div className="py-6 text-center">
-          <HeaderIcon className="mx-auto mb-3 h-10 w-10 text-gray-300" />
+          <HeaderIcon className="mx-auto mb-3 h-10 w-10 text-gray-300 dark:text-slate-600" />
 
           <p className="font-medium">{emptyTitle}</p>
 
-          <p className="mt-1 text-sm text-gray-500">{emptyDescription}</p>
+          <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">{emptyDescription}</p>
 
           {emptyHref && emptyHrefLabel && (
             <Link
@@ -82,7 +82,7 @@ export default function QuickAccessCard({
               <Link
                 key={item.key}
                 href={item.href}
-                className={`group flex items-center justify-between rounded-lg border border-gray-200 p-3 transition-[background-color,border-color] hover:border-orange-300 hover:bg-orange-50 ${
+                className={`group flex items-center justify-between rounded-lg border border-gray-200 dark:border-slate-700 p-3 transition-[background-color,border-color] hover:border-orange-300 hover:bg-orange-50 ${
                   layout === 'horizontal' ? 'min-w-[280px] flex-shrink-0' : ''
                 }`}
               >
@@ -94,11 +94,11 @@ export default function QuickAccessCard({
                   <div>
                     <div className="font-medium">{item.title}</div>
 
-                    <div className="text-sm text-gray-500">{item.subtitle}</div>
+                    <div className="text-sm text-gray-500 dark:text-slate-400">{item.subtitle}</div>
                   </div>
                 </div>
 
-                <ArrowRight className="h-4 w-4 text-gray-400 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="h-4 w-4 text-gray-400 dark:text-slate-500 transition-transform group-hover:translate-x-1" />
               </Link>
             );
           })}

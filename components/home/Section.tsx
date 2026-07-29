@@ -20,7 +20,7 @@ export default function Section({
           <h2 className="text-2xl font-bold tracking-tight">{title}</h2>
 
           {description && (
-            <p className="mt-1 text-sm text-gray-500">{description}</p>
+            <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">{description}</p>
           )}
         </div>
 

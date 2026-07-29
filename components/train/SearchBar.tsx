@@ -20,12 +20,14 @@ export default function SearchBar({
       <div className="relative flex-1">
         <Search
           size={18}
-          className="absolute top-1/2 left-4 -translate-y-1/2 text-slate-400"
+          aria-hidden="true"
+          className="absolute top-1/2 left-4 -translate-y-1/2 text-slate-400 dark:text-slate-500"
         />
 
         <input
           type="text"
           placeholder="Train number or name"
+          aria-label="Train number or name"
           value={query}
           onChange={(e) => onQueryChange(e.target.value)}
           onKeyDown={(e) => {
@@ -34,21 +36,23 @@ export default function SearchBar({
               onSearch();
             }
           }}
-          className="h-11 w-full rounded-lg border border-slate-200 bg-white pr-10 pl-10 text-base shadow-sm transition-all outline-none placeholder:text-slate-400 focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
+          className="h-11 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 pr-10 pl-10 text-base shadow-sm transition-all outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
         />
 
         {query && (
           <button
             type="button"
             onClick={() => onQueryChange('')}
-            className="absolute top-1/2 right-4 -translate-y-1/2 rounded-full p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+            aria-label="Clear search"
+            className="absolute top-1/2 right-4 -translate-y-1/2 rounded-full p-1 text-slate-400 dark:text-slate-500 transition hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-600"
           >
-            <X size={18} />
+            <X size={18} aria-hidden="true" />
           </button>
         )}
       </div>
 
       <button
+        type="button"
         onClick={() => onSearch()}
         disabled={loading || !query.trim()}
         className="bg-primary flex h-11 items-center justify-center rounded-lg px-8 font-semibold text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md disabled:cursor-not-allowed disabled:bg-slate-400"

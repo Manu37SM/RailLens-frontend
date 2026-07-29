@@ -40,7 +40,7 @@ export default function AssistantInput({
   };
 
   return (
-    <div className="border-t border-gray-200 bg-white p-4">
+    <div className="border-t border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
       <div className="flex items-center gap-2">
         <input
           ref={inputRef}
@@ -49,7 +49,8 @@ export default function AssistantInput({
           onChange={(event) => setInput(event.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Ask about trains, stations or journeys..."
-          className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm transition-colors outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
+          aria-label="Ask about trains, stations or journeys"
+          className="flex-1 rounded-lg border border-gray-300 dark:border-slate-600 px-4 py-2 text-base sm:text-sm transition-colors outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
         />
 
         <button
@@ -57,9 +58,9 @@ export default function AssistantInput({
           onClick={handleSend}
           disabled={!input.trim()}
           aria-label="Send message"
-          className="flex h-11 w-11 items-center justify-center rounded-lg bg-orange-600 text-white transition-colors hover:bg-orange-700 disabled:cursor-not-allowed disabled:bg-gray-300"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-orange-600 text-white transition-colors hover:bg-orange-700 disabled:cursor-not-allowed disabled:bg-gray-300"
         >
-          <SendHorizontal size={18} />
+          <SendHorizontal size={18} aria-hidden="true" />
         </button>
       </div>
     </div>
