@@ -6,6 +6,7 @@ import SearchHistoryList from '@/components/history/SearchHistoryList';
 
 export const metadata: Metadata = {
   title: 'Search History | RailLens',
+  robots: { index: false, follow: true },
 };
 
 export default function HistoryPage() {

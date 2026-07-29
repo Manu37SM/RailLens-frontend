@@ -1,7 +1,11 @@
 import Link from 'next/link';
-import { TrainFront } from 'lucide-react';
+import { Bookmark, Clock3, Heart, TrainFront } from 'lucide-react';
 
 import ThemeToggle from '@/components/theme/ThemeToggle';
+import AuthNavLinks from '@/components/auth/AuthNavLinks';
+
+const navLinkClasses =
+  'hover:text-primary focus-visible:ring-primary flex items-center gap-1.5 rounded-md text-sm font-medium text-slate-600 transition-colors focus-visible:ring-2 focus-visible:outline-none dark:text-slate-300';
 
 export default function Navbar() {
   return (
@@ -24,19 +28,29 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-3 sm:gap-6">
-          <Link
-            href="/"
-            className="hover:text-primary focus-visible:ring-primary rounded-md text-sm font-medium text-slate-600 transition-colors focus-visible:ring-2 focus-visible:outline-none dark:text-slate-300"
-          >
+          {/* Redundant with the logo link on small screens, where every
+              bit of horizontal space matters more - kept as a full text
+              link from sm: up. */}
+          <Link href="/" className={`hidden sm:flex ${navLinkClasses}`}>
             Home
           </Link>
 
-          <Link
-            href="/history"
-            className="hover:text-primary focus-visible:ring-primary rounded-md text-sm font-medium text-slate-600 transition-colors focus-visible:ring-2 focus-visible:outline-none dark:text-slate-300"
-          >
-            History
+          <Link href="/favorites" aria-label="Favorites" className={navLinkClasses}>
+            <Heart size={16} aria-hidden="true" />
+            <span className="hidden sm:inline" aria-hidden="true">Favorites</span>
           </Link>
+
+          <Link href="/history" aria-label="History" className={navLinkClasses}>
+            <Clock3 size={16} aria-hidden="true" />
+            <span className="hidden sm:inline" aria-hidden="true">History</span>
+          </Link>
+
+          <Link href="/saved-journeys" aria-label="Saved Journeys" className={navLinkClasses}>
+            <Bookmark size={16} aria-hidden="true" />
+            <span className="hidden sm:inline" aria-hidden="true">Saved</span>
+          </Link>
+
+          <AuthNavLinks />
 
           <ThemeToggle />
         </div>

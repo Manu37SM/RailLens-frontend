@@ -26,6 +26,7 @@ export default function SearchBar({
 
         <input
           type="text"
+          data-global-search
           placeholder="Train number or name"
           aria-label="Train number or name"
           value={query}

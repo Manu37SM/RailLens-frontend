@@ -82,7 +82,7 @@ export default function QuickAccessCard({
               <Link
                 key={item.key}
                 href={item.href}
-                className={`group flex items-center justify-between rounded-lg border border-gray-200 dark:border-slate-700 p-3 transition-[background-color,border-color] hover:border-orange-300 hover:bg-orange-50 ${
+                className={`group flex items-center justify-between rounded-lg border border-gray-200 dark:border-slate-700 p-3 transition-[background-color,border-color] hover:border-orange-300 hover:bg-orange-50 dark:hover:border-orange-500/50 dark:hover:bg-orange-500/10 ${
                   layout === 'horizontal' ? 'min-w-[280px] flex-shrink-0' : ''
                 }`}
               >

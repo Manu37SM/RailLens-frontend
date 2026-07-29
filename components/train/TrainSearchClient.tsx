@@ -8,12 +8,18 @@ import Container from '@/components/layout/Container';
 import SearchBar from '@/components/train/SearchBar';
 import TrainList from '@/components/train/TrainList';
 import ErrorState from '@/components/common/ErrorState';
+import PopularSearchChips from '@/components/common/PopularSearchChips';
 
 import RecentSearchChips from './RecentSearchChips';
 
 import { searchTrains } from '@/services/trainService';
 import { ApiError } from '@/services/api';
 import { TrainSearchResponse } from '@/types/train';
+import {
+  getPopularTrainSearches,
+  recordTrainSearch,
+  usePopularSearches,
+} from '@/stores/popularSearchStore';
 
 export default function Home() {
   const [query, setQuery] = useState('');
@@ -25,6 +31,10 @@ export default function Home() {
   // states (a prompt to search vs. a "no results" message).
   const [hasSearched, setHasSearched] = useState(false);
 
+  // Subscribing so the chip row updates immediately after a search - same
+  // pattern as popularityStore's usage elsewhere.
+  usePopularSearches();
+
   async function handleSearch(searchQuery: string = query) {
     const trimmed = searchQuery.trim();
 
@@ -33,6 +43,7 @@ export default function Home() {
     setQuery(trimmed);
     setError(null);
     setHasSearched(true);
+    recordTrainSearch(trimmed);
 
     try {
       setLoading(true);
@@ -63,6 +74,14 @@ export default function Home() {
             loading={loading}
           />
           <RecentSearchChips
+            onSelect={(value) => {
+              setQuery(value);
+              handleSearch(value);
+            }}
+          />
+
+          <PopularSearchChips
+            entries={getPopularTrainSearches()}
             onSelect={(value) => {
               setQuery(value);
               handleSearch(value);

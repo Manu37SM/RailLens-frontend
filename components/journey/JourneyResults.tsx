@@ -1,10 +1,26 @@
+'use client';
+
+import { useMemo, useState } from 'react';
 import { SearchX, TrainFront, ArrowUpDown } from 'lucide-react';
 
 import Card from '@/components/layout/Card';
 import ErrorState from '@/components/common/ErrorState';
-import { JourneySearchResponse } from '@/types/journey';
+import { JourneySearchResponse, JourneyTrainResponse } from '@/types/journey';
 
 import JourneyResultRow from './JourneyResultRow';
+
+type SortMode = 'duration' | 'distance';
+
+// The backend already returns results sorted by duration ascending
+// (JourneyService - "fastest first"), so 'duration' here is just "keep
+// the order the API gave us" rather than a client-side re-sort. Duration
+// only exists as a formatted string ("2h 05m") on the wire, not a raw
+// number, so parsing it back out is only needed for display purposes -
+// sorting by it never requires parsing since we simply don't touch the
+// API's own order.
+function parseDistance(train: JourneyTrainResponse): number {
+  return train.distance;
+}
 
 interface Props {
   results: JourneySearchResponse | null;
@@ -19,6 +35,15 @@ export default function JourneyResults({
   error,
   onRetry,
 }: Props) {
+  const [sortMode, setSortMode] = useState<SortMode>('duration');
+
+  const sortedTrains = useMemo(() => {
+    if (!results) return [];
+    if (sortMode === 'duration') return results.trains;
+
+    return [...results.trains].sort((a, b) => parseDistance(a) - parseDistance(b));
+  }, [results, sortMode]);
+
   if (error) {
     return <ErrorState message={error} onRetry={onRetry} />;
   }
@@ -111,19 +136,24 @@ export default function JourneyResults({
 
         <button
           type="button"
-          disabled
-          className="flex cursor-not-allowed items-center gap-2 rounded-lg border bg-slate-50 dark:bg-slate-800 px-3 py-2 text-sm text-slate-400 dark:text-slate-500"
-          title="Sorting coming soon"
+          onClick={() => setSortMode((prev) => (prev === 'duration' ? 'distance' : 'duration'))}
+          aria-pressed={sortMode === 'distance'}
+          className="flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
+          title={
+            sortMode === 'duration'
+              ? 'Sorted fastest first - tap to sort by distance instead'
+              : 'Sorted shortest distance first - tap to sort by duration instead'
+          }
         >
           <ArrowUpDown className="h-4 w-4 rotate-90 lg:rotate-0" />
-          Sort
+          {sortMode === 'duration' ? 'Fastest first' : 'Shortest first'}
         </button>
       </div>
 
       {/* Journey Cards */}
 
       <div className="space-y-3">
-        {results.trains.map((train) => (
+        {sortedTrains.map((train) => (
           <JourneyResultRow key={train.trainNumber} train={train} />
         ))}
       </div>

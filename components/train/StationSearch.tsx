@@ -16,6 +16,7 @@ export default function StationSearch({ value, onChange }: StationSearchProps) {
 
       <input
         type="text"
+        data-global-search
         placeholder="Search station..."
         aria-label="Search station"
         value={value}

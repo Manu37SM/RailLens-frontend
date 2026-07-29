@@ -1,3 +1,7 @@
+'use client';
+
+import { useMemo, useState } from 'react';
+
 import { StationTrainResponse } from '@/types/station';
 import StationTrainRow from './StationTrainRow';
 
@@ -5,7 +9,74 @@ interface Props {
   trains: StationTrainResponse[];
 }
 
+type Filter = 'all' | 'passing' | 'originating' | 'terminating' | 'departures' | 'arrivals';
+
+const FILTERS: { key: Filter; label: string }[] = [
+  { key: 'all', label: 'All' },
+  { key: 'originating', label: 'Originating' },
+  { key: 'terminating', label: 'Terminating' },
+  { key: 'passing', label: 'Passing Through' },
+  { key: 'departures', label: 'Departures' },
+  { key: 'arrivals', label: 'Arrivals' },
+];
+
+// "HH:mm:ss" strings sort correctly lexicographically - no need to parse
+// into Date/LocalTime objects just to compare them. Trains missing the
+// relevant time (e.g. a terminating train has no departureTime) sort to
+// the end rather than the beginning, where a naive string comparison
+// would otherwise put a missing value (empty/null sorts "before"
+// everything).
+function compareTimes(a: string | null, b: string | null): number {
+  if (a === b) return 0;
+  if (a === null) return 1;
+  if (b === null) return -1;
+  return a.localeCompare(b);
+}
+
+/**
+ * M-Indicator/IndianRailInfo both split a station's trains into
+ * originating/terminating/passing-through, rather than one flat list -
+ * useful because "which trains actually start here" (vs. just stopping
+ * briefly) is a different question from "what stops at this station."
+ * Computed entirely from data already on StationTrainResponse
+ * (origin/destination flags) - no new API call needed.
+ */
 export default function StationTrainList({ trains }: Props) {
+  const [filter, setFilter] = useState<Filter>('all');
+
+  const counts = useMemo(
+    () => ({
+      all: trains.length,
+      originating: trains.filter((t) => t.origin).length,
+      terminating: trains.filter((t) => t.destination).length,
+      passing: trains.filter((t) => !t.origin && !t.destination).length,
+      departures: trains.filter((t) => t.departureTime !== null).length,
+      arrivals: trains.filter((t) => t.arrivalTime !== null).length,
+    }),
+    [trains]
+  );
+
+  const filteredTrains = useMemo(() => {
+    switch (filter) {
+      case 'originating':
+        return trains.filter((t) => t.origin);
+      case 'terminating':
+        return trains.filter((t) => t.destination);
+      case 'passing':
+        return trains.filter((t) => !t.origin && !t.destination);
+      // Departures/Arrivals aren't a different subset of trains (every
+      // train here either departs or arrives, usually both) - they're the
+      // same list sorted by the time a passenger waiting on the platform
+      // actually cares about, same as a real departures/arrivals board.
+      case 'departures':
+        return [...trains].sort((a, b) => compareTimes(a.departureTime, b.departureTime));
+      case 'arrivals':
+        return [...trains].sort((a, b) => compareTimes(a.arrivalTime, b.arrivalTime));
+      default:
+        return trains;
+    }
+  }, [trains, filter]);
+
   return (
     <div className="mt-4 overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm">
       <div className="border-b border-slate-200 dark:border-slate-700 px-4 py-3">
@@ -14,12 +85,37 @@ export default function StationTrainList({ trains }: Props) {
         </h2>
       </div>
 
-      {trains.length === 0 ? (
+      {trains.length > 0 && (
+        <div
+          role="tablist"
+          aria-label="Filter trains"
+          className="flex flex-wrap gap-1.5 border-b border-slate-200 dark:border-slate-700 px-4 py-2.5"
+        >
+          {FILTERS.map((f) => (
+            <button
+              key={f.key}
+              type="button"
+              role="tab"
+              aria-selected={filter === f.key}
+              onClick={() => setFilter(f.key)}
+              className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                filter === f.key
+                  ? 'bg-orange-600 text-white'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+              }`}
+            >
+              {f.label} ({counts[f.key]})
+            </button>
+          ))}
+        </div>
+      )}
+
+      {filteredTrains.length === 0 ? (
         <div className="px-5 py-8 text-center text-slate-500 dark:text-slate-400">
           No trains found.
         </div>
       ) : (
-        trains.map((train) => (
+        filteredTrains.map((train) => (
           <StationTrainRow key={train.trainNumber} train={train} />
         ))
       )}

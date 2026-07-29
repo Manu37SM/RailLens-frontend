@@ -45,13 +45,13 @@ export default function StationTrainRow({ train }: Props) {
         </span>
 
         {train.origin && (
-          <span className="rounded bg-green-100 px-2 py-1 text-green-700">
+          <span className="rounded bg-green-100 dark:bg-green-500/15 px-2 py-1 text-green-700 dark:text-green-300">
             Origin
           </span>
         )}
 
         {train.destination && (
-          <span className="rounded bg-red-100 px-2 py-1 text-red-700">
+          <span className="rounded bg-red-100 dark:bg-red-500/15 px-2 py-1 text-red-700 dark:text-red-300">
             Destination
           </span>
         )}

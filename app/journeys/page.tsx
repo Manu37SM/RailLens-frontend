@@ -1,6 +1,13 @@
+import { Metadata } from 'next';
+
 import Container from '@/components/layout/Container';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import JourneySearchClient from '@/components/journey/JourneySearchClient';
+
+export const metadata: Metadata = {
+  title: 'Trains Between Stations | RailLens',
+  description: 'Find trains running between any two stations on Indian Railways.',
+};
 
 interface JourneysPageProps {
   searchParams: Promise<{

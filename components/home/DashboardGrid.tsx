@@ -16,16 +16,16 @@ export default function DashboardGrid({
 }: DashboardGridProps) {
   const accentClasses = {
     orange: {
-      icon: 'bg-orange-100 text-orange-600',
-      badge: 'bg-orange-100 text-orange-700',
+      icon: 'bg-orange-100 dark:bg-orange-500/15 text-orange-600 dark:text-orange-400',
+      badge: 'bg-orange-100 dark:bg-orange-500/15 text-orange-700 dark:text-orange-300',
     },
     blue: {
-      icon: 'bg-blue-100 text-blue-600',
-      badge: 'bg-blue-100 text-blue-700',
+      icon: 'bg-blue-100 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400',
+      badge: 'bg-blue-100 dark:bg-blue-500/15 text-blue-700 dark:text-blue-300',
     },
     green: {
-      icon: 'bg-green-100 text-green-600',
-      badge: 'bg-green-100 text-green-700',
+      icon: 'bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-400',
+      badge: 'bg-green-100 dark:bg-green-500/15 text-green-700 dark:text-green-300',
     },
     gray: {
       icon: 'bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-300',

@@ -1,4 +1,5 @@
 import FavoriteButton from '@/components/common/FavoriteButton';
+import ShareButton from '@/components/common/ShareButton';
 
 interface TrainHeaderProps {
   trainNumber: string;
@@ -44,13 +45,21 @@ export default function TrainHeader({
           </h1>
         </div>
 
-        <FavoriteButton
-          favorite={{
-            type: 'train',
-            trainNumber,
-            trainName,
-          }}
-        />
+        <div className="flex items-center gap-2">
+          <ShareButton
+            title={`${trainNumber} ${trainName}`}
+            text={`${trainNumber} ${trainName} - ${sourceStationName} to ${destinationStationName} on RailLens`}
+            path={`/trains/${trainNumber}`}
+          />
+
+          <FavoriteButton
+            favorite={{
+              type: 'train',
+              trainNumber,
+              trainName,
+            }}
+          />
+        </div>
       </div>
 
       <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-600 dark:text-slate-300">

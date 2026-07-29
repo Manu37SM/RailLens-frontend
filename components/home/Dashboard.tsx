@@ -4,6 +4,8 @@ import QuickAccess from './QuickAccess';
 import SearchActions from './SearchActions';
 import Explore from './Explore';
 import TravelTools from './TravelTools';
+import Popular from './Popular';
+import Section from './Section';
 
 export default function Dashboard() {
   return (
@@ -15,6 +17,10 @@ export default function Dashboard() {
           <SearchActions />
 
           <Explore />
+
+          <Section title="Popular" description="What you've been looking at on this device.">
+            <Popular />
+          </Section>
 
           <TravelTools />
         </div>

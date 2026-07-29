@@ -23,14 +23,14 @@ export default function DashboardHeader() {
   const recentSearches = useRecentSearches();
 
   return (
-    <section className="border-b bg-gradient-to-br from-orange-50 via-white to-orange-100">
+    <section className="border-b bg-gradient-to-br from-orange-50 via-white to-orange-100 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-orange-950">
       <Container>
         <div className="py-10 lg:py-12">
-          <span className="inline-flex rounded-full bg-orange-100 px-3 py-1 text-sm font-medium text-orange-700">
+          <span className="inline-flex rounded-full bg-orange-100 px-3 py-1 text-sm font-medium text-orange-700 dark:bg-orange-500/15 dark:text-orange-300">
             👋 {getGreeting()}
           </span>
 
-          <h1 className="mt-5 text-4xl font-bold tracking-tight">RailLens</h1>
+          <h1 className="mt-5 text-4xl font-bold tracking-tight text-slate-900 dark:text-white">RailLens</h1>
 
           <p className="mt-4 max-w-2xl text-base leading-7 text-gray-600 dark:text-slate-300">
             Your personal railway dashboard for searching trains, exploring

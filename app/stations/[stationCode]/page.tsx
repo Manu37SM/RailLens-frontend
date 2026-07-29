@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import Container from '@/components/layout/Container';
@@ -10,6 +11,23 @@ interface StationPageProps {
   params: Promise<{
     stationCode: string;
   }>;
+}
+
+export async function generateMetadata({
+  params,
+}: StationPageProps): Promise<Metadata> {
+  const { stationCode } = await params;
+
+  try {
+    const station = await getStation(stationCode);
+
+    return {
+      title: `${station.stationName} (${station.stationCode}) | RailLens`,
+      description: `Trains passing through ${station.stationName} station (${station.stationCode}) - arrivals, departures and schedules on RailLens.`,
+    };
+  } catch {
+    return { title: `Station ${stationCode} | RailLens` };
+  }
 }
 
 export default async function StationPage({ params }: StationPageProps) {

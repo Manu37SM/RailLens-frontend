@@ -1,8 +1,10 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/layout/Navbar';
 import AssistantFab from '@/components/assistant/AssistantFab';
+import ServiceWorkerRegister from '@/components/pwa/ServiceWorkerRegister';
+import GlobalSearchShortcut from '@/components/common/GlobalSearchShortcut';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -14,13 +16,42 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
+// Needed to turn relative paths into absolute URLs in generated <meta
+// og:url>/<link rel="canonical"> tags and in app/sitemap.ts. Falls back to
+// localhost for local dev; set NEXT_PUBLIC_SITE_URL to the real deployed
+// origin (e.g. https://raillens.vercel.app) once it exists.
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: 'RailLens',
+    default: 'RailLens - Indian Railway Train & Station Search',
     template: '%s | RailLens',
   },
   description:
-    'A modern railway information system built with Spring Boot, Next.js, and PostgreSQL.',
+    'Search Indian Railways trains and stations, plan journeys between stations, and view live schedules - free, fast and open.',
+  manifest: '/manifest.json',
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [{ url: '/icons/apple-touch-icon.png', sizes: '180x180' }],
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'RailLens',
+  },
+};
+
+// themeColor/color-scheme live in a separate `viewport` export (not
+// `metadata`) as of Next 14+ - putting them in `metadata` is a silent
+// no-op rather than an error, which is an easy mistake to make.
+export const viewport: Viewport = {
+  themeColor: '#2563eb',
+  colorScheme: 'light dark',
 };
 
 // Runs before hydration so the correct theme class is present on first
@@ -64,6 +95,9 @@ export default function RootLayout({
         <main id="main-content" className="flex-1">
           {children} <AssistantFab />
         </main>
+
+        <ServiceWorkerRegister />
+        <GlobalSearchShortcut />
       </body>
     </html>
   );

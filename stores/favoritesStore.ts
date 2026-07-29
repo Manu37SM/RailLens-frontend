@@ -13,6 +13,13 @@ function isSameFavorite(a: Favorite, b: Favorite): boolean {
     case 'station':
       return b.type === 'station' && b.stationCode === a.stationCode;
 
+    case 'route':
+      return (
+        b.type === 'route' &&
+        b.fromStationCode === a.fromStationCode &&
+        b.toStationCode === a.toStationCode
+      );
+
     default:
       return false;
   }

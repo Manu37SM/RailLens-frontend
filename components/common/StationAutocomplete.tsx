@@ -26,13 +26,18 @@ interface StationAutocompleteProps {
   label: string;
   placeholder?: string;
   onSelect: (station: StationSearchResponse | null) => void;
+  // Marks this instance as the target of the global "/" search shortcut
+  // (see hooks/useGlobalSearchShortcut.ts). Only pass this on one
+  // StationAutocomplete per page - e.g. JourneySearchForm's "From" field,
+  // not "To" as well - so "/" has one unambiguous target.
+  shortcutTarget?: boolean;
 }
 
 const StationAutocomplete = forwardRef<
   StationAutocompleteRef,
   StationAutocompleteProps
 >(function StationAutocomplete(
-  { label, placeholder = 'Search station...', onSelect },
+  { label, placeholder = 'Search station...', onSelect, shortcutTarget = false },
   ref
 ) {
   const [query, setQuery] = useState('');
@@ -246,6 +251,7 @@ const StationAutocomplete = forwardRef<
         ref={inputRef}
         id={inputId}
         type="text"
+        {...(shortcutTarget ? { 'data-global-search': true } : {})}
         value={query}
         placeholder={placeholder}
         autoComplete="off"
@@ -338,7 +344,7 @@ const StationAutocomplete = forwardRef<
                   onClick={() => selectStation(station)}
                   className={`w-full border-b border-slate-100 dark:border-slate-800 px-4 py-2.5 text-left transition last:border-b-0 ${
                     selectedIndex === index
-                      ? 'bg-orange-50'
+                      ? 'bg-orange-50 dark:bg-orange-500/15'
                       : 'hover:bg-slate-50 dark:hover:bg-slate-800'
                   }`}
                 >
