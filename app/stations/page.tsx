@@ -15,6 +15,12 @@ export default function StationsPage() {
           items={[{ label: 'Home', href: '/' }, { label: 'Stations' }]}
         />
 
+        {/* Page-level heading - /trains has one, this page didn't (see
+            frontend architecture review's accessibility findings). */}
+        <h1 className="mb-4 text-2xl font-bold text-slate-900 dark:text-slate-100">
+          Station Search
+        </h1>
+
         <StationSearchClient />
       </Container>
     </div>

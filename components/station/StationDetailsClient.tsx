@@ -8,6 +8,7 @@ import { recordStationView } from '@/stores/popularityStore';
 
 import StationHeader from './StationHeader';
 import StationTrainList from './StationTrainList';
+import StationIntelligenceCard from './StationIntelligenceCard';
 
 interface Props {
   station: StationResponse;
@@ -44,6 +45,8 @@ export default function StationDetailsClient({ station }: Props) {
         terminatingCount={terminatingCount}
         passingCount={passingCount}
       />
+
+      <StationIntelligenceCard stationCode={station.stationCode} />
 
       <StationTrainList trains={station.trains} />
     </>

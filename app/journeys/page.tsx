@@ -27,6 +27,12 @@ export default async function JourneysPage({
         items={[{ label: 'Home', href: '/' }, { label: 'Between Stations' }]}
       />
 
+      {/* Page-level heading - /trains has one, this page didn't (see
+          frontend architecture review's accessibility findings). */}
+      <h1 className="mb-4 text-2xl font-bold text-slate-900 dark:text-slate-100">
+        Trains Between Stations
+      </h1>
+
       <JourneySearchClient initialFrom={from} initialTo={to} />
     </Container>
   );

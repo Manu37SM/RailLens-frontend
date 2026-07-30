@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import Link from 'next/link';
 import { Clock3, MapPin, Route, TrainFront } from 'lucide-react';
 
@@ -16,6 +17,16 @@ export default function RecentSearchChips({ onSelect }: Props) {
     ? searches.filter((s) => s.type === 'train')
     : searches;
 
+  // Previously re-sorted (and, since .sort() mutates in place, re-derived
+  // a fresh array) inline in JSX on every render. Zero-risk at today's
+  // scale (max MAX_RECENT_SEARCHES items), but a cheap, contained fix per
+  // the frontend architecture review's performance findings - sort/slice
+  // only re-run when the underlying list actually changes.
+  const sortedSearches = useMemo(
+    () => [...recentSearches].sort((a, b) => b.timestamp - a.timestamp).slice(0, 6),
+    [recentSearches]
+  );
+
   if (searches.length === 0) return null;
 
   return (
@@ -29,9 +40,7 @@ export default function RecentSearchChips({ onSelect }: Props) {
       </div>
 
       <div className="flex scrollbar-none gap-2 overflow-x-auto pb-2">
-        {recentSearches
-          .sort((a, b) => b.timestamp - a.timestamp)
-          .slice(0, 6)
+        {sortedSearches
           .map((search) => {
             switch (search.type) {
               case 'train': {

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 import AssistantFab from '@/components/assistant/AssistantFab';
 import ServiceWorkerRegister from '@/components/pwa/ServiceWorkerRegister';
 import GlobalSearchShortcut from '@/components/common/GlobalSearchShortcut';
@@ -95,6 +96,8 @@ export default function RootLayout({
         <main id="main-content" className="flex-1">
           {children} <AssistantFab />
         </main>
+
+        <Footer />
 
         <ServiceWorkerRegister />
         <GlobalSearchShortcut />

@@ -14,6 +14,7 @@ import {
 
 import Card from '@/components/layout/Card';
 import AdminKeyForm from './AdminKeyForm';
+import DatasetHealthPanel from './DatasetHealthPanel';
 import { clearAdminKey, useAdminKey } from '@/stores/adminKeyStore';
 import { clearCache, getAdminStats, triggerImport } from '@/services/adminService';
 import { ApiError } from '@/services/api';
@@ -286,6 +287,8 @@ export default function AdminDashboard() {
           </p>
         )}
       </Card>
+
+      <DatasetHealthPanel adminKey={adminKey} />
     </div>
   );
 }

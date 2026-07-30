@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Bookmark, Clock3, Heart, TrainFront } from 'lucide-react';
+import { Bookmark, Clock3, Heart, MapPin, Route, TrainFront } from 'lucide-react';
 
 import ThemeToggle from '@/components/theme/ThemeToggle';
 import AuthNavLinks from '@/components/auth/AuthNavLinks';
@@ -33,6 +33,27 @@ export default function Navbar() {
               link from sm: up. */}
           <Link href="/" className={`hidden sm:flex ${navLinkClasses}`}>
             Home
+          </Link>
+
+          {/* Direct links to the three core search routes - previously
+              only reachable via the homepage dashboard or breadcrumbs, so a
+              user landing on a detail page (shared link, favorite) had no
+              persistent way to get to search. See the RailLens frontend
+              architecture review's "primary navigation is incomplete"
+              finding. */}
+          <Link href="/trains" aria-label="Trains" className={navLinkClasses}>
+            <TrainFront size={16} aria-hidden="true" />
+            <span className="hidden sm:inline" aria-hidden="true">Trains</span>
+          </Link>
+
+          <Link href="/stations" aria-label="Stations" className={navLinkClasses}>
+            <MapPin size={16} aria-hidden="true" />
+            <span className="hidden sm:inline" aria-hidden="true">Stations</span>
+          </Link>
+
+          <Link href="/journeys" aria-label="Journeys" className={navLinkClasses}>
+            <Route size={16} aria-hidden="true" />
+            <span className="hidden sm:inline" aria-hidden="true">Journeys</span>
           </Link>
 
           <Link href="/favorites" aria-label="Favorites" className={navLinkClasses}>

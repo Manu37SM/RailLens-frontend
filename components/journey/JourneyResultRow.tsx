@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Clock3, MapPinned, TrainFront } from 'lucide-react';
+import { ArrowRight, Clock3, Gauge, MapPinned, Moon, TrainFront } from 'lucide-react';
 
 import Card from '@/components/layout/Card';
 import { JourneyTrainResponse } from '@/types/journey';
@@ -71,6 +71,24 @@ export default function JourneyResultRow({ train }: Props) {
               <span>{train.distance} km</span>
             </div>
           </div>
+        </div>
+
+        <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
+          <span>{train.numHalts} halt{train.numHalts === 1 ? '' : 's'}</span>
+
+          {train.averageMovingSpeedKmh != null && (
+            <span className="flex items-center gap-1">
+              <Gauge size={12} className="text-slate-400" />
+              {train.averageMovingSpeedKmh} km/h avg
+            </span>
+          )}
+
+          {train.nightTravelPercent != null && train.nightTravelPercent > 0 && (
+            <span className="flex items-center gap-1">
+              <Moon size={12} className="text-indigo-400" />
+              {train.nightTravelPercent}% overnight
+            </span>
+          )}
         </div>
       </Card>
     </Link>

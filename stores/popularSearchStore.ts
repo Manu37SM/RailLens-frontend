@@ -64,4 +64,9 @@ export function getPopularStationSearches(limit = 5): PopularSearchEntry[] {
   return topEntries(store.get().stations, limit);
 }
 
+// Same clear*() convention as clearPopularity() / clearFavorites() / etc.
+export function clearPopularSearches() {
+  store.set(EMPTY_STATE);
+}
+
 export const usePopularSearches = store.useStore;

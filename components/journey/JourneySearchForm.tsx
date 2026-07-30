@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useRef, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { ArrowUpDown, Heart } from 'lucide-react';
 
 import StationAutocomplete, {
@@ -30,6 +31,7 @@ export default function JourneySearchForm({
   const fromRef = useRef<StationAutocompleteRef>(null);
   const toRef = useRef<StationAutocompleteRef>(null);
 
+  const router = useRouter();
   const preferences = usePreferences();
 
   // Subscribing (rather than just calling isFavorite once) so the heart
@@ -68,9 +70,22 @@ export default function JourneySearchForm({
         toStation.stationName
       );
 
+      // Keep the URL in sync with every search, not just the first one on
+      // page load - previously /journeys?from=X&to=Y only reflected the
+      // initial deep link; searching again after changing stations never
+      // updated it, so the "shareable URL" promise only held for the very
+      // first search of a page visit. replace() (not push()) so repeated
+      // searches don't spam browser history. See the frontend architecture
+      // review's "journeys page doesn't sync search state back to the URL"
+      // finding.
+      router.replace(
+        `/journeys?from=${encodeURIComponent(fromStation.stationCode)}&to=${encodeURIComponent(toStation.stationCode)}`,
+        { scroll: false }
+      );
+
       onSearch(fromStation.stationCode, toStation.stationCode);
     },
-    [onSearch]
+    [onSearch, router]
   );
 
   useEffect(() => {

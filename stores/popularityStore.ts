@@ -56,4 +56,13 @@ export function getPopularStations(limit = 5): PopularEntry[] {
   return topEntries(store.get().stations, limit);
 }
 
+// Matches the clear*() convention every other on-device store in this app
+// exposes (clearFavorites, clearRecentSearches, clearSavedJourneys,
+// clearDefaultFromStation) - lets a user wipe this device's view-count
+// history from their preferences/account UI without clearing every other
+// piece of on-device state at once.
+export function clearPopularity() {
+  store.set(EMPTY_STATE);
+}
+
 export const usePopularity = store.useStore;

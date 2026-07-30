@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { KeyRound, MapPin, Trash2, User } from 'lucide-react';
+import { Eraser, KeyRound, MapPin, Trash2, User } from 'lucide-react';
 
 import { changePassword, deleteAccount, getCurrentUser } from '@/services/authService';
 import { ApiError } from '@/services/api';
@@ -13,6 +13,8 @@ import {
   setDefaultFromStation,
   usePreferences,
 } from '@/stores/preferencesStore';
+import { clearPopularity, usePopularity } from '@/stores/popularityStore';
+import { clearPopularSearches, usePopularSearches } from '@/stores/popularSearchStore';
 import StationAutocomplete, {
   StationAutocompleteRef,
 } from '@/components/common/StationAutocomplete';
@@ -120,6 +122,7 @@ export default function AccountClient() {
       </div>
 
       <PreferencesCard />
+      <PrivacyCard />
       <ChangePasswordCard />
       <DeleteAccountCard />
     </div>
@@ -174,6 +177,65 @@ function PreferencesCard() {
             : 'Pre-fills a station as the From station on the journey planner, so you don’t have to search for it every time.'}
         </p>
       </div>
+    </div>
+  );
+}
+
+// "Popular trains/stations" (popularityStore) and "Popular searches"
+// (popularSearchStore) are the only two on-device tracking stores with no
+// dedicated management page anywhere in the app - Favorites/Recent
+// Searches/Saved Journeys each already have their own list page with a
+// "Clear all" button, but view-count and query-count tracking only ever
+// surface as read-only chips (components/home/Popular.tsx,
+// PopularSearchChips.tsx), with no way to reset them short of clearing
+// site data in the browser. This card closes that gap without touching
+// the other stores, which already have their own clear affordance.
+function PrivacyCard() {
+  const popularity = usePopularity();
+  const popularSearches = usePopularSearches();
+  const [cleared, setCleared] = useState(false);
+
+  const trackedCount =
+    Object.keys(popularity.trains).length +
+    Object.keys(popularity.stations).length +
+    Object.keys(popularSearches.trains).length +
+    Object.keys(popularSearches.stations).length;
+
+  function handleClear() {
+    clearPopularity();
+    clearPopularSearches();
+    setCleared(true);
+  }
+
+  return (
+    <div className={cardClasses}>
+      <h2 className="flex items-center gap-2 text-base font-semibold text-slate-900 dark:text-slate-100">
+        <Eraser size={18} aria-hidden="true" />
+        On-device activity
+      </h2>
+
+      <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">
+        RailLens tracks which trains/stations you view and search most often
+        on this device only, to power the &quot;Popular&quot; sections on the
+        home page - nothing is sent to a server. Clearing it resets those
+        sections without touching your favorites, history, or saved
+        journeys.
+      </p>
+
+      <button
+        type="button"
+        onClick={handleClear}
+        disabled={trackedCount === 0}
+        className="mt-4 flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-slate-300 dark:border-slate-600 font-medium text-slate-700 dark:text-slate-300 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {trackedCount === 0 ? 'Nothing to clear' : 'Clear on-device activity'}
+      </button>
+
+      {cleared && trackedCount === 0 && (
+        <p role="status" className="mt-2 text-sm font-medium text-green-600 dark:text-green-400">
+          Cleared.
+        </p>
+      )}
     </div>
   );
 }

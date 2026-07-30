@@ -22,9 +22,12 @@ export default function StationHeader({
     <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-5 py-4 shadow-sm">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <div className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+          {/* h1, not a div - TrainHeader uses a real heading for its
+              primary identifier, this page didn't; matches it now (see
+              frontend architecture review's accessibility findings). */}
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             {stationCode}
-          </div>
+          </h1>
 
           <p className="mt-0.5 text-base text-slate-600 dark:text-slate-300">{stationName}</p>
         </div>

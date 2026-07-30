@@ -7,6 +7,8 @@ import { recordTrainView } from '@/stores/popularityStore';
 
 import TrainHeader from './TrainHeader';
 import JourneyTable from './JourneyStop';
+import TrainIntelligenceCard from './TrainIntelligenceCard';
+import RouteComparisonCard from './RouteComparisonCard';
 
 interface Props {
   train: TrainDetailsResponse;
@@ -94,6 +96,10 @@ export default function TrainDetailsClient({ train }: Props) {
         minutes={train.journeyMinutes}
         speed={train.averageSpeed}
       />
+
+      <TrainIntelligenceCard trainNumber={train.trainNumber} />
+
+      <RouteComparisonCard trainNumber={train.trainNumber} />
 
       <JourneyTable
         trainNumber={train.trainNumber}

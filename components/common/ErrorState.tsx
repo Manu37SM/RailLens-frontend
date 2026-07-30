@@ -15,6 +15,26 @@ interface ErrorStateProps {
  * Shared "something went wrong" panel. Used by route-level error/not-found
  * boundaries and by client components whose own data fetch (search, etc.)
  * failed, so every failure in the app looks and behaves consistently.
+ *
+ * Documented, intentional exception: TrainIntelligenceCard and
+ * StationIntelligenceCard (components/train, components/station) do NOT
+ * use this component - they render nothing (`return null`) on a failed
+ * fetch instead. That's a deliberate choice for those two specific cards,
+ * not an oversight: both are supplementary "enrichment" sections on a
+ * page that's already fully useful without them (train/station route and
+ * schedule data loads separately and doesn't depend on these cards), so a
+ * quiet failure there is less disruptive than a visible error block for
+ * something the user didn't explicitly ask for. This is *not* the right
+ * default for anything else - any future card/section that becomes
+ * load-bearing (the user came to the page specifically for it, or it's
+ * the result of a user-initiated action like a search or form submit)
+ * should use ErrorState like everything else in the app does, the same
+ * way RouteComparisonCard (a user-initiated comparison) shows a visible
+ * inline error rather than failing silently. See the frontend
+ * architecture review's "two different 'something went wrong' conventions
+ * now coexist" finding - if you're adding a third silent-failure card,
+ * make sure it's genuinely as optional as those two before copying the
+ * pattern.
  */
 export default function ErrorState({
   title = 'Something went wrong',
