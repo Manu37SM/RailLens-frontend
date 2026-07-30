@@ -25,10 +25,7 @@ export interface AuthSession {
   email: string;
 }
 
-function readStoredSession(): AuthSession | null {
-  if (typeof window === 'undefined') return null;
-
-  const raw = window.localStorage.getItem(STORAGE_KEY);
+function parseStoredSession(raw: string | null): AuthSession | null {
   if (!raw) return null;
 
   try {
@@ -54,8 +51,30 @@ function readStoredSession(): AuthSession | null {
   }
 }
 
+function readStoredSession(): AuthSession | null {
+  if (typeof window === 'undefined') return null;
+
+  return parseStoredSession(window.localStorage.getItem(STORAGE_KEY));
+}
+
+// useSyncExternalStore requires getSnapshot() to return a STABLE reference
+// when nothing has actually changed - it compares consecutive results with
+// Object.is() to decide whether to re-render. The previous version called
+// readStoredSession() (which does JSON.parse + spreads into a new object)
+// directly from getSnapshot(), so it returned a brand-new object on every
+// single call, including the calls React makes just to double-check after
+// a render. React reads that as "the store changed again," re-renders,
+// calls getSnapshot() again, gets yet another new object, and loops -
+// exactly the "Maximum update depth exceeded" / "getSnapshot should be
+// cached" errors seen on the register page. Every other store in this
+// codebase (createLocalStorageStore) avoids this by caching a snapshot at
+// module scope and only replacing it when the underlying data actually
+// changes - mirrored here.
+let cachedSession: AuthSession | null = null;
+let initialized = false;
+
 function getSnapshot(): AuthSession | null {
-  return readStoredSession();
+  return cachedSession;
 }
 
 function getServerSnapshot(): AuthSession | null {
@@ -67,8 +86,28 @@ const listeners = new Set<() => void>();
 function subscribe(callback: () => void) {
   listeners.add(callback);
 
+  // Hydrate from localStorage after mounting, same pattern/reasoning as
+  // createLocalStorageStore: the server snapshot is always null (no
+  // access to localStorage during SSR), so the real value has to be read
+  // once the component has mounted on the client. queueMicrotask defers
+  // the notify so this doesn't try to setState synchronously during
+  // React's render/subscribe phase.
+  if (!initialized) {
+    initialized = true;
+
+    const next = readStoredSession();
+
+    if (JSON.stringify(next) !== JSON.stringify(cachedSession)) {
+      cachedSession = next;
+      queueMicrotask(notify);
+    }
+  }
+
   const onStorage = (event: StorageEvent) => {
-    if (event.key === STORAGE_KEY) callback();
+    if (event.key === STORAGE_KEY) {
+      cachedSession = readStoredSession();
+      callback();
+    }
   };
   window.addEventListener('storage', onStorage);
 
@@ -84,11 +123,13 @@ function notify() {
 
 export function setSession(session: AuthSession) {
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+  cachedSession = session;
   notify();
 }
 
 export function clearSession() {
   window.localStorage.removeItem(STORAGE_KEY);
+  cachedSession = null;
   notify();
 }
 
@@ -97,7 +138,10 @@ export function useAuthSession(): AuthSession | null {
 }
 
 // Non-reactive read for use outside components (e.g. lib/sessionRefresh.ts)
-// where a hook can't be called.
+// where a hook can't be called. Deliberately NOT wired through the cached
+// snapshot above - this always re-reads localStorage directly, since
+// callers here aren't part of React's render loop and want the current
+// value, not a memoized one.
 export function getSession(): AuthSession | null {
   return readStoredSession();
 }
