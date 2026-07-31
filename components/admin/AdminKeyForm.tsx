@@ -5,6 +5,7 @@ import { KeyRound } from 'lucide-react';
 
 import Card from '@/components/layout/Card';
 import { setAdminKey } from '@/stores/adminKeyStore';
+import { inputClasses } from '@/lib/formStyles';
 
 interface AdminKeyFormProps {
   error?: string | null;
@@ -48,7 +49,7 @@ export default function AdminKeyForm({ error }: AdminKeyFormProps) {
           value={key}
           onChange={(e) => setKey(e.target.value)}
           placeholder="Admin API key"
-          className="h-10 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 px-3 text-base sm:text-sm text-slate-900 dark:text-slate-100 transition-colors placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-orange-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+          className={inputClasses}
         />
 
         {error && (

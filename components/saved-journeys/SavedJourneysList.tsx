@@ -84,7 +84,7 @@ export default function SavedJourneysList() {
       <div className="space-y-2">
         {journeys.map((journey) => (
           <Card key={journey.id} className="flex items-center gap-3 px-4 py-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-orange-100">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-orange-100 dark:bg-orange-500/15">
               <Route className="h-5 w-5 text-orange-600" aria-hidden="true" />
             </div>
 

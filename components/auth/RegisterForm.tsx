@@ -8,6 +8,7 @@ import { UserPlus } from 'lucide-react';
 import { register } from '@/services/authService';
 import { ApiError } from '@/services/api';
 import { setSession } from '@/stores/authStore';
+import { inputClasses, labelClasses } from '@/lib/formStyles';
 
 // Mirrors train-db's RegisterRequest bean validation (see
 // train-db/.../model/RegisterRequest.java) so obvious mistakes are caught
@@ -104,10 +105,7 @@ export default function RegisterForm() {
 
       <div className="mt-6 space-y-4">
         <div>
-          <label
-            htmlFor="username"
-            className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300"
-          >
+          <label htmlFor="username" className={labelClasses}>
             Username
           </label>
 
@@ -117,15 +115,12 @@ export default function RegisterForm() {
             autoComplete="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="h-10 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 px-3 text-base sm:text-sm text-slate-900 dark:text-slate-100 transition-colors placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-orange-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+            className={inputClasses}
           />
         </div>
 
         <div>
-          <label
-            htmlFor="email"
-            className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300"
-          >
+          <label htmlFor="email" className={labelClasses}>
             Email
           </label>
 
@@ -135,15 +130,12 @@ export default function RegisterForm() {
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="h-10 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 px-3 text-base sm:text-sm text-slate-900 dark:text-slate-100 transition-colors placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-orange-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+            className={inputClasses}
           />
         </div>
 
         <div>
-          <label
-            htmlFor="password"
-            className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300"
-          >
+          <label htmlFor="password" className={labelClasses}>
             Password
           </label>
 
@@ -153,7 +145,7 @@ export default function RegisterForm() {
             autoComplete="new-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="h-10 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 px-3 text-base sm:text-sm text-slate-900 dark:text-slate-100 transition-colors placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-orange-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+            className={inputClasses}
           />
 
           <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">

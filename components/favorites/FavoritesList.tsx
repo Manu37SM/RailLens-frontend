@@ -138,7 +138,7 @@ export default function FavoritesList() {
             key={favoriteKey(favorite)}
             className="flex items-center gap-3 px-4 py-3"
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-orange-100">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-orange-100 dark:bg-orange-500/15">
               <FavoriteIcon type={favorite.type} />
             </div>
 

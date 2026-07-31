@@ -10,6 +10,7 @@ import { clearSession, useAuthSession } from '@/stores/authStore';
 import { getValidAccessToken } from '@/lib/sessionRefresh';
 import {
   clearDefaultFromStation,
+  getPreferences,
   setDefaultFromStation,
   usePreferences,
 } from '@/stores/preferencesStore';
@@ -19,17 +20,12 @@ import StationAutocomplete, {
   StationAutocompleteRef,
 } from '@/components/common/StationAutocomplete';
 import { CurrentUserResponse } from '@/types/auth';
+import { cardClasses, inputClasses, labelClasses } from '@/lib/formStyles';
 
 // Mirrors train-db's ChangePasswordRequest bean validation (see
 // train-db/.../model/ChangePasswordRequest.java) - same client-side
 // pre-check pattern as RegisterForm/LoginForm, backend still re-validates.
 const PASSWORD_PATTERN = /^(?=.*[A-Za-z])(?=.*\d).+$/;
-
-const inputClasses =
-  'h-10 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 px-3 text-base sm:text-sm text-slate-900 dark:text-slate-100 transition-colors placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-orange-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-orange-100 focus:outline-none';
-const labelClasses = 'mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300';
-const cardClasses =
-  'w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm';
 
 export default function AccountClient() {
   const router = useRouter();
@@ -138,11 +134,20 @@ function PreferencesCard() {
   // internally and has no "value" prop, so without this the field would
   // render empty even when a default is already set (same pattern
   // JourneySearchForm uses to hydrate from initialFrom/initialTo).
+  //
+  // Reads via getPreferences() rather than the `preferences` variable
+  // above, for the same hydration-race reason as JourneySearchForm's
+  // matching effect (see its comment) - this `[]`-deps effect only ever
+  // runs once, so closing over `preferences` would freeze in whatever
+  // value the store had during the very first render, before localStorage
+  // hydration lands.
   useEffect(() => {
-    if (preferences.defaultFromStationCode && preferences.defaultFromStationName) {
+    const saved = getPreferences();
+
+    if (saved.defaultFromStationCode && saved.defaultFromStationName) {
       stationRef.current?.setStation({
-        stationCode: preferences.defaultFromStationCode,
-        stationName: preferences.defaultFromStationName,
+        stationCode: saved.defaultFromStationCode,
+        stationName: saved.defaultFromStationName,
       });
     }
     // Only on mount - re-running this on every preferences change would

@@ -11,7 +11,7 @@ import StationAutocomplete, {
 import { StationSearchResponse } from '@/types/station';
 import { addJourneySearch } from '@/stores/recentSearchStore';
 import { getStation } from '@/services/stationService';
-import { usePreferences } from '@/stores/preferencesStore';
+import { getPreferences, usePreferences } from '@/stores/preferencesStore';
 import { isFavorite, toggleFavorite, useFavorites } from '@/stores/favoritesStore';
 
 interface JourneySearchFormProps {
@@ -145,13 +145,30 @@ export default function JourneySearchForm({
   // only when there's no explicit deep link (initialFrom/initialTo, e.g.
   // from a "search again" link elsewhere in the app), and only once on
   // mount so it doesn't fight the user if they clear the field afterward.
+  //
+  // Reads via getPreferences() rather than the `preferences` variable
+  // above - createLocalStorageStore hydrates from localStorage inside its
+  // own subscribe effect, which mutates the store's cache synchronously
+  // but only notifies React of the change a tick later (queueMicrotask).
+  // Since this effect has `[]` deps, it only ever runs once, closing over
+  // whatever `preferences` was during the very first render - which is
+  // always the pre-hydration default (localStorage hasn't been read yet
+  // at that point), so the closed-over value would silently never reflect
+  // a saved default station. getPreferences() reads the store's live
+  // value at the moment this effect actually runs instead, which by then
+  // already reflects hydration - usePreferences() (and therefore its
+  // internal subscribe effect) is called earlier in this component than
+  // this effect, so React runs that hydration effect first.
   useEffect(() => {
     if (initialFrom || initialTo) return;
-    if (!preferences.defaultFromStationCode || !preferences.defaultFromStationName) return;
+
+    const saved = getPreferences();
+
+    if (!saved.defaultFromStationCode || !saved.defaultFromStationName) return;
 
     const defaultStation: StationSearchResponse = {
-      stationCode: preferences.defaultFromStationCode,
-      stationName: preferences.defaultFromStationName,
+      stationCode: saved.defaultFromStationCode,
+      stationName: saved.defaultFromStationName,
     };
 
     setFrom(defaultStation);

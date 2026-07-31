@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Check, Share2 } from 'lucide-react';
+import { AlertCircle, Check, Share2 } from 'lucide-react';
 
 interface ShareButtonProps {
   title: string;
@@ -23,6 +23,7 @@ interface ShareButtonProps {
  */
 export default function ShareButton({ title, text, path }: ShareButtonProps) {
   const [copied, setCopied] = useState(false);
+  const [copyFailed, setCopyFailed] = useState(false);
 
   async function handleShare() {
     const url = `${window.location.origin}${path}`;
@@ -42,9 +43,14 @@ export default function ShareButton({ title, text, path }: ShareButtonProps) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Clipboard API can be blocked (permissions, insecure context) -
-      // silently do nothing rather than show a broken "Copied" state that
-      // wasn't true.
+      // Clipboard API can be blocked (permissions, insecure context, some
+      // http:// LAN preview setups) - previously this failed completely
+      // silently, so clicking Share just appeared to do nothing with no
+      // way to tell the click even registered. Now at least surfaces that
+      // it didn't work, so the user knows to copy the URL manually instead
+      // of assuming the button is broken or clicking it repeatedly.
+      setCopyFailed(true);
+      setTimeout(() => setCopyFailed(false), 3000);
     }
   }
 
@@ -52,12 +58,14 @@ export default function ShareButton({ title, text, path }: ShareButtonProps) {
     <button
       type="button"
       onClick={handleShare}
-      title="Share"
-      aria-label={copied ? 'Link copied' : 'Share'}
+      title={copyFailed ? "Couldn't copy link - copy the URL from your address bar instead" : 'Share'}
+      aria-label={copied ? 'Link copied' : copyFailed ? 'Could not copy link' : 'Share'}
       className="rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 p-2 text-slate-600 dark:text-slate-300 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800"
     >
       {copied ? (
         <Check size={18} className="text-green-600 dark:text-green-400" aria-hidden="true" />
+      ) : copyFailed ? (
+        <AlertCircle size={18} className="text-red-600 dark:text-red-400" aria-hidden="true" />
       ) : (
         <Share2 size={18} aria-hidden="true" />
       )}

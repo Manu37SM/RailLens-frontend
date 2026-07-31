@@ -8,6 +8,7 @@ import { LogIn } from 'lucide-react';
 import { login } from '@/services/authService';
 import { ApiError } from '@/services/api';
 import { setSession } from '@/stores/authStore';
+import { inputClasses, labelClasses } from '@/lib/formStyles';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -67,10 +68,7 @@ export default function LoginForm() {
 
       <div className="mt-6 space-y-4">
         <div>
-          <label
-            htmlFor="usernameOrEmail"
-            className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300"
-          >
+          <label htmlFor="usernameOrEmail" className={labelClasses}>
             Username or email
           </label>
 
@@ -80,15 +78,12 @@ export default function LoginForm() {
             autoComplete="username"
             value={usernameOrEmail}
             onChange={(e) => setUsernameOrEmail(e.target.value)}
-            className="h-10 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 px-3 text-base sm:text-sm text-slate-900 dark:text-slate-100 transition-colors placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-orange-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+            className={inputClasses}
           />
         </div>
 
         <div>
-          <label
-            htmlFor="password"
-            className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300"
-          >
+          <label htmlFor="password" className={labelClasses}>
             Password
           </label>
 
@@ -98,7 +93,7 @@ export default function LoginForm() {
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="h-10 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 px-3 text-base sm:text-sm text-slate-900 dark:text-slate-100 transition-colors placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-orange-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+            className={inputClasses}
           />
         </div>
 

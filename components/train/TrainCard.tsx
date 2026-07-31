@@ -18,7 +18,7 @@ export default function TrainCard({ train }: TrainCardProps) {
     >
       <Card className="group rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 shadow-sm transition-colors hover:border-orange-300 hover:bg-orange-50/30">
         <div className="flex items-start gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-orange-100 text-orange-600">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-orange-100 text-orange-600 dark:bg-orange-500/15">
             <TrainFront size={18} />
           </div>
 

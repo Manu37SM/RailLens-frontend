@@ -31,7 +31,7 @@ function StatCard({
 }) {
   return (
     <Card className="flex items-center gap-3">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-orange-100">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-orange-100 dark:bg-orange-500/15">
         <Icon className="h-5 w-5 text-orange-600" aria-hidden="true" />
       </div>
       <div>

@@ -87,7 +87,7 @@ export default function QuickAccessCard({
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="rounded-lg bg-orange-100 p-2">
+                  <div className="rounded-lg bg-orange-100 p-2 dark:bg-orange-500/15">
                     <Icon className="h-5 w-5 text-orange-600" />
                   </div>
 

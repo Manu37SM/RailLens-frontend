@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import AssistantHeader from './AssistantHeader';
 import AssistantMessages from './AssistantMessages';
@@ -74,17 +74,39 @@ export default function AssistantDialog({
   const appendMessages = (...messages: AssistantMessage[]) => {
     setMessages((prev) => [...prev, ...messages]);
   };
-  const [isProcessing] = useState(false);
+  // Was declared without a setter before (`const [isProcessing] =
+  // useState(false)`), so the "typing" indicator this feeds
+  // (AssistantMessages' isTyping prop) was permanently dead - fully wired
+  // up in the UI but never actually toggled. Now reflects the real
+  // navigate() delay below.
+  const [isProcessing, setIsProcessing] = useState(false);
   const [suggestions, setSuggestions] = useState<ActionChip[]>([]);
+  const navigateTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const clearSuggestions = () => setSuggestions([]);
 
   const navigate = (href: string) => {
-    setTimeout(() => {
+    setIsProcessing(true);
+
+    navigateTimeoutRef.current = setTimeout(() => {
+      navigateTimeoutRef.current = null;
+      setIsProcessing(false);
       router.push(href);
       closeAssistant();
     }, 300);
   };
+
+  // Without this, a navigate() fired just before the dialog/component
+  // unmounts (fast repeated actions, or the page navigating away some
+  // other way) still runs its callback 300ms later against a stale
+  // closure - router.push/closeAssistant on an unmounted component.
+  useEffect(() => {
+    return () => {
+      if (navigateTimeoutRef.current) {
+        clearTimeout(navigateTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const getWelcomeMessage = (): AssistantMessage => ({
     id: crypto.randomUUID(),
