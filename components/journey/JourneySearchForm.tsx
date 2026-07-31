@@ -31,6 +31,11 @@ export default function JourneySearchForm({
   const fromRef = useRef<StationAutocompleteRef>(null);
   const toRef = useRef<StationAutocompleteRef>(null);
 
+  // Tracks the from/to pair this component itself last pushed via
+  // router.replace() in search() below - see search()'s comment for why
+  // this exists.
+  const lastSyncedRef = useRef<{ from?: string; to?: string }>({});
+
   const router = useRouter();
   const preferences = usePreferences();
 
@@ -78,6 +83,14 @@ export default function JourneySearchForm({
       // searches don't spam browser history. See the frontend architecture
       // review's "journeys page doesn't sync search state back to the URL"
       // finding.
+      //
+      // Record this as our own echo before firing it - the effect below
+      // reads initialFrom/initialTo (the props this replace() eventually
+      // feeds back in via the server-rendered page) and needs to tell "a
+      // real external navigation just happened" apart from "the URL I just
+      // wrote came back around as props." See that effect's comment.
+      lastSyncedRef.current = { from: fromStation.stationCode, to: toStation.stationCode };
+
       router.replace(
         `/journeys?from=${encodeURIComponent(fromStation.stationCode)}&to=${encodeURIComponent(toStation.stationCode)}`,
         { scroll: false }
@@ -91,6 +104,24 @@ export default function JourneySearchForm({
   useEffect(() => {
     async function initialize() {
       if (!initialFrom || !initialTo) return;
+
+      // search() below calls router.replace() to keep the URL in sync,
+      // which changes this page's searchParams and therefore re-renders
+      // this component with new initialFrom/initialTo props - the exact
+      // same props this effect depends on. Without this check, every
+      // manual search or swap-then-search re-triggered this effect a
+      // second time (initialFrom/initialTo now matching what was just
+      // searched), which re-fetched both stations and called search()
+      // again - a redundant duplicate request every single time, right
+      // after the user's own action, that could resolve after (and
+      // silently clobber) whatever the results panel was already showing.
+      // Arriving from an actual external link (a favorite/recent search,
+      // or a fresh deep link) never matches lastSyncedRef, since that's
+      // only ever set by this component's own search() calls - so real
+      // navigations still work exactly as before.
+      if (lastSyncedRef.current.from === initialFrom && lastSyncedRef.current.to === initialTo) {
+        return;
+      }
 
       const [fromStation, toStation] = await Promise.all([
         getStation(initialFrom),

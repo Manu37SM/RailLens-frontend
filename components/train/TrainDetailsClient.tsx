@@ -80,6 +80,14 @@ export default function TrainDetailsClient({ train }: Props) {
   }
 
   function handleClearSelection() {
+    // "Clear" is the exit affordance in PartialJourneySummary - it must
+    // also leave select mode, not just blank the two picked stops.
+    // Previously this only cleared boardStop/deboardStop, so the header
+    // button kept showing "Selecting stops..." (selectMode stayed true)
+    // even after the user explicitly clicked out - the button then only
+    // fixed itself if the user clicked it again, a second, unnecessary
+    // step.
+    setSelectMode(false);
     setBoardStop(null);
     setDeboardStop(null);
   }

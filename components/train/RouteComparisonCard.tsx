@@ -17,7 +17,7 @@ export default function RouteComparisonCard({ trainNumber }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleCompare(e: React.FormEvent) {
+  async function handleCompare(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (!otherTrainNumber.trim()) return;

@@ -54,7 +54,17 @@ export default function JourneyTable({
           }`}
         >
           <MapPinned className="h-3.5 w-3.5" aria-hidden="true" />
-          {selectMode ? 'Selecting stops...' : 'Plan a partial journey'}
+          {/* Three real states, not two - this used to only check
+              `selectMode`, so once both stops were picked (the summary
+              bar below is now showing, Save/Clear are available) this
+              still said "Selecting stops..." even though selection was
+              already finished. Only the middle state - selectMode on,
+              fewer than two stops picked - should say that. */}
+          {!selectMode
+            ? 'Plan a partial journey'
+            : boardStop && deboardStop
+              ? 'Segment selected'
+              : 'Selecting stops...'}
         </button>
       </div>
 

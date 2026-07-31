@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { SubmitEvent, useState } from 'react';
 import { KeyRound } from 'lucide-react';
 
 import Card from '@/components/layout/Card';
@@ -13,7 +13,7 @@ interface AdminKeyFormProps {
 export default function AdminKeyForm({ error }: AdminKeyFormProps) {
   const [key, setKey] = useState('');
 
-  function handleSubmit(event: FormEvent) {
+  function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!key.trim()) return;
