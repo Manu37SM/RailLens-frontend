@@ -9,6 +9,14 @@ import {
   StationCountEntry,
 } from '@/types/rankings';
 
+// Defensive cap, same reasoning as AchievementsGrid/SmartSearchClient: these
+// lists are meant to be small leaderboards and the backend already limits
+// them, but nothing here re-derives that limit - if a backend change or bug
+// ever widened one of these to scale with the station/train count instead
+// of staying a fixed top-N, this keeps the render bounded rather than
+// dumping thousands of rows into the DOM.
+const MAX_LIST_ITEMS = 25;
+
 function RankedHaltCountList({
   title,
   icon: Icon,
@@ -30,7 +38,7 @@ function RankedHaltCountList({
       </div>
 
       <ol className="space-y-2">
-        {trains.map((train, index) => (
+        {trains.slice(0, MAX_LIST_ITEMS).map((train, index) => (
           <li key={train.trainNumber} className="flex items-center gap-3 text-sm">
             <span className="w-4 shrink-0 text-slate-400 dark:text-slate-500">{index + 1}</span>
             <Link
@@ -70,7 +78,7 @@ function RankedHaltDurationList({
       </div>
 
       <ol className="space-y-2">
-        {halts.map((halt, index) => (
+        {halts.slice(0, MAX_LIST_ITEMS).map((halt, index) => (
           <li key={`${halt.trainNumber}-${halt.stationCode}`} className="flex items-center gap-3 text-sm">
             <span className="w-4 shrink-0 text-slate-400 dark:text-slate-500">{index + 1}</span>
             <Link
@@ -112,7 +120,7 @@ function RankedStationCountList({
       </div>
 
       <ol className="space-y-2">
-        {stations.map((station, index) => (
+        {stations.slice(0, MAX_LIST_ITEMS).map((station, index) => (
           <li key={station.stationCode} className="flex items-center gap-3 text-sm">
             <span className="w-4 shrink-0 text-slate-400 dark:text-slate-500">{index + 1}</span>
             <Link

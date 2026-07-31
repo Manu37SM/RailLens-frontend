@@ -96,6 +96,57 @@ describe('resolveIntent', () => {
       query: 'asdkjfh',
     });
   });
+
+  // "Railway Intelligence" feature set (added after the original five
+  // intents above) - see FEATURE.md.
+  it('recognizes rankings requests', () => {
+    expect(resolveIntent('show me the rankings')).toEqual({ type: 'rankings' });
+  });
+
+  it('recognizes fun facts requests', () => {
+    expect(resolveIntent('any fun facts?')).toEqual({ type: 'funFacts' });
+  });
+
+  it('recognizes achievements requests', () => {
+    expect(resolveIntent('open achievements')).toEqual({ type: 'achievements' });
+  });
+
+  it('recognizes railway network requests', () => {
+    expect(resolveIntent('show the railway network')).toEqual({ type: 'network' });
+  });
+
+  it('recognizes statistics requests', () => {
+    expect(resolveIntent('show statistics')).toEqual({ type: 'stats' });
+    expect(resolveIntent('dataset health')).toEqual({ type: 'stats' });
+  });
+
+  it('recognizes smart search requests', () => {
+    expect(resolveIntent('open smart search')).toEqual({ type: 'smartSearch' });
+  });
+
+  it('recognizes admin portal requests', () => {
+    expect(resolveIntent('open admin panel')).toEqual({ type: 'admin' });
+  });
+
+  it('recognizes account requests', () => {
+    expect(resolveIntent('open my account')).toEqual({ type: 'account' });
+  });
+
+  it('recognizes developers page requests', () => {
+    expect(resolveIntent('show developer docs')).toEqual({ type: 'developers' });
+  });
+
+  it('recognizes saved journeys requests', () => {
+    expect(resolveIntent('show saved journeys')).toEqual({ type: 'savedJourneys' });
+  });
+
+  it('still treats a bare 2-5 letter word as a station code, not a new intent (pre-existing trade-off)', () => {
+    // "stats" and "admin" are both 5 letters, so a *bare* word still hits
+    // the station-code regex first, same as "help" already does - only
+    // longer/multi-word phrasing reaches the new intents above.
+    expect(resolveIntent('stats')).toEqual({ type: 'station', stationCode: 'STATS' });
+    expect(resolveIntent('admin')).toEqual({ type: 'station', stationCode: 'ADMIN' });
+  });
 });
 
 describe('buildAssistantResponse', () => {

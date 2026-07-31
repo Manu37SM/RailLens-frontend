@@ -15,6 +15,13 @@ import { PopularSearchEntry, PopularSearchState } from '@/types/popularSearch';
 const EMPTY_STATE: PopularSearchState = { trains: {}, stations: {} };
 const MIN_QUERY_LENGTH = 2;
 
+// Keyed by free-text query rather than a bounded ID space (unlike
+// popularityStore's train/station codes), so this can otherwise grow
+// without limit as a user types more distinct queries over time - same
+// unbounded-localStorage-growth / ever-growing-sort risk as popularityStore,
+// same fix.
+const MAX_ENTRIES_PER_BUCKET = 200;
+
 const store = createLocalStorageStore<PopularSearchState>('popular-searches', EMPTY_STATE);
 
 function recordSearch(bucket: 'trains' | 'stations', rawQuery: string) {
@@ -27,17 +34,33 @@ function recordSearch(bucket: 'trains' | 'stations', rawQuery: string) {
 
   store.update((state) => {
     const existing = state[bucket][query];
+    const nextBucket = { ...state[bucket] };
+
+    if (!existing && Object.keys(nextBucket).length >= MAX_ENTRIES_PER_BUCKET) {
+      let leastSearchedQuery: string | null = null;
+      let leastCount = Infinity;
+
+      for (const entry of Object.values(nextBucket)) {
+        if (entry.count < leastCount) {
+          leastCount = entry.count;
+          leastSearchedQuery = entry.query;
+        }
+      }
+
+      if (leastSearchedQuery) {
+        delete nextBucket[leastSearchedQuery];
+      }
+    }
+
+    nextBucket[query] = {
+      query,
+      displayQuery: existing?.displayQuery ?? displayQuery,
+      count: (existing?.count ?? 0) + 1,
+    };
 
     return {
       ...state,
-      [bucket]: {
-        ...state[bucket],
-        [query]: {
-          query,
-          displayQuery: existing?.displayQuery ?? displayQuery,
-          count: (existing?.count ?? 0) + 1,
-        },
-      },
+      [bucket]: nextBucket,
     };
   });
 }

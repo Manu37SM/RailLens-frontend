@@ -72,7 +72,10 @@ export default function NetworkStatsGrid({ stats }: Props) {
               </tr>
             </thead>
             <tbody>
-              {stats.mostCentralStations.map((station, index) => (
+              {/* Defensive cap - the backend already limits this to its own
+                  top-N (TOP_CENTRAL_STATIONS), but nothing here re-derives
+                  that limit; keeps this table bounded even if that changes. */}
+              {stats.mostCentralStations.slice(0, 25).map((station, index) => (
                 <tr
                   key={station.stationCode}
                   className="border-b border-slate-100 dark:border-slate-800 last:border-0"

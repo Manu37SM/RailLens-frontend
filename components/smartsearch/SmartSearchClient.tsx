@@ -107,19 +107,34 @@ export default function SmartSearchClient() {
           {result.trains.length === 0 ? (
             <p className="text-sm text-slate-500 dark:text-slate-400">No trains matched.</p>
           ) : (
-            <ul className="space-y-2">
-              {result.trains.map((train) => (
-                <li key={train.trainNumber}>
-                  <Link
-                    href={`/trains/${train.trainNumber}`}
-                    className="flex items-center gap-2 text-sm text-slate-900 dark:text-slate-100 hover:text-orange-600"
-                  >
-                    <TrainFront size={14} className="text-orange-600" aria-hidden="true" />
-                    {train.trainNumber} &middot; {train.trainName}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <>
+              {/* Defensive cap: the backend already limits this list, but a
+                  loosely-matching query (e.g. "trains with more than 20
+                  halts") is exactly the kind of thing that could return a
+                  large slice of the ~14,000-train dataset - rendering that
+                  unbounded into the DOM is the frontend equivalent of the
+                  backend crash risk this pass is fixing. Same defensive
+                  pattern AchievementsGrid already uses. */}
+              <ul className="space-y-2">
+                {result.trains.slice(0, 50).map((train) => (
+                  <li key={train.trainNumber}>
+                    <Link
+                      href={`/trains/${train.trainNumber}`}
+                      className="flex items-center gap-2 text-sm text-slate-900 dark:text-slate-100 hover:text-orange-600"
+                    >
+                      <TrainFront size={14} className="text-orange-600" aria-hidden="true" />
+                      {train.trainNumber} &middot; {train.trainName}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              {result.trains.length > 50 && (
+                <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+                  Showing 50 of {result.trains.length.toLocaleString()} matches. Try a more specific query to narrow
+                  this down.
+                </p>
+              )}
+            </>
           )}
         </Card>
       )}

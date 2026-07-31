@@ -223,6 +223,46 @@ export default function AssistantDialog({
         navigate('/journeys');
         break;
 
+      case 'rankings':
+        navigate('/rankings');
+        break;
+
+      case 'funFacts':
+        navigate('/fun-facts');
+        break;
+
+      case 'achievements':
+        navigate('/achievements');
+        break;
+
+      case 'network':
+        navigate('/network');
+        break;
+
+      case 'stats':
+        navigate('/stats');
+        break;
+
+      case 'smartSearch':
+        navigate('/smart-search');
+        break;
+
+      case 'admin':
+        navigate('/admin');
+        break;
+
+      case 'account':
+        navigate('/account');
+        break;
+
+      case 'developers':
+        navigate('/developers');
+        break;
+
+      case 'savedJourneys':
+        navigate('/saved-journeys');
+        break;
+
       case 'favorites':
       case 'recent':
       case 'unknown':

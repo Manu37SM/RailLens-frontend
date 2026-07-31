@@ -14,22 +14,50 @@ import { PopularEntry, PopularityState } from '@/types/popularity';
 
 const EMPTY_STATE: PopularityState = { trains: {}, stations: {} };
 
+// Without a cap, a long-lived user browsing widely across the ~14,000-train/
+// several-thousand-station catalog over months would grow this map's key
+// count roughly proportional to the dataset itself - unbounded localStorage
+// growth, and topEntries() below sorts the whole map on every read, so an
+// uncapped map also means an ever-growing sort on every popularity lookup.
+// 200 is generous headroom over what's ever actually displayed (top 5/10),
+// so this never affects normal usage, only the pathological long-tail case.
+const MAX_ENTRIES_PER_BUCKET = 200;
+
 const store = createLocalStorageStore<PopularityState>('popularity', EMPTY_STATE);
 
 function recordView(bucket: 'trains' | 'stations', code: string, name: string) {
   store.update((state) => {
     const existing = state[bucket][code];
+    const nextBucket = { ...state[bucket] };
+
+    if (!existing && Object.keys(nextBucket).length >= MAX_ENTRIES_PER_BUCKET) {
+      // At capacity and this is a genuinely new entry - evict the
+      // least-viewed one to make room rather than let the map keep
+      // growing.
+      let leastViewedCode: string | null = null;
+      let leastViews = Infinity;
+
+      for (const entry of Object.values(nextBucket)) {
+        if (entry.views < leastViews) {
+          leastViews = entry.views;
+          leastViewedCode = entry.code;
+        }
+      }
+
+      if (leastViewedCode) {
+        delete nextBucket[leastViewedCode];
+      }
+    }
+
+    nextBucket[code] = {
+      code,
+      name,
+      views: (existing?.views ?? 0) + 1,
+    };
 
     return {
       ...state,
-      [bucket]: {
-        ...state[bucket],
-        [code]: {
-          code,
-          name,
-          views: (existing?.views ?? 0) + 1,
-        },
-      },
+      [bucket]: nextBucket,
     };
   });
 }
