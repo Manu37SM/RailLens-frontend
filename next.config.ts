@@ -5,6 +5,11 @@ const nextConfig: NextConfig = {
     root: __dirname,
   },
 
+  // Dev-only Next.js indicator (Route/Bundler/Preferences popover). Already
+  // absent in production builds by default — this just also hides it while
+  // running `next dev` locally.
+  devIndicators: false,
+
   // Vercel (and most static/edge hosts) don't add security response
   // headers by default - the equivalent hardening already exists for the
   // API in train-db's SecurityHeadersFilter, but that only covers JSON
