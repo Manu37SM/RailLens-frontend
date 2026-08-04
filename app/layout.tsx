@@ -58,11 +58,18 @@ export const viewport: Viewport = {
 // Runs before hydration so the correct theme class is present on first
 // paint - without this, the page would flash light mode for a moment
 // before React mounts and applies the user's stored/system preference.
+// Mirrors lib/theme.ts's resolveTheme(): 'dark'/'light' apply directly,
+// anything else (including the literal 'system' preference, or nothing
+// stored yet) falls back to the OS setting.
 const THEME_INIT_SCRIPT = `
 (function () {
   try {
     var stored = localStorage.getItem('raillens-theme');
-    var dark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var dark = stored === 'dark'
+      ? true
+      : stored === 'light'
+        ? false
+        : window.matchMedia('(prefers-color-scheme: dark)').matches;
     if (dark) document.documentElement.classList.add('dark');
   } catch (e) {}
 })();
