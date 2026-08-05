@@ -15,7 +15,7 @@
  * fixes that: picking it is a real, persisted preference the user can
  * return to at any time.
  */
-import { useSyncExternalStore } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
 
 export type ThemePreference = 'light' | 'dark' | 'system';
 type ResolvedTheme = 'light' | 'dark';
@@ -105,17 +105,30 @@ export function useTheme(): [ThemePreference, (preference: ThemePreference) => v
     getServerSnapshot,
   );
 
-  // Deliberately not a useEffect keyed on `preference`: while preference
-  // stays 'system' and only the OS theme flips, `preference` itself never
-  // changes, so a dependency array of [preference] would skip re-applying
-  // the class on exactly the case this exists to fix. Re-running this on
-  // every render this hook produces is cheap (toggling a class that's
-  // already correct is a no-op) and guarantees the DOM always matches the
-  // current resolved theme, including immediately after a system-change
-  // event triggers a re-render via subscribe() above.
-  if (typeof window !== 'undefined') {
+  // Applying the DOM class during render (rather than in an effect) meant
+  // this ran on React's very first hydration pass too - the pass where
+  // useSyncExternalStore is required to return getServerSnapshot()'s fixed
+  // 'system' value regardless of what's actually in localStorage, so a
+  // real stored 'dark'/'light' preference got clobbered by a live
+  // matchMedia() read the instant hydration committed - the flash of
+  // correct theme (from the inline script in the root layout), followed by
+  // a re-render that snapped it back to the OS preference, reported
+  // 2026-08-05 as "loads dark, restarts, then switches to light".
+  //
+  // A useEffect fixes that (effects never run during the render React
+  // uses to match server output - only after commit, once `preference`
+  // already holds the real client value), but deliberately still has no
+  // dependency array rather than `[preference]`: while preference stays
+  // 'system' and only the OS theme flips, `preference` itself never
+  // changes, so a `[preference]` dependency array would skip re-applying
+  // the class on exactly the case this exists to fix (see subscribe()
+  // above). Running this after every render this hook produces is cheap
+  // (toggling a class that's already correct is a no-op) and guarantees
+  // the DOM always matches the current resolved theme, including
+  // immediately after a system-change event triggers a re-render.
+  useEffect(() => {
     applyResolvedTheme(resolveTheme(preference));
-  }
+  });
 
   return [preference, setTheme];
 }

@@ -9,17 +9,22 @@ import { JourneySearchResponse, JourneyTrainResponse } from '@/types/journey';
 
 import JourneyResultRow from './JourneyResultRow';
 
-type SortMode = 'duration' | 'distance';
+type SortMode = 'fastest' | 'slowest';
 
 // The backend already returns results sorted by duration ascending
-// (JourneyService - "fastest first"), so 'duration' here is just "keep
-// the order the API gave us" rather than a client-side re-sort. Duration
-// only exists as a formatted string ("2h 05m") on the wire, not a raw
-// number, so parsing it back out is only needed for display purposes -
-// sorting by it never requires parsing since we simply don't touch the
-// API's own order.
-function parseDistance(train: JourneyTrainResponse): number {
-  return train.distance;
+// (JourneyService - "fastest first"), so 'fastest' here is just "keep
+// the order the API gave us" rather than a client-side re-sort.
+//
+// The toggle used to flip to a 'distance' mode, sorting by
+// JourneyTrainResponse.distance - but distance is the fixed track
+// distance between the two searched stations, so every train in a given
+// result set shares the same (or near-identical) value. Sorting an
+// all-equal key is a stable no-op, so the button visibly did nothing -
+// reported 2026-08-05 as "fastest first button is not working". Total
+// travel time (movingMinutes + haltedMinutes) does vary per train, so
+// reversing by that actually reorders the list.
+function totalMinutes(train: JourneyTrainResponse): number {
+  return train.movingMinutes + train.haltedMinutes;
 }
 
 interface Props {
@@ -35,13 +40,13 @@ export default function JourneyResults({
   error,
   onRetry,
 }: Props) {
-  const [sortMode, setSortMode] = useState<SortMode>('duration');
+  const [sortMode, setSortMode] = useState<SortMode>('fastest');
 
   const sortedTrains = useMemo(() => {
     if (!results) return [];
-    if (sortMode === 'duration') return results.trains;
 
-    return [...results.trains].sort((a, b) => parseDistance(a) - parseDistance(b));
+    const sorted = [...results.trains].sort((a, b) => totalMinutes(a) - totalMinutes(b));
+    return sortMode === 'fastest' ? sorted : sorted.reverse();
   }, [results, sortMode]);
 
   if (error) {
@@ -136,17 +141,17 @@ export default function JourneyResults({
 
         <button
           type="button"
-          onClick={() => setSortMode((prev) => (prev === 'duration' ? 'distance' : 'duration'))}
-          aria-pressed={sortMode === 'distance'}
+          onClick={() => setSortMode((prev) => (prev === 'fastest' ? 'slowest' : 'fastest'))}
+          aria-pressed={sortMode === 'slowest'}
           className="flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
           title={
-            sortMode === 'duration'
-              ? 'Sorted fastest first - tap to sort by distance instead'
-              : 'Sorted shortest distance first - tap to sort by duration instead'
+            sortMode === 'fastest'
+              ? 'Sorted fastest first - tap to sort slowest first instead'
+              : 'Sorted slowest first - tap to sort fastest first instead'
           }
         >
           <ArrowUpDown className="h-4 w-4 rotate-90 lg:rotate-0" />
-          {sortMode === 'duration' ? 'Fastest first' : 'Shortest first'}
+          {sortMode === 'fastest' ? 'Fastest first' : 'Slowest first'}
         </button>
       </div>
 
