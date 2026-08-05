@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useEffect, useRef, useState } from 'react';
+import { SubmitEvent, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eraser, KeyRound, MapPin, Trash2, User } from 'lucide-react';
 
@@ -268,7 +268,7 @@ function ChangePasswordCard() {
     return null;
   }
 
-  async function handleSubmit(event: FormEvent) {
+  async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const validationError = validate();

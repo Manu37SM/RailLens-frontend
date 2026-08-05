@@ -37,7 +37,10 @@ export default function JourneySearchForm({
   const lastSyncedRef = useRef<{ from?: string; to?: string }>({});
 
   const router = useRouter();
-  const preferences = usePreferences();
+  // Called for its hydration side-effect only (see the effect below that
+  // reads getPreferences() instead) - same call-without-using-the-return-
+  // value pattern as useFavorites() just below.
+  usePreferences();
 
   // Subscribing (rather than just calling isFavorite once) so the heart
   // icon updates immediately after a toggle - same pattern as
