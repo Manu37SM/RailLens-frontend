@@ -1,0 +1,15 @@
+# GitHub Dependabot - see train-db/.github/dependabot.yml for the reasoning
+# (same project, same choice). Scans package.json/package-lock.json weekly
+# and opens a PR for vulnerable or outdated dependencies - npm's own `npm
+# audit` covers the same ground on demand locally.
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
