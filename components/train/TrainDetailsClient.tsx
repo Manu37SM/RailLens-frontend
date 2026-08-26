@@ -35,8 +35,6 @@ export default function TrainDetailsClient({ train }: Props) {
   }, []);
   useEffect(() => {
     recordTrainView(train.trainNumber, train.trainName);
-    // Only once per mount (a fresh page load / navigation) - not on every
-    // re-render, and not keyed to anything that changes within a visit.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   function handleToggleSelectMode() {

@@ -125,8 +125,6 @@ function PreferencesCard() {
         stationName: saved.defaultFromStationName,
       });
     }
-    // Only on mount - re-running this on every preferences change would
-    // fight the user while they're actively typing a new selection.
   }, []);
   return (
     <div className={cardClasses}>
