@@ -1,6 +1,5 @@
 import Container from '@/components/layout/Container';
 import ErrorState from '@/components/common/ErrorState';
-
 export default function TrainNotFound() {
   return (
     <div className="bg-background py-5">

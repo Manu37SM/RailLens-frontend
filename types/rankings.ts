@@ -3,7 +3,6 @@ export interface HaltCountEntry {
   trainName: string;
   haltCount: number;
 }
-
 export interface HaltDurationEntry {
   trainNumber: string;
   trainName: string;
@@ -11,13 +10,11 @@ export interface HaltDurationEntry {
   stationName: string;
   minutes: number;
 }
-
 export interface StationCountEntry {
   stationCode: string;
   stationName: string;
   count: number;
 }
-
 export interface RankingsResponse {
   mostHaltsTrains: HaltCountEntry[];
   fewestHaltsTrains: HaltCountEntry[];

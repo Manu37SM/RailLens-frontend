@@ -1,9 +1,8 @@
 import Container from '@/components/layout/Container';
 import ErrorState from '@/components/common/ErrorState';
-
 export default function StationNotFound() {
   return (
-    <div className="bg-slate-50 dark:bg-slate-800 py-5">
+    <div className="bg-slate-50 py-5 dark:bg-slate-800">
       <Container>
         <ErrorState
           title="Station not found"

@@ -6,23 +6,15 @@ import Footer from '@/components/layout/Footer';
 import AssistantFab from '@/components/assistant/AssistantFab';
 import ServiceWorkerRegister from '@/components/pwa/ServiceWorkerRegister';
 import GlobalSearchShortcut from '@/components/common/GlobalSearchShortcut';
-
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
 });
-
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
 });
-
-// Needed to turn relative paths into absolute URLs in generated <meta
-// og:url>/<link rel="canonical"> tags and in app/sitemap.ts. Falls back to
-// localhost for local dev; set NEXT_PUBLIC_SITE_URL to the real deployed
-// origin (e.g. https://raillens.vercel.app) once it exists.
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
-
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
@@ -46,21 +38,10 @@ export const metadata: Metadata = {
     title: 'RailLens',
   },
 };
-
-// themeColor/color-scheme live in a separate `viewport` export (not
-// `metadata`) as of Next 14+ - putting them in `metadata` is a silent
-// no-op rather than an error, which is an easy mistake to make.
 export const viewport: Viewport = {
   themeColor: '#2563eb',
   colorScheme: 'light dark',
 };
-
-// Runs before hydration so the correct theme class is present on first
-// paint - without this, the page would flash light mode for a moment
-// before React mounts and applies the user's stored/system preference.
-// Mirrors lib/theme.ts's resolveTheme(): 'dark'/'light' apply directly,
-// anything else (including the literal 'system' preference, or nothing
-// stored yet) falls back to the OS setting.
 const THEME_INIT_SCRIPT = `
 (function () {
   try {
@@ -74,7 +55,6 @@ const THEME_INIT_SCRIPT = `
   } catch (e) {}
 })();
 `;
-
 export default function RootLayout({
   children,
 }: Readonly<{

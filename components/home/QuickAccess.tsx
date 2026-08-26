@@ -1,8 +1,6 @@
 import Section from './Section';
-
 import Favorites from './Favorites';
 import RecentSearches from './RecentSearches';
-
 export default function QuickAccess() {
   return (
     <Section

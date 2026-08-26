@@ -1,14 +1,18 @@
 import Link from 'next/link';
 import { Repeat, Ruler, Sparkles, TextQuote, TrainFront } from 'lucide-react';
-
 import Card from '@/components/layout/Card';
 import { FunStatsResponse } from '@/types/funStats';
-
-const ALPHABET = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
-
-export default function FunFactsGrid({ funStats }: { funStats: FunStatsResponse }) {
-  const coveredLetters = ALPHABET.filter((letter) => (funStats.stationCountByFirstLetter[letter] ?? 0) > 0);
-
+const ALPHABET = Array.from({ length: 26 }, (_, i) =>
+  String.fromCharCode(65 + i)
+);
+export default function FunFactsGrid({
+  funStats,
+}: {
+  funStats: FunStatsResponse;
+}) {
+  const coveredLetters = ALPHABET.filter(
+    (letter) => (funStats.stationCountByFirstLetter[letter] ?? 0) > 0
+  );
   return (
     <div className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
@@ -20,7 +24,7 @@ export default function FunFactsGrid({ funStats }: { funStats: FunStatsResponse 
             </div>
             <Link
               href={`/stations/${funStats.longestStationName.stationCode}`}
-              className="font-semibold text-slate-900 dark:text-slate-100 hover:text-orange-600"
+              className="font-semibold text-slate-900 hover:text-orange-600 dark:text-slate-100"
             >
               {funStats.longestStationName.stationName}
             </Link>
@@ -38,7 +42,7 @@ export default function FunFactsGrid({ funStats }: { funStats: FunStatsResponse 
             </div>
             <Link
               href={`/stations/${funStats.shortestStationName.stationCode}`}
-              className="font-semibold text-slate-900 dark:text-slate-100 hover:text-orange-600"
+              className="font-semibold text-slate-900 hover:text-orange-600 dark:text-slate-100"
             >
               {funStats.shortestStationName.stationName}
             </Link>
@@ -51,14 +55,19 @@ export default function FunFactsGrid({ funStats }: { funStats: FunStatsResponse 
         {funStats.mostCommonStationNameWord && (
           <Card>
             <div className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400">
-              <TextQuote className="h-4 w-4 text-purple-600" aria-hidden="true" />
+              <TextQuote
+                className="h-4 w-4 text-purple-600"
+                aria-hidden="true"
+              />
               Most common word in station names
             </div>
-            <p className="font-semibold text-slate-900 dark:text-slate-100 capitalize">
+            <p className="font-semibold text-slate-900 capitalize dark:text-slate-100">
               {funStats.mostCommonStationNameWord.word}
             </p>
             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              Appears in {funStats.mostCommonStationNameWord.count.toLocaleString()} station names
+              Appears in{' '}
+              {funStats.mostCommonStationNameWord.count.toLocaleString()}{' '}
+              station names
             </p>
           </Card>
         )}
@@ -66,17 +75,22 @@ export default function FunFactsGrid({ funStats }: { funStats: FunStatsResponse 
         {funStats.trainWithMostUniqueStations && (
           <Card>
             <div className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400">
-              <TrainFront className="h-4 w-4 text-green-600" aria-hidden="true" />
+              <TrainFront
+                className="h-4 w-4 text-green-600"
+                aria-hidden="true"
+              />
               Most unique stations on one route
             </div>
             <Link
               href={`/trains/${funStats.trainWithMostUniqueStations.trainNumber}`}
-              className="font-semibold text-slate-900 dark:text-slate-100 hover:text-orange-600"
+              className="font-semibold text-slate-900 hover:text-orange-600 dark:text-slate-100"
             >
-              {funStats.trainWithMostUniqueStations.trainNumber} · {funStats.trainWithMostUniqueStations.trainName}
+              {funStats.trainWithMostUniqueStations.trainNumber} ·{' '}
+              {funStats.trainWithMostUniqueStations.trainName}
             </Link>
             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              {funStats.trainWithMostUniqueStations.uniqueStationCount.toLocaleString()} distinct stations
+              {funStats.trainWithMostUniqueStations.uniqueStationCount.toLocaleString()}{' '}
+              distinct stations
             </p>
           </Card>
         )}
@@ -95,8 +109,8 @@ export default function FunFactsGrid({ funStats }: { funStats: FunStatsResponse 
                 key={letter}
                 className={`flex h-7 w-7 items-center justify-center rounded text-xs font-semibold ${
                   count > 0
-                    ? 'bg-orange-100 dark:bg-orange-500/15 text-orange-700 dark:text-orange-300'
-                    : 'bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-slate-600'
+                    ? 'bg-orange-100 text-orange-700 dark:bg-orange-500/15 dark:text-orange-300'
+                    : 'bg-gray-100 text-gray-400 dark:bg-slate-800 dark:text-slate-600'
                 }`}
                 title={`${count} station${count === 1 ? '' : 's'}`}
               >
@@ -118,7 +132,7 @@ export default function FunFactsGrid({ funStats }: { funStats: FunStatsResponse 
               <Link
                 key={code}
                 href={`/stations/${code}`}
-                className="rounded-full bg-blue-100 dark:bg-blue-500/15 px-3 py-1 text-sm font-medium text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/25"
+                className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700 hover:bg-blue-200 dark:bg-blue-500/15 dark:text-blue-300 dark:hover:bg-blue-500/25"
               >
                 {code}
               </Link>

@@ -1,18 +1,17 @@
 import { Metadata } from 'next';
-
 import Container from '@/components/layout/Container';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import FavoritesList from '@/components/favorites/FavoritesList';
-
 export const metadata: Metadata = {
   title: 'Favorites | RailLens',
   robots: { index: false, follow: true },
 };
-
 export default function FavoritesPage() {
   return (
     <Container>
-      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Favorites' }]} />
+      <Breadcrumb
+        items={[{ label: 'Home', href: '/' }, { label: 'Favorites' }]}
+      />
 
       <section className="py-6">
         <div className="mb-6">

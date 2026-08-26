@@ -3,7 +3,6 @@ export interface PopularEntry {
   name: string;
   views: number;
 }
-
 export interface PopularityState {
   trains: Record<string, PopularEntry>;
   stations: Record<string, PopularEntry>;

@@ -1,17 +1,16 @@
 'use client';
-
 import { useMemo, useState } from 'react';
-
 import { StationTrainResponse } from '@/types/station';
 import StationTrainRow from './StationTrainRow';
-
 interface Props {
   trains: StationTrainResponse[];
 }
-
-type Filter = 'all' | 'passing' | 'originating' | 'terminating' | 'departures' | 'arrivals';
-
-const FILTERS: { key: Filter; label: string }[] = [
+type Filter =
+  'all' | 'passing' | 'originating' | 'terminating' | 'departures' | 'arrivals';
+const FILTERS: {
+  key: Filter;
+  label: string;
+}[] = [
   { key: 'all', label: 'All' },
   { key: 'originating', label: 'Originating' },
   { key: 'terminating', label: 'Terminating' },
@@ -19,31 +18,14 @@ const FILTERS: { key: Filter; label: string }[] = [
   { key: 'departures', label: 'Departures' },
   { key: 'arrivals', label: 'Arrivals' },
 ];
-
-// "HH:mm:ss" strings sort correctly lexicographically - no need to parse
-// into Date/LocalTime objects just to compare them. Trains missing the
-// relevant time (e.g. a terminating train has no departureTime) sort to
-// the end rather than the beginning, where a naive string comparison
-// would otherwise put a missing value (empty/null sorts "before"
-// everything).
 function compareTimes(a: string | null, b: string | null): number {
   if (a === b) return 0;
   if (a === null) return 1;
   if (b === null) return -1;
   return a.localeCompare(b);
 }
-
-/**
- * M-Indicator/IndianRailInfo both split a station's trains into
- * originating/terminating/passing-through, rather than one flat list -
- * useful because "which trains actually start here" (vs. just stopping
- * briefly) is a different question from "what stops at this station."
- * Computed entirely from data already on StationTrainResponse
- * (origin/destination flags) - no new API call needed.
- */
 export default function StationTrainList({ trains }: Props) {
   const [filter, setFilter] = useState<Filter>('all');
-
   const counts = useMemo(
     () => ({
       all: trains.length,
@@ -55,7 +37,6 @@ export default function StationTrainList({ trains }: Props) {
     }),
     [trains]
   );
-
   const filteredTrains = useMemo(() => {
     switch (filter) {
       case 'originating':
@@ -64,22 +45,21 @@ export default function StationTrainList({ trains }: Props) {
         return trains.filter((t) => t.destination);
       case 'passing':
         return trains.filter((t) => !t.origin && !t.destination);
-      // Departures/Arrivals aren't a different subset of trains (every
-      // train here either departs or arrives, usually both) - they're the
-      // same list sorted by the time a passenger waiting on the platform
-      // actually cares about, same as a real departures/arrivals board.
       case 'departures':
-        return [...trains].sort((a, b) => compareTimes(a.departureTime, b.departureTime));
+        return [...trains].sort((a, b) =>
+          compareTimes(a.departureTime, b.departureTime)
+        );
       case 'arrivals':
-        return [...trains].sort((a, b) => compareTimes(a.arrivalTime, b.arrivalTime));
+        return [...trains].sort((a, b) =>
+          compareTimes(a.arrivalTime, b.arrivalTime)
+        );
       default:
         return trains;
     }
   }, [trains, filter]);
-
   return (
-    <div className="mt-4 overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm">
-      <div className="border-b border-slate-200 dark:border-slate-700 px-4 py-3">
+    <div className="mt-4 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
+      <div className="border-b border-slate-200 px-4 py-3 dark:border-slate-700">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
           Trains Passing Through
         </h2>
@@ -89,7 +69,7 @@ export default function StationTrainList({ trains }: Props) {
         <div
           role="tablist"
           aria-label="Filter trains"
-          className="flex flex-wrap gap-1.5 border-b border-slate-200 dark:border-slate-700 px-4 py-2.5"
+          className="flex flex-wrap gap-1.5 border-b border-slate-200 px-4 py-2.5 dark:border-slate-700"
         >
           {FILTERS.map((f) => (
             <button
@@ -101,7 +81,7 @@ export default function StationTrainList({ trains }: Props) {
               className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
                 filter === f.key
                   ? 'bg-orange-600 text-white'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
               }`}
             >
               {f.label} ({counts[f.key]})

@@ -1,15 +1,19 @@
 import Link from 'next/link';
-import { Bookmark, Clock3, Heart, MapPin, Route, TrainFront } from 'lucide-react';
-
+import {
+  Bookmark,
+  Clock3,
+  Heart,
+  MapPin,
+  Route,
+  TrainFront,
+} from 'lucide-react';
 import ThemeToggle from '@/components/theme/ThemeToggle';
 import AuthNavLinks from '@/components/auth/AuthNavLinks';
-
 const navLinkClasses =
   'hover:text-primary focus-visible:ring-primary flex items-center gap-1.5 rounded-md text-sm font-medium text-slate-600 transition-colors focus-visible:ring-2 focus-visible:outline-none dark:text-slate-300';
-
 export default function Navbar() {
   return (
-    <header className="border-border/80 sticky top-0 z-50 border-b bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
+    <header className="border-border/80 sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md dark:bg-slate-900/80 print:hidden">
       <nav
         aria-label="Primary"
         className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
@@ -28,47 +32,66 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-3 sm:gap-6">
-          {/* Redundant with the logo link on small screens, where every
-              bit of horizontal space matters more - kept as a full text
-              link from sm: up. */}
           <Link href="/" className={`hidden sm:flex ${navLinkClasses}`}>
             Home
           </Link>
 
-          {/* Direct links to the three core search routes - previously
-              only reachable via the homepage dashboard or breadcrumbs, so a
-              user landing on a detail page (shared link, favorite) had no
-              persistent way to get to search. See the RailLens frontend
-              architecture review's "primary navigation is incomplete"
-              finding. */}
           <Link href="/trains" aria-label="Trains" className={navLinkClasses}>
             <TrainFront size={16} aria-hidden="true" />
-            <span className="hidden sm:inline" aria-hidden="true">Trains</span>
+            <span className="hidden sm:inline" aria-hidden="true">
+              Trains
+            </span>
           </Link>
 
-          <Link href="/stations" aria-label="Stations" className={navLinkClasses}>
+          <Link
+            href="/stations"
+            aria-label="Stations"
+            className={navLinkClasses}
+          >
             <MapPin size={16} aria-hidden="true" />
-            <span className="hidden sm:inline" aria-hidden="true">Stations</span>
+            <span className="hidden sm:inline" aria-hidden="true">
+              Stations
+            </span>
           </Link>
 
-          <Link href="/journeys" aria-label="Journeys" className={navLinkClasses}>
+          <Link
+            href="/journeys"
+            aria-label="Journeys"
+            className={navLinkClasses}
+          >
             <Route size={16} aria-hidden="true" />
-            <span className="hidden sm:inline" aria-hidden="true">Journeys</span>
+            <span className="hidden sm:inline" aria-hidden="true">
+              Journeys
+            </span>
           </Link>
 
-          <Link href="/favorites" aria-label="Favorites" className={navLinkClasses}>
+          <Link
+            href="/favorites"
+            aria-label="Favorites"
+            className={navLinkClasses}
+          >
             <Heart size={16} aria-hidden="true" />
-            <span className="hidden sm:inline" aria-hidden="true">Favorites</span>
+            <span className="hidden sm:inline" aria-hidden="true">
+              Favorites
+            </span>
           </Link>
 
           <Link href="/history" aria-label="History" className={navLinkClasses}>
             <Clock3 size={16} aria-hidden="true" />
-            <span className="hidden sm:inline" aria-hidden="true">History</span>
+            <span className="hidden sm:inline" aria-hidden="true">
+              History
+            </span>
           </Link>
 
-          <Link href="/saved-journeys" aria-label="Saved Journeys" className={navLinkClasses}>
+          <Link
+            href="/saved-journeys"
+            aria-label="Saved Journeys"
+            className={navLinkClasses}
+          >
             <Bookmark size={16} aria-hidden="true" />
-            <span className="hidden sm:inline" aria-hidden="true">Saved</span>
+            <span className="hidden sm:inline" aria-hidden="true">
+              Saved
+            </span>
           </Link>
 
           <AuthNavLinks />

@@ -1,9 +1,7 @@
 import Link from 'next/link';
 import { Award, Gem, Mountain, Rocket, Sparkle, Zap } from 'lucide-react';
-
 import Card from '@/components/layout/Card';
 import { AchievementsResponse } from '@/types/achievements';
-
 function Leaderboard<T>({
   title,
   icon: Icon,
@@ -24,7 +22,6 @@ function Leaderboard<T>({
   valueOf: (item: T) => string;
 }) {
   if (items.length === 0) return null;
-
   return (
     <Card>
       <div className="mb-3 flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400">
@@ -35,22 +32,29 @@ function Leaderboard<T>({
       <ol className="space-y-2">
         {items.slice(0, 10).map((item, index) => (
           <li key={keyOf(item)} className="flex items-center gap-3 text-sm">
-            <span className="w-4 shrink-0 text-slate-400 dark:text-slate-500">{index + 1}</span>
+            <span className="w-4 shrink-0 text-slate-400 dark:text-slate-500">
+              {index + 1}
+            </span>
             <Link
               href={hrefOf(item)}
-              className="min-w-0 flex-1 truncate font-medium text-slate-900 dark:text-slate-100 hover:text-orange-600"
+              className="min-w-0 flex-1 truncate font-medium text-slate-900 hover:text-orange-600 dark:text-slate-100"
             >
               {primaryOf(item)}
             </Link>
-            <span className="shrink-0 text-slate-500 dark:text-slate-400">{valueOf(item)}</span>
+            <span className="shrink-0 text-slate-500 dark:text-slate-400">
+              {valueOf(item)}
+            </span>
           </li>
         ))}
       </ol>
     </Card>
   );
 }
-
-export default function AchievementsGrid({ achievements }: { achievements: AchievementsResponse }) {
+export default function AchievementsGrid({
+  achievements,
+}: {
+  achievements: AchievementsResponse;
+}) {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       <Leaderboard

@@ -1,37 +1,26 @@
 'use client';
-
 import Link from 'next/link';
 import { ArrowRight, LucideIcon } from 'lucide-react';
-
 import Card from '@/components/layout/Card';
 import { QuickAccessItem } from '@/types/quickAccess';
-
 interface QuickAccessCardProps {
   title: string;
   description: string;
-
   icon: LucideIcon;
-
   items: QuickAccessItem[];
-
   emptyTitle: string;
   emptyDescription: string;
-
   emptyHref?: string;
   emptyHrefLabel?: string;
   layout?: 'list' | 'horizontal';
 }
-
 export default function QuickAccessCard({
   title,
   description,
   icon: HeaderIcon,
-
   items,
-
   emptyTitle,
   emptyDescription,
-
   emptyHref,
   emptyHrefLabel,
   layout = 'list',
@@ -42,7 +31,9 @@ export default function QuickAccessCard({
         <div>
           <h3 className="text-lg font-semibold">{title}</h3>
 
-          <p className="text-sm text-gray-500 dark:text-slate-400">{description}</p>
+          <p className="text-sm text-gray-500 dark:text-slate-400">
+            {description}
+          </p>
         </div>
 
         <HeaderIcon className="h-5 w-5 text-orange-500" />
@@ -54,7 +45,9 @@ export default function QuickAccessCard({
 
           <p className="font-medium">{emptyTitle}</p>
 
-          <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">{emptyDescription}</p>
+          <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
+            {emptyDescription}
+          </p>
 
           {emptyHref && emptyHrefLabel && (
             <Link
@@ -77,14 +70,11 @@ export default function QuickAccessCard({
         >
           {items.map((item) => {
             const Icon = item.icon;
-
             return (
               <Link
                 key={item.key}
                 href={item.href}
-                className={`group flex items-center justify-between rounded-lg border border-gray-200 dark:border-slate-700 p-3 transition-[background-color,border-color] hover:border-orange-300 hover:bg-orange-50 dark:hover:border-orange-500/50 dark:hover:bg-orange-500/10 ${
-                  layout === 'horizontal' ? 'min-w-[280px] flex-shrink-0' : ''
-                }`}
+                className={`group flex items-center justify-between rounded-lg border border-gray-200 p-3 transition-[background-color,border-color] hover:border-orange-300 hover:bg-orange-50 dark:border-slate-700 dark:hover:border-orange-500/50 dark:hover:bg-orange-500/10 ${layout === 'horizontal' ? 'min-w-[280px] flex-shrink-0' : ''}`}
               >
                 <div className="flex items-center gap-3">
                   <div className="rounded-lg bg-orange-100 p-2 dark:bg-orange-500/15">
@@ -94,11 +84,13 @@ export default function QuickAccessCard({
                   <div>
                     <div className="font-medium">{item.title}</div>
 
-                    <div className="text-sm text-gray-500 dark:text-slate-400">{item.subtitle}</div>
+                    <div className="text-sm text-gray-500 dark:text-slate-400">
+                      {item.subtitle}
+                    </div>
                   </div>
                 </div>
 
-                <ArrowRight className="h-4 w-4 text-gray-400 dark:text-slate-500 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="h-4 w-4 text-gray-400 transition-transform group-hover:translate-x-1 dark:text-slate-500" />
               </Link>
             );
           })}

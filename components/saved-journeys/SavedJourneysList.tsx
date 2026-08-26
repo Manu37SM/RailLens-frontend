@@ -1,22 +1,17 @@
 'use client';
-
 import Link from 'next/link';
 import { useState } from 'react';
 import { Bookmark, Route, Trash2, X } from 'lucide-react';
-
 import Card from '@/components/layout/Card';
-import { clearSavedJourneys, removeSavedJourney, useSavedJourneys } from '@/stores/savedJourneyStore';
+import {
+  clearSavedJourneys,
+  removeSavedJourney,
+  useSavedJourneys,
+} from '@/stores/savedJourneyStore';
 import { formatPartialDuration } from '@/lib/partialJourney';
-
-// Mirrors components/favorites/FavoritesList.tsx / history/SearchHistoryList.tsx's
-// layout (empty state, confirm-before-clear-all, per-item remove button) so
-// this - the app's third localStorage-backed list - stays visually
-// consistent with the other two.
-
 export default function SavedJourneysList() {
   const journeys = useSavedJourneys();
   const [confirmingClear, setConfirmingClear] = useState(false);
-
   if (journeys.length === 0) {
     return (
       <Card className="py-10">
@@ -42,14 +37,14 @@ export default function SavedJourneysList() {
       </Card>
     );
   }
-
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-end">
         {confirmingClear ? (
           <div className="flex items-center gap-2 text-sm">
             <span className="text-slate-600 dark:text-slate-300">
-              Remove all {journeys.length} saved journey{journeys.length !== 1 ? 's' : ''}?
+              Remove all {journeys.length} saved journey
+              {journeys.length !== 1 ? 's' : ''}?
             </span>
             <button
               type="button"
@@ -64,7 +59,7 @@ export default function SavedJourneysList() {
             <button
               type="button"
               onClick={() => setConfirmingClear(false)}
-              className="rounded-md border border-slate-300 dark:border-slate-600 px-3 py-1.5 font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+              className="rounded-md border border-slate-300 px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800"
             >
               Cancel
             </button>
@@ -73,7 +68,7 @@ export default function SavedJourneysList() {
           <button
             type="button"
             onClick={() => setConfirmingClear(true)}
-            className="flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-red-600"
+            className="flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-red-600 dark:text-slate-400"
           >
             <Trash2 className="h-4 w-4" aria-hidden="true" />
             Clear all
@@ -88,12 +83,16 @@ export default function SavedJourneysList() {
               <Route className="h-5 w-5 text-orange-600" aria-hidden="true" />
             </div>
 
-            <Link href={`/trains/${journey.trainNumber}`} className="min-w-0 flex-1">
+            <Link
+              href={`/trains/${journey.trainNumber}`}
+              className="min-w-0 flex-1"
+            >
               <p className="truncate font-semibold text-slate-900 dark:text-slate-100">
                 {journey.boardingStationCode} → {journey.deboardingStationCode}
               </p>
               <p className="truncate text-xs text-slate-500 dark:text-slate-400">
-                {journey.trainNumber} · {journey.trainName} · {journey.distanceKm} km ·{' '}
+                {journey.trainNumber} · {journey.trainName} ·{' '}
+                {journey.distanceKm} km ·{' '}
                 {formatPartialDuration(journey.durationMinutes)}
               </p>
             </Link>
@@ -102,7 +101,7 @@ export default function SavedJourneysList() {
               type="button"
               onClick={() => removeSavedJourney(journey.id)}
               aria-label={`Remove saved journey ${journey.boardingStationCode} to ${journey.deboardingStationCode}`}
-              className="shrink-0 rounded-md p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-red-600"
+              className="shrink-0 rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-red-600 dark:hover:bg-slate-800"
             >
               <X className="h-4 w-4" aria-hidden="true" />
             </button>

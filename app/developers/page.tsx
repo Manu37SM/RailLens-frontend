@@ -1,48 +1,45 @@
 import { Metadata } from 'next';
 import { BookOpen, Gauge, KeyRound } from 'lucide-react';
-
 import Container from '@/components/layout/Container';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import EndpointCard from '@/components/developers/EndpointCard';
-
 export const metadata: Metadata = {
   title: 'Developers | RailLens',
   description:
     'RailLens public API documentation - endpoints, request/response examples in curl, JavaScript and Python, rate limits, and the full OpenAPI/Swagger spec.',
 };
-
-// Same fallback/env-var pattern as services/api.ts, so this page always
-// documents the API base URL the frontend is actually configured to call.
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:8080/api/v1';
-
-// Swagger/OpenAPI (springdoc, see train-db/pom.xml) is served from the app
-// root, not under /api/v1 - so the link needs the origin only.
 const API_ORIGIN = API_BASE_URL.replace(/\/api\/v1\/?$/, '');
 const SWAGGER_URL = `${API_ORIGIN}/swagger-ui.html`;
-
 export default function DevelopersPage() {
   return (
-    <div className="bg-slate-50 dark:bg-slate-800 py-6">
+    <div className="bg-slate-50 py-6 dark:bg-slate-800">
       <Container>
-        <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Developers' }]} />
+        <Breadcrumb
+          items={[{ label: 'Home', href: '/' }, { label: 'Developers' }]}
+        />
 
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
             Developers
           </h1>
           <p className="mt-2 max-w-2xl text-gray-600 dark:text-slate-300">
-            RailLens&apos;s train/station/journey search data is available as
-            a public, read-only REST API - the same one this website itself
-            calls. Built for the mobile apps in the roadmap, but usable by
-            anyone today.
+            RailLens&apos;s train/station/journey search data is available as a
+            public, read-only REST API - the same one this website itself calls.
+            Built for the mobile apps in the roadmap, but usable by anyone
+            today.
           </p>
         </div>
 
         <div className="mb-8 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+          <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
             <div className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
-              <BookOpen size={16} className="text-orange-600" aria-hidden="true" />
+              <BookOpen
+                size={16}
+                className="text-orange-600"
+                aria-hidden="true"
+              />
               Base URL
             </div>
             <code className="mt-1.5 block truncate text-sm text-slate-600 dark:text-slate-300">
@@ -50,19 +47,22 @@ export default function DevelopersPage() {
             </code>
           </div>
 
-          <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+          <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
             <div className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
-              <KeyRound size={16} className="text-orange-600" aria-hidden="true" />
+              <KeyRound
+                size={16}
+                className="text-orange-600"
+                aria-hidden="true"
+              />
               Authentication
             </div>
             <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-300">
               None required for the read endpoints below. API keys for
-              higher-volume/third-party use are planned but not yet
-              available.
+              higher-volume/third-party use are planned but not yet available.
             </p>
           </div>
 
-          <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+          <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
             <div className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
               <Gauge size={16} className="text-orange-600" aria-hidden="true" />
               Rate limit
@@ -75,7 +75,7 @@ export default function DevelopersPage() {
           </div>
         </div>
 
-        <div className="mb-8 rounded-lg border border-orange-200 dark:border-orange-500/30 bg-orange-50 dark:bg-orange-500/10 p-4 text-sm text-orange-900 dark:text-orange-200">
+        <div className="mb-8 rounded-lg border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900 dark:border-orange-500/30 dark:bg-orange-500/10 dark:text-orange-200">
           Looking for the complete, always-up-to-date spec instead? RailLens
           also publishes a full{' '}
           <a
@@ -86,8 +86,7 @@ export default function DevelopersPage() {
           >
             OpenAPI/Swagger UI
           </a>{' '}
-          covering every endpoint, request/response schema, and validation
-          rule.
+          covering every endpoint, request/response schema, and validation rule.
         </div>
 
         <h2 className="mb-4 text-lg font-bold text-slate-900 dark:text-slate-100">

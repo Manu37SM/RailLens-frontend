@@ -1,15 +1,11 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-
 import Card from '@/components/layout/Card';
-
 import { DashboardItem } from '@/types/DashboardItem';
-
 interface DashboardGridProps {
   items: DashboardItem[];
   columns?: '2' | '3';
 }
-
 export default function DashboardGrid({
   items,
   columns = '3',
@@ -17,7 +13,8 @@ export default function DashboardGrid({
   const accentClasses = {
     orange: {
       icon: 'bg-orange-100 dark:bg-orange-500/15 text-orange-600 dark:text-orange-400',
-      badge: 'bg-orange-100 dark:bg-orange-500/15 text-orange-700 dark:text-orange-300',
+      badge:
+        'bg-orange-100 dark:bg-orange-500/15 text-orange-700 dark:text-orange-300',
     },
     blue: {
       icon: 'bg-blue-100 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400',
@@ -25,14 +22,14 @@ export default function DashboardGrid({
     },
     green: {
       icon: 'bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-400',
-      badge: 'bg-green-100 dark:bg-green-500/15 text-green-700 dark:text-green-300',
+      badge:
+        'bg-green-100 dark:bg-green-500/15 text-green-700 dark:text-green-300',
     },
     gray: {
       icon: 'bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-300',
       badge: 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300',
     },
   };
-
   return (
     <div
       className={
@@ -44,7 +41,6 @@ export default function DashboardGrid({
       {items.map((item) => {
         const Icon = item.icon;
         const colors = accentClasses[item.accent ?? 'orange'];
-
         const content = (
           <Card
             className={`h-full transition-shadow ${
@@ -84,11 +80,9 @@ export default function DashboardGrid({
             </div>
           </Card>
         );
-
         if (item.disabled || !item.href) {
           return <div key={item.title}>{content}</div>;
         }
-
         return (
           <Link key={item.title} href={item.href}>
             {content}

@@ -1,25 +1,15 @@
 'use client';
-
 import { createLocalStorageStore } from './createLocalStorageStore';
 import { RecentSearch } from '@/types/recentSearch';
-
 const STORAGE_KEY = 'recent-searches';
-// A dedicated "Search History" page (see app/history) shows the full list
-// rather than just the handful of inline chips on each search page, so the
-// cap needs enough headroom to actually be useful there - 10 was fine for
-// "recent chips" but too thin for "history".
 const MAX_RECENT_SEARCHES = 50;
-
 const store = createLocalStorageStore<RecentSearch[]>(STORAGE_KEY, []);
-
 function matches(item: RecentSearch, search: RecentSearch): boolean {
   switch (search.type) {
     case 'train':
       return item.type === 'train' && item.trainNumber === search.trainNumber;
-
     case 'station':
       return item.type === 'station' && item.stationCode === search.stationCode;
-
     case 'journey':
       return (
         item.type === 'journey' &&
@@ -28,21 +18,16 @@ function matches(item: RecentSearch, search: RecentSearch): boolean {
       );
   }
 }
-
 function addSearch(search: RecentSearch) {
   store.update((searches) => {
     const filtered = searches.filter((item) => !matches(item, search));
-
     filtered.unshift(search);
-
     return filtered.slice(0, MAX_RECENT_SEARCHES);
   });
 }
-
 export function removeSearch(search: RecentSearch) {
   store.update((searches) => searches.filter((item) => !matches(item, search)));
 }
-
 export function addTrainSearch(trainNumber: string, trainName: string) {
   addSearch({
     type: 'train',
@@ -51,7 +36,6 @@ export function addTrainSearch(trainNumber: string, trainName: string) {
     timestamp: Date.now(),
   });
 }
-
 export function addStationSearch(stationCode: string, stationName: string) {
   addSearch({
     type: 'station',
@@ -60,7 +44,6 @@ export function addStationSearch(stationCode: string, stationName: string) {
     timestamp: Date.now(),
   });
 }
-
 export function addJourneySearch(
   fromCode: string,
   fromName: string,
@@ -76,13 +59,10 @@ export function addJourneySearch(
     timestamp: Date.now(),
   });
 }
-
 export function clearRecentSearches() {
   store.set([]);
 }
-
 export function getRecentSearches() {
   return store.get();
 }
-
 export const useRecentSearches = store.useStore;

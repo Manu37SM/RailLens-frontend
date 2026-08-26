@@ -1,17 +1,13 @@
 'use client';
-
 import { useState } from 'react';
 import { SearchX, TrainFront } from 'lucide-react';
-
 import Card from '@/components/layout/Card';
 import Container from '@/components/layout/Container';
 import SearchBar from '@/components/train/SearchBar';
 import TrainList from '@/components/train/TrainList';
 import ErrorState from '@/components/common/ErrorState';
 import PopularSearchChips from '@/components/common/PopularSearchChips';
-
 import RecentSearchChips from './RecentSearchChips';
-
 import { searchTrains } from '@/services/trainService';
 import { ApiError } from '@/services/api';
 import { TrainSearchResponse } from '@/types/train';
@@ -20,36 +16,23 @@ import {
   recordTrainSearch,
   usePopularSearches,
 } from '@/stores/popularSearchStore';
-
 export default function Home() {
   const [query, setQuery] = useState('');
   const [trains, setTrains] = useState<TrainSearchResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // Distinguishes "haven't searched yet" from "searched, found nothing" -
-  // both start with an empty trains array, but they need different empty
-  // states (a prompt to search vs. a "no results" message).
   const [hasSearched, setHasSearched] = useState(false);
-
-  // Subscribing so the chip row updates immediately after a search - same
-  // pattern as popularityStore's usage elsewhere.
   usePopularSearches();
-
   async function handleSearch(searchQuery: string = query) {
     const trimmed = searchQuery.trim();
-
     if (!trimmed) return;
-
     setQuery(trimmed);
     setError(null);
     setHasSearched(true);
     recordTrainSearch(trimmed);
-
     try {
       setLoading(true);
-
       const results = await searchTrains(trimmed);
-
       setTrains(results);
     } catch (err) {
       setTrains([]);
@@ -62,7 +45,6 @@ export default function Home() {
       setLoading(false);
     }
   }
-
   return (
     <main className="bg-background min-h-screen">
       <Container>
@@ -165,8 +147,8 @@ export default function Home() {
                 </h3>
 
                 <p className="mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
-                  Enter a train number or name above to see its schedule,
-                  route and running days.
+                  Enter a train number or name above to see its schedule, route
+                  and running days.
                 </p>
               </div>
             </Card>

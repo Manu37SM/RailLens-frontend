@@ -1,10 +1,13 @@
 'use client';
-
 import { SubmitEvent, useEffect, useRef, useState } from 'react';
+import { useHasMounted } from '@/lib/useHasMounted';
 import { useRouter } from 'next/navigation';
 import { Eraser, KeyRound, MapPin, Trash2, User } from 'lucide-react';
-
-import { changePassword, deleteAccount, getCurrentUser } from '@/services/authService';
+import {
+  changePassword,
+  deleteAccount,
+  getCurrentUser,
+} from '@/services/authService';
 import { ApiError } from '@/services/api';
 import { clearSession, useAuthSession } from '@/stores/authStore';
 import { getValidAccessToken } from '@/lib/sessionRefresh';
@@ -15,43 +18,29 @@ import {
   usePreferences,
 } from '@/stores/preferencesStore';
 import { clearPopularity, usePopularity } from '@/stores/popularityStore';
-import { clearPopularSearches, usePopularSearches } from '@/stores/popularSearchStore';
+import {
+  clearPopularSearches,
+  usePopularSearches,
+} from '@/stores/popularSearchStore';
 import StationAutocomplete, {
   StationAutocompleteRef,
 } from '@/components/common/StationAutocomplete';
 import { CurrentUserResponse } from '@/types/auth';
 import { cardClasses, inputClasses, labelClasses } from '@/lib/formStyles';
-
-// Mirrors train-db's ChangePasswordRequest bean validation (see
-// train-db/.../model/ChangePasswordRequest.java) - same client-side
-// pre-check pattern as RegisterForm/LoginForm, backend still re-validates.
 const PASSWORD_PATTERN = /^(?=.*[A-Za-z])(?=.*\d).+$/;
-
 export default function AccountClient() {
   const router = useRouter();
   const session = useAuthSession();
-
   const [profile, setProfile] = useState<CurrentUserResponse | null>(null);
   const [profileError, setProfileError] = useState<string | null>(null);
-
-  // session is null for one render on first mount (useSyncExternalStore's
-  // server snapshot) before localStorage is read client-side, so we can't
-  // redirect on that alone - wait a tick to avoid bouncing a logged-in
-  // user straight back to /login.
-  const [checkedSession, setCheckedSession] = useState(false);
-
-  useEffect(() => {
-    setCheckedSession(true);
-  }, []);
-
+  const checkedSession = useHasMounted();
   useEffect(() => {
     if (!session) return;
-
     let cancelled = false;
-
     getValidAccessToken()
       .then((token) => {
-        if (!token) throw new ApiError(401, 'Session expired. Please log in again.');
+        if (!token)
+          throw new ApiError(401, 'Session expired. Please log in again.');
         return getCurrentUser(token);
       })
       .then((response) => {
@@ -63,22 +52,18 @@ export default function AccountClient() {
           err instanceof ApiError ? err.message : 'Failed to load your account.'
         );
       });
-
     return () => {
       cancelled = true;
     };
   }, [session]);
-
   useEffect(() => {
     if (checkedSession && !session) {
       router.replace('/login');
     }
   }, [checkedSession, session, router]);
-
   if (!session) {
     return null;
   }
-
   return (
     <div className="mx-auto flex w-full max-w-sm flex-col gap-6">
       <div className={cardClasses}>
@@ -102,7 +87,9 @@ export default function AccountClient() {
           </div>
           {profile?.createdAt && (
             <div className="flex justify-between gap-4">
-              <dt className="text-slate-500 dark:text-slate-400">Member since</dt>
+              <dt className="text-slate-500 dark:text-slate-400">
+                Member since
+              </dt>
               <dd className="font-medium text-slate-900 dark:text-slate-100">
                 {new Date(profile.createdAt).toLocaleDateString()}
               </dd>
@@ -111,7 +98,10 @@ export default function AccountClient() {
         </dl>
 
         {profileError && (
-          <p role="alert" className="mt-3 text-sm font-medium text-red-600 dark:text-red-400">
+          <p
+            role="alert"
+            className="mt-3 text-sm font-medium text-red-600 dark:text-red-400"
+          >
             {profileError}
           </p>
         )}
@@ -124,26 +114,11 @@ export default function AccountClient() {
     </div>
   );
 }
-
 function PreferencesCard() {
   const preferences = usePreferences();
   const stationRef = useRef<StationAutocompleteRef>(null);
-
-  // Hydrate the autocomplete's displayed value from the already-saved
-  // preference on mount - StationAutocomplete manages its own input state
-  // internally and has no "value" prop, so without this the field would
-  // render empty even when a default is already set (same pattern
-  // JourneySearchForm uses to hydrate from initialFrom/initialTo).
-  //
-  // Reads via getPreferences() rather than the `preferences` variable
-  // above, for the same hydration-race reason as JourneySearchForm's
-  // matching effect (see its comment) - this `[]`-deps effect only ever
-  // runs once, so closing over `preferences` would freeze in whatever
-  // value the store had during the very first render, before localStorage
-  // hydration lands.
   useEffect(() => {
     const saved = getPreferences();
-
     if (saved.defaultFromStationCode && saved.defaultFromStationName) {
       stationRef.current?.setStation({
         stationCode: saved.defaultFromStationCode,
@@ -152,9 +127,7 @@ function PreferencesCard() {
     }
     // Only on mount - re-running this on every preferences change would
     // fight the user while they're actively typing a new selection.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   return (
     <div className={cardClasses}>
       <h2 className="flex items-center gap-2 text-base font-semibold text-slate-900 dark:text-slate-100">
@@ -185,33 +158,20 @@ function PreferencesCard() {
     </div>
   );
 }
-
-// "Popular trains/stations" (popularityStore) and "Popular searches"
-// (popularSearchStore) are the only two on-device tracking stores with no
-// dedicated management page anywhere in the app - Favorites/Recent
-// Searches/Saved Journeys each already have their own list page with a
-// "Clear all" button, but view-count and query-count tracking only ever
-// surface as read-only chips (components/home/Popular.tsx,
-// PopularSearchChips.tsx), with no way to reset them short of clearing
-// site data in the browser. This card closes that gap without touching
-// the other stores, which already have their own clear affordance.
 function PrivacyCard() {
   const popularity = usePopularity();
   const popularSearches = usePopularSearches();
   const [cleared, setCleared] = useState(false);
-
   const trackedCount =
     Object.keys(popularity.trains).length +
     Object.keys(popularity.stations).length +
     Object.keys(popularSearches.trains).length +
     Object.keys(popularSearches.stations).length;
-
   function handleClear() {
     clearPopularity();
     clearPopularSearches();
     setCleared(true);
   }
-
   return (
     <div className={cardClasses}>
       <h2 className="flex items-center gap-2 text-base font-semibold text-slate-900 dark:text-slate-100">
@@ -220,85 +180,79 @@ function PrivacyCard() {
       </h2>
 
       <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">
-        RailLens tracks which trains/stations you view and search most often
-        on this device only, to power the &quot;Popular&quot; sections on the
-        home page - nothing is sent to a server. Clearing it resets those
-        sections without touching your favorites, history, or saved
-        journeys.
+        RailLens tracks which trains/stations you view and search most often on
+        this device only, to power the &quot;Popular&quot; sections on the home
+        page - nothing is sent to a server. Clearing it resets those sections
+        without touching your favorites, history, or saved journeys.
       </p>
 
       <button
         type="button"
         onClick={handleClear}
         disabled={trackedCount === 0}
-        className="mt-4 flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-slate-300 dark:border-slate-600 font-medium text-slate-700 dark:text-slate-300 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-4 flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-slate-300 font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800"
       >
         {trackedCount === 0 ? 'Nothing to clear' : 'Clear on-device activity'}
       </button>
 
       {cleared && trackedCount === 0 && (
-        <p role="status" className="mt-2 text-sm font-medium text-green-600 dark:text-green-400">
+        <p
+          role="status"
+          className="mt-2 text-sm font-medium text-green-600 dark:text-green-400"
+        >
           Cleared.
         </p>
       )}
     </div>
   );
 }
-
 function ChangePasswordCard() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-
   function validate(): string | null {
     if (!currentPassword) {
       return 'Current password is required.';
     }
-
     if (newPassword.length < 8) {
       return 'New password must be at least 8 characters.';
     }
-
     if (!PASSWORD_PATTERN.test(newPassword)) {
       return 'New password must contain at least one letter and one number.';
     }
-
     return null;
   }
-
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-
     const validationError = validate();
     if (validationError) {
       setError(validationError);
       setSuccess(false);
       return;
     }
-
     setSubmitting(true);
     setError(null);
     setSuccess(false);
-
     try {
       const token = await getValidAccessToken();
-      if (!token) throw new ApiError(401, 'Session expired. Please log in again.');
-
+      if (!token)
+        throw new ApiError(401, 'Session expired. Please log in again.');
       await changePassword({ currentPassword, newPassword }, token);
       setCurrentPassword('');
       setNewPassword('');
       setSuccess(true);
     } catch (err) {
       setError(
-        err instanceof ApiError ? err.message : 'Failed to change password. Please try again.'
+        err instanceof ApiError
+          ? err.message
+          : 'Failed to change password. Please try again.'
       );
     } finally {
       setSubmitting(false);
     }
   }
-
   return (
     <form onSubmit={handleSubmit} className={cardClasses} noValidate>
       <h2 className="flex items-center gap-2 text-base font-semibold text-slate-900 dark:text-slate-100">
@@ -339,13 +293,19 @@ function ChangePasswordCard() {
         </div>
 
         {error && (
-          <p role="alert" className="text-sm font-medium text-red-600 dark:text-red-400">
+          <p
+            role="alert"
+            className="text-sm font-medium text-red-600 dark:text-red-400"
+          >
             {error}
           </p>
         )}
 
         {success && (
-          <p role="status" className="text-sm font-medium text-green-600 dark:text-green-400">
+          <p
+            role="status"
+            className="text-sm font-medium text-green-600 dark:text-green-400"
+          >
             Password changed.
           </p>
         )}
@@ -361,40 +321,36 @@ function ChangePasswordCard() {
     </form>
   );
 }
-
 function DeleteAccountCard() {
   const router = useRouter();
-
   const [confirming, setConfirming] = useState(false);
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   async function handleDelete() {
     if (!password) {
       setError('Password is required.');
       return;
     }
-
     setSubmitting(true);
     setError(null);
-
     try {
       const token = await getValidAccessToken();
-      if (!token) throw new ApiError(401, 'Session expired. Please log in again.');
-
+      if (!token)
+        throw new ApiError(401, 'Session expired. Please log in again.');
       await deleteAccount({ password }, token);
       clearSession();
       router.push('/');
       router.refresh();
     } catch (err) {
       setError(
-        err instanceof ApiError ? err.message : 'Failed to delete account. Please try again.'
+        err instanceof ApiError
+          ? err.message
+          : 'Failed to delete account. Please try again.'
       );
       setSubmitting(false);
     }
   }
-
   return (
     <div className={`${cardClasses} border-red-200 dark:border-red-900/50`}>
       <h2 className="flex items-center gap-2 text-base font-semibold text-slate-900 dark:text-slate-100">
@@ -410,7 +366,7 @@ function DeleteAccountCard() {
         <button
           type="button"
           onClick={() => setConfirming(true)}
-          className="mt-4 flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-red-300 dark:border-red-800 font-semibold text-red-600 dark:text-red-400 transition-colors hover:bg-red-50 dark:hover:bg-red-950/40"
+          className="mt-4 flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-red-300 font-semibold text-red-600 transition-colors hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/40"
         >
           Delete my account
         </button>
@@ -431,7 +387,10 @@ function DeleteAccountCard() {
           </div>
 
           {error && (
-            <p role="alert" className="text-sm font-medium text-red-600 dark:text-red-400">
+            <p
+              role="alert"
+              className="text-sm font-medium text-red-600 dark:text-red-400"
+            >
               {error}
             </p>
           )}
@@ -453,7 +412,7 @@ function DeleteAccountCard() {
                 setError(null);
               }}
               disabled={submitting}
-              className="flex h-10 flex-1 items-center justify-center rounded-lg border border-slate-300 dark:border-slate-600 font-medium text-slate-700 dark:text-slate-300 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800"
+              className="flex h-10 flex-1 items-center justify-center rounded-lg border border-slate-300 font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800"
             >
               Cancel
             </button>

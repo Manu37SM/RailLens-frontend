@@ -1,19 +1,22 @@
 import Link from 'next/link';
-import { ArrowRight, Clock3, Gauge, MapPinned, Moon, TrainFront } from 'lucide-react';
-
+import {
+  ArrowRight,
+  Clock3,
+  Gauge,
+  MapPinned,
+  Moon,
+  TrainFront,
+} from 'lucide-react';
 import Card from '@/components/layout/Card';
 import { JourneyTrainResponse } from '@/types/journey';
-
 interface Props {
   train: JourneyTrainResponse;
 }
-
 export default function JourneyResultRow({ train }: Props) {
   return (
     <Link href={`/trains/${train.trainNumber}`} className="block">
       <Card className="group px-4 py-3 hover:border-orange-200">
         <div className="flex items-center justify-between gap-4">
-          {/* Left */}
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
               <TrainFront size={18} className="shrink-0 text-orange-600" />
@@ -22,7 +25,9 @@ export default function JourneyResultRow({ train }: Props) {
                 {train.trainNumber}
               </span>
 
-              <span className="truncate text-slate-600 dark:text-slate-300">{train.trainName}</span>
+              <span className="truncate text-slate-600 dark:text-slate-300">
+                {train.trainName}
+              </span>
             </div>
 
             <div className="mt-2 flex items-center gap-3">
@@ -31,7 +36,7 @@ export default function JourneyResultRow({ train }: Props) {
                   {train.departureTime}
                 </p>
 
-                <p className="mt-1 text-xs tracking-wide text-slate-500 dark:text-slate-400 uppercase">
+                <p className="mt-1 text-xs tracking-wide text-slate-500 uppercase dark:text-slate-400">
                   DEPARTURE
                 </p>
               </div>
@@ -52,15 +57,14 @@ export default function JourneyResultRow({ train }: Props) {
                   {train.arrivalTime}
                 </p>
 
-                <p className="mt-1 text-xs tracking-wide text-slate-500 dark:text-slate-400 uppercase">
+                <p className="mt-1 text-xs tracking-wide text-slate-500 uppercase dark:text-slate-400">
                   ARRIVAL
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Right */}
-          <div className="flex shrink-0 flex-col items-end gap-2 border-l border-slate-200 dark:border-slate-700 pl-4">
+          <div className="flex shrink-0 flex-col items-end gap-2 border-l border-slate-200 pl-4 dark:border-slate-700">
             <div className="flex items-center gap-1 text-sm text-slate-600 dark:text-slate-300">
               <Clock3 size={15} className="text-orange-500" />
               <span>{train.duration}</span>
@@ -74,7 +78,9 @@ export default function JourneyResultRow({ train }: Props) {
         </div>
 
         <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
-          <span>{train.numHalts} halt{train.numHalts === 1 ? '' : 's'}</span>
+          <span>
+            {train.numHalts} halt{train.numHalts === 1 ? '' : 's'}
+          </span>
 
           {train.averageMovingSpeedKmh != null && (
             <span className="flex items-center gap-1">

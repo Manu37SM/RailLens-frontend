@@ -5,7 +5,6 @@ export interface CentralStation {
   closenessCentrality: number;
   degree: number;
 }
-
 export interface NetworkStatsResponse {
   totalStations: number;
   totalTrains: number;

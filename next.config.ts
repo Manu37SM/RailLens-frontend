@@ -1,21 +1,9 @@
 import type { NextConfig } from 'next';
-
 const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
   },
-
-  // Dev-only Next.js indicator (Route/Bundler/Preferences popover). Already
-  // absent in production builds by default — this just also hides it while
-  // running `next dev` locally.
   devIndicators: false,
-
-  // Vercel (and most static/edge hosts) don't add security response
-  // headers by default - the equivalent hardening already exists for the
-  // API in train-db's SecurityHeadersFilter, but that only covers JSON
-  // responses from the backend, not the actual HTML/JS this app serves.
-  // Applied to every route (matcher: '/(.*)') since there's no reason any
-  // page here should ever be framed or leak a full referrer.
   async headers() {
     return [
       {
@@ -33,5 +21,4 @@ const nextConfig: NextConfig = {
     ];
   },
 };
-
 export default nextConfig;

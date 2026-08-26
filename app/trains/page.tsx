@@ -1,15 +1,13 @@
 import { Metadata } from 'next';
 import { TrainFront } from 'lucide-react';
 import Breadcrumb from '@/components/layout/Breadcrumb';
-
 import Container from '@/components/layout/Container';
 import TrainSearchClient from '@/components/train/TrainSearchClient';
-
 export const metadata: Metadata = {
   title: 'Train Search | RailLens',
-  description: 'Search Indian Railways trains by number or name and view full routes, schedules and stops.',
+  description:
+    'Search Indian Railways trains by number or name and view full routes, schedules and stops.',
 };
-
 export default function TrainsPage() {
   return (
     <Container>

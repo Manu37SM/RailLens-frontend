@@ -1,24 +1,5 @@
 import { Favorite } from '@/types/favorite';
 import { RecentSearch } from '@/types/recentSearch';
-
-/**
- * Pure intent-resolution and response-generation logic for the assistant,
- * extracted out of AssistantDialog.tsx. Previously this lived entirely
- * inside the component (~450 lines, regex parsing + response strings +
- * navigation side effects all inline), which meant the one genuinely
- * non-trivial piece of logic here - resolveIntent's regex matching, which
- * has real edge cases worth testing (train numbers vs. station codes vs.
- * "X to Y" journeys vs. help keywords) - couldn't be unit tested without
- * rendering the whole dialog. See the frontend architecture review's
- * "assistant's business logic lives entirely inside the component"
- * finding.
- *
- * Deliberately still pure: no React, no navigation, no component state.
- * AssistantDialog.tsx keeps the stateful parts (conversation mode,
- * messages, navigate()/executeAction() side effects) and just calls these
- * two functions.
- */
-
 export type AssistantAction =
   | {
       type: 'train';
@@ -88,51 +69,42 @@ export type AssistantAction =
       type: 'unknown';
       query: string;
     };
-
 export interface AssistantResponse {
   message: string;
   closeAfterAction?: boolean;
 }
-
 const helpResponses: Record<string, string> = {
   trains:
     'Use the Train Search page to search by train number or train name. Select a train to view its schedule, route, running days, and other details.',
-
   stations:
     'Use the Station Search page to search by station name or station code. You can view station details and trains passing through that station.',
-
   journey:
     'Use Journey Search to find trains between two stations. Enter your source and destination stations to see available trains.',
-
   favorites:
     'Click the star icon on a train or station to save it as a favorite. Your favorites are stored locally on your device.',
-
   recent:
     'RailLens automatically saves your recent train, station, and journey searches for quick access.',
-
   railLens:
     'RailLens is an Indian Railway Information System that helps you search trains, stations, journeys, favorites, and recent searches.',
 };
-
 export function resolveIntent(query: string): AssistantAction {
   const input = query.trim();
-
   if (/^\d{5}$/.test(input)) {
     return {
       type: 'train',
       trainNumber: input,
     };
   }
-
+  if (/help|what can you do/i.test(input)) {
+    return { type: 'help' };
+  }
   if (/^[A-Za-z]{2,5}$/.test(input)) {
     return {
       type: 'station',
       stationCode: input.toUpperCase(),
     };
   }
-
   const journeyMatch = input.match(/^(.+?)\s+to\s+(.+)$/i);
-
   if (journeyMatch) {
     return {
       type: 'journey',
@@ -140,107 +112,75 @@ export function resolveIntent(query: string): AssistantAction {
       to: journeyMatch[2].trim(),
     };
   }
-
   if (/favorite/i.test(input)) {
     return {
       type: 'favorites',
     };
   }
-
   if (/recent/i.test(input)) {
     return {
       type: 'recent',
     };
   }
-
-  if (/help|what can you do/i.test(input)) {
-    return { type: 'help' };
-  }
-
-  // "Railway Intelligence" feature set added after the original five
-  // intents above - see FEATURE.md. Multi-word/longer phrases only,
-  // deliberately, so a bare short word (e.g. "stats", "admin") still
-  // falls through to the 2-5 letter station-code match above, same
-  // pre-existing trade-off "help" already has with that regex.
   if (/rank/i.test(input)) {
     return { type: 'rankings' };
   }
-
   if (/fun fact|fun stat|funfact/i.test(input)) {
     return { type: 'funFacts' };
   }
-
   if (/achievement/i.test(input)) {
     return { type: 'achievements' };
   }
-
   if (/railway network|network stats|network graph|\bnetwork\b/i.test(input)) {
     return { type: 'network' };
   }
-
   if (/statistic|dataset health|\bstats\b/i.test(input)) {
     return { type: 'stats' };
   }
-
   if (/smart search/i.test(input)) {
     return { type: 'smartSearch' };
   }
-
   if (/\badmin\b/i.test(input)) {
     return { type: 'admin' };
   }
-
   if (/\baccount\b|preferences|my profile/i.test(input)) {
     return { type: 'account' };
   }
-
   if (/developer/i.test(input)) {
     return { type: 'developers' };
   }
-
   if (/saved journey/i.test(input)) {
     return { type: 'savedJourneys' };
   }
-
   if (/search.*train|find.*train|train search/i.test(input)) {
     return {
       type: 'unknown',
       query: 'help:trains',
     };
   }
-
   if (/station search|search.*station|find.*station/i.test(input)) {
     return {
       type: 'unknown',
       query: 'help:stations',
     };
   }
-
   if (/journey|plan.*trip|plan.*journey/i.test(input)) {
     return {
       type: 'unknown',
       query: 'help:journey',
     };
   }
-
   if (/raillens/i.test(input)) {
     return {
       type: 'unknown',
       query: 'help:raillens',
     };
   }
-
   return {
     type: 'unknown',
     query: input,
   };
 }
-
-/**
- * favorites/recentSearches are passed in rather than read from a store
- * directly, keeping this function pure and independently testable with
- * plain fixture arrays instead of needing to mock stores/localStorage.
- */
 export function buildAssistantResponse(
   action: AssistantAction,
   favorites: Favorite[],
@@ -252,103 +192,86 @@ export function buildAssistantResponse(
         message: `Opening train ${action.trainNumber}...`,
         closeAfterAction: true,
       };
-
     case 'station':
       return {
         message: `Opening station ${action.stationCode}...`,
         closeAfterAction: true,
       };
-
     case 'journey':
       return {
         message: `Searching journeys from ${action.from} to ${action.to}...`,
         closeAfterAction: true,
       };
-
     case 'home':
       return {
         message: 'Opening Home...',
         closeAfterAction: true,
       };
-
     case 'trains':
       return {
         message: 'Opening Train Search...',
         closeAfterAction: true,
       };
-
     case 'stations':
       return {
         message: 'Opening Station Search...',
         closeAfterAction: true,
       };
-
     case 'journeys':
       return {
         message: 'Opening Journey Search...',
         closeAfterAction: true,
       };
-
     case 'rankings':
       return {
         message: 'Opening Rankings...',
         closeAfterAction: true,
       };
-
     case 'funFacts':
       return {
         message: 'Opening Fun Facts...',
         closeAfterAction: true,
       };
-
     case 'achievements':
       return {
         message: 'Opening Achievements...',
         closeAfterAction: true,
       };
-
     case 'network':
       return {
         message: 'Opening Railway Network...',
         closeAfterAction: true,
       };
-
     case 'stats':
       return {
         message: 'Opening Statistics...',
         closeAfterAction: true,
       };
-
     case 'smartSearch':
       return {
         message: 'Opening Smart Search...',
         closeAfterAction: true,
       };
-
     case 'admin':
       return {
         message: 'Opening Admin Portal...',
         closeAfterAction: true,
       };
-
     case 'account':
       return {
         message: 'Opening Account...',
         closeAfterAction: true,
       };
-
     case 'developers':
       return {
         message: 'Opening Developers...',
         closeAfterAction: true,
       };
-
     case 'savedJourneys':
       return {
         message: 'Opening Saved Journeys...',
         closeAfterAction: true,
       };
-
     case 'favorites':
       return {
         message:
@@ -364,7 +287,6 @@ export function buildAssistantResponse(
                 )
                 .join('\n'),
       };
-
     case 'recent':
       return {
         message:
@@ -375,17 +297,14 @@ export function buildAssistantResponse(
                   switch (item.type) {
                     case 'train':
                       return `🚆 ${item.trainNumber} • ${item.trainName}`;
-
                     case 'station':
                       return `📍 ${item.stationCode} • ${item.stationName}`;
-
                     case 'journey':
                       return `🗺 ${item.fromName} → ${item.toName}`;
                   }
                 })
                 .join('\n'),
       };
-
     case 'help':
       return {
         message:
@@ -401,27 +320,20 @@ export function buildAssistantResponse(
           'You can also ask:\n' +
           '"How do I search trains?"',
       };
-
     case 'unknown': {
       switch (action.query) {
         case 'help:trains':
           return { message: helpResponses.trains };
-
         case 'help:stations':
           return { message: helpResponses.stations };
-
         case 'help:journey':
           return { message: helpResponses.journey };
-
         case 'help:favorites':
           return { message: helpResponses.favorites };
-
         case 'help:recent':
           return { message: helpResponses.recent };
-
         case 'help:raillens':
           return { message: helpResponses.railLens };
-
         default:
           return {
             message:
@@ -429,7 +341,6 @@ export function buildAssistantResponse(
           };
       }
     }
-
     default:
       return {
         message:

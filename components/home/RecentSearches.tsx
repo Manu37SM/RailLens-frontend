@@ -1,15 +1,10 @@
 'use client';
-
 import { Clock3, MapPin, Route, TrainFront } from 'lucide-react';
-
 import QuickAccessCard from './QuickAccessCard';
-
 import { useRecentSearches } from '@/stores/recentSearchStore';
 import { QuickAccessItem } from '@/types/quickAccess';
-
 export default function RecentSearches() {
   const searches = useRecentSearches();
-
   const items: QuickAccessItem[] = searches.slice(0, 5).map((search) => {
     switch (search.type) {
       case 'train':
@@ -20,7 +15,6 @@ export default function RecentSearches() {
           subtitle: `Train • ${search.trainNumber}`,
           icon: TrainFront,
         };
-
       case 'station':
         return {
           key: search.stationCode,
@@ -29,7 +23,6 @@ export default function RecentSearches() {
           subtitle: `Station • ${search.stationCode}`,
           icon: MapPin,
         };
-
       case 'journey':
         return {
           key: `${search.fromCode}-${search.toCode}`,
@@ -40,7 +33,6 @@ export default function RecentSearches() {
         };
     }
   });
-
   return (
     <QuickAccessCard
       title="Recent Searches"

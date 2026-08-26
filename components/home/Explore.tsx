@@ -1,19 +1,7 @@
 import { BarChart3, Building2, Map, Train } from 'lucide-react';
-
 import Section from './Section';
 import DashboardGrid from './DashboardGrid';
-
 import { DashboardItem } from '@/types/DashboardItem';
-
-// Previously these tiles ("Vande Bharat", "Rajdhani Express", etc.) had no
-// href, so DashboardGrid rendered them as non-interactive <div>s that
-// still looked clickable (cursor-pointer, hover shadow via Card) - a dead
-// end that misled anyone who tapped one. Train category/type isn't in the
-// imported dataset (see rail-dataset-analyzer's column_detector.py - no
-// CLASSES_COLUMNS equivalent survives into what's actually stored), so
-// filtering by "Vande Bharat" etc. genuinely isn't possible yet without a
-// richer data source. Replaced with tiles that link to real, working
-// pages instead of implying a filter that doesn't exist.
 const items: DashboardItem[] = [
   {
     title: 'Browse All Trains',
@@ -41,7 +29,6 @@ const items: DashboardItem[] = [
     accent: 'blue',
   },
 ];
-
 export default function Explore() {
   return (
     <Section

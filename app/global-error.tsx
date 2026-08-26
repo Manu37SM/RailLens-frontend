@@ -1,25 +1,17 @@
 'use client';
-
 import { useEffect } from 'react';
-
-// app/error.tsx (the regular route-segment error boundary) does NOT catch
-// errors thrown by the root layout itself (Navbar, the theme script, font
-// loading, etc.) - Next.js requires this separate global-error.tsx for
-// that case, and it has to render its own <html>/<body> since it replaces
-// the entire root layout when it triggers. Kept deliberately minimal - no
-// Tailwind theme variables, no Navbar, nothing that could itself be part
-// of what just broke.
 export default function GlobalError({
   error,
   reset,
 }: {
-  error: Error & { digest?: string };
+  error: Error & {
+    digest?: string;
+  };
   reset: () => void;
 }) {
   useEffect(() => {
     console.error(error);
   }, [error]);
-
   return (
     <html lang="en">
       <body

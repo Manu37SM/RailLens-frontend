@@ -1,9 +1,7 @@
 'use client';
-
 import Link from 'next/link';
 import { useState } from 'react';
 import { Clock3, MapPin, Route, Trash2, TrainFront, X } from 'lucide-react';
-
 import Card from '@/components/layout/Card';
 import {
   clearRecentSearches,
@@ -12,7 +10,6 @@ import {
 } from '@/stores/recentSearchStore';
 import { formatRelativeTime } from '@/lib/formatRelativeTime';
 import { RecentSearch } from '@/types/recentSearch';
-
 function searchHref(search: RecentSearch): string {
   switch (search.type) {
     case 'train':
@@ -23,7 +20,6 @@ function searchHref(search: RecentSearch): string {
       return `/journeys?from=${search.fromCode}&to=${search.toCode}`;
   }
 }
-
 function searchKey(search: RecentSearch): string {
   switch (search.type) {
     case 'train':
@@ -34,10 +30,8 @@ function searchKey(search: RecentSearch): string {
       return `journey-${search.fromCode}-${search.toCode}`;
   }
 }
-
 function SearchIcon({ type }: { type: RecentSearch['type'] }) {
   const className = 'h-5 w-5 text-orange-600';
-
   switch (type) {
     case 'train':
       return <TrainFront className={className} />;
@@ -47,7 +41,6 @@ function SearchIcon({ type }: { type: RecentSearch['type'] }) {
       return <Route className={className} />;
   }
 }
-
 function searchTitle(search: RecentSearch): string {
   switch (search.type) {
     case 'train':
@@ -58,7 +51,6 @@ function searchTitle(search: RecentSearch): string {
       return `${search.fromCode} → ${search.toCode}`;
   }
 }
-
 function searchSubtitle(search: RecentSearch): string {
   switch (search.type) {
     case 'train':
@@ -69,16 +61,10 @@ function searchSubtitle(search: RecentSearch): string {
       return `${search.fromName} → ${search.toName}`;
   }
 }
-
 export default function SearchHistoryList() {
   const searches = useRecentSearches();
-  // Confirm before wiping everything - this can't be undone once
-  // localStorage is cleared, and "Clear all" sitting right next to a list
-  // of items people may still want is an easy misclick.
   const [confirmingClear, setConfirmingClear] = useState(false);
-
   const sorted = [...searches].sort((a, b) => b.timestamp - a.timestamp);
-
   if (sorted.length === 0) {
     return (
       <Card className="py-10">
@@ -90,14 +76,13 @@ export default function SearchHistoryList() {
           </h3>
 
           <p className="mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
-            Trains, stations and journeys you search for will show up here,
-            so you can quickly get back to them later.
+            Trains, stations and journeys you search for will show up here, so
+            you can quickly get back to them later.
           </p>
         </div>
       </Card>
     );
   }
-
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-end">
@@ -119,7 +104,7 @@ export default function SearchHistoryList() {
             <button
               type="button"
               onClick={() => setConfirmingClear(false)}
-              className="rounded-md border border-slate-300 dark:border-slate-600 px-3 py-1.5 font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+              className="rounded-md border border-slate-300 px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800"
             >
               Cancel
             </button>
@@ -128,7 +113,7 @@ export default function SearchHistoryList() {
           <button
             type="button"
             onClick={() => setConfirmingClear(true)}
-            className="flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-red-600"
+            className="flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-red-600 dark:text-slate-400"
           >
             <Trash2 className="h-4 w-4" />
             Clear all
@@ -151,7 +136,8 @@ export default function SearchHistoryList() {
                 {searchTitle(search)}
               </p>
               <p className="truncate text-xs text-slate-500 dark:text-slate-400">
-                {searchSubtitle(search)} · {formatRelativeTime(search.timestamp)}
+                {searchSubtitle(search)} ·{' '}
+                {formatRelativeTime(search.timestamp)}
               </p>
             </Link>
 
@@ -159,7 +145,7 @@ export default function SearchHistoryList() {
               type="button"
               onClick={() => removeSearch(search)}
               aria-label={`Remove ${searchTitle(search)} from history`}
-              className="shrink-0 rounded-md p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-red-600"
+              className="shrink-0 rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-red-600 dark:hover:bg-slate-800"
             >
               <X className="h-4 w-4" />
             </button>

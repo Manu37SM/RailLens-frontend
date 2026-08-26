@@ -1,10 +1,7 @@
 import { MapPinned, Route, TrainFront } from 'lucide-react';
-
 import Section from './Section';
 import DashboardGrid from './DashboardGrid';
-
 import { DashboardItem } from '@/types/DashboardItem';
-
 const items: DashboardItem[] = [
   {
     title: 'Train Search',
@@ -25,7 +22,6 @@ const items: DashboardItem[] = [
     icon: MapPinned,
   },
 ];
-
 export default function SearchActions() {
   return (
     <Section title="Search" description="Choose a railway search service.">

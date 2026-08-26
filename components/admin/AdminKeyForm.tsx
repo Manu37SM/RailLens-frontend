@@ -1,27 +1,19 @@
 'use client';
-
 import { SubmitEvent, useState } from 'react';
 import { KeyRound } from 'lucide-react';
-
 import Card from '@/components/layout/Card';
 import { setAdminKey } from '@/stores/adminKeyStore';
 import { inputClasses } from '@/lib/formStyles';
-
 interface AdminKeyFormProps {
   error?: string | null;
 }
-
 export default function AdminKeyForm({ error }: AdminKeyFormProps) {
   const [key, setKey] = useState('');
-
   function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-
     if (!key.trim()) return;
-
     setAdminKey(key.trim());
   }
-
   return (
     <Card className="mx-auto max-w-sm">
       <div className="mb-4 flex items-center gap-2">
@@ -32,9 +24,8 @@ export default function AdminKeyForm({ error }: AdminKeyFormProps) {
       </div>
 
       <p className="mb-4 text-sm text-slate-500 dark:text-slate-400">
-        Enter the admin API key to view stats and run data imports. Kept
-        only for this browser tab - you&apos;ll need to enter it again next
-        session.
+        Enter the admin API key to view stats and run data imports. Kept only
+        for this browser tab - you&apos;ll need to enter it again next session.
       </p>
 
       <form onSubmit={handleSubmit} noValidate>
@@ -53,7 +44,10 @@ export default function AdminKeyForm({ error }: AdminKeyFormProps) {
         />
 
         {error && (
-          <p role="alert" className="mt-2 text-sm font-medium text-red-600 dark:text-red-400">
+          <p
+            role="alert"
+            className="mt-2 text-sm font-medium text-red-600 dark:text-red-400"
+          >
             {error}
           </p>
         )}

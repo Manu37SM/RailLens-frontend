@@ -1,6 +1,12 @@
 import Link from 'next/link';
-import { Clock3, Hourglass, Network, Signpost, Timer, TrendingUp } from 'lucide-react';
-
+import {
+  Clock3,
+  Hourglass,
+  Network,
+  Signpost,
+  Timer,
+  TrendingUp,
+} from 'lucide-react';
 import Card from '@/components/layout/Card';
 import {
   HaltCountEntry,
@@ -8,15 +14,7 @@ import {
   RankingsResponse,
   StationCountEntry,
 } from '@/types/rankings';
-
-// Defensive cap, same reasoning as AchievementsGrid/SmartSearchClient: these
-// lists are meant to be small leaderboards and the backend already limits
-// them, but nothing here re-derives that limit - if a backend change or bug
-// ever widened one of these to scale with the station/train count instead
-// of staying a fixed top-N, this keeps the render bounded rather than
-// dumping thousands of rows into the DOM.
 const MAX_LIST_ITEMS = 25;
-
 function RankedHaltCountList({
   title,
   icon: Icon,
@@ -29,7 +27,6 @@ function RankedHaltCountList({
   trains: HaltCountEntry[];
 }) {
   if (trains.length === 0) return null;
-
   return (
     <Card>
       <div className="mb-3 flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400">
@@ -39,11 +36,16 @@ function RankedHaltCountList({
 
       <ol className="space-y-2">
         {trains.slice(0, MAX_LIST_ITEMS).map((train, index) => (
-          <li key={train.trainNumber} className="flex items-center gap-3 text-sm">
-            <span className="w-4 shrink-0 text-slate-400 dark:text-slate-500">{index + 1}</span>
+          <li
+            key={train.trainNumber}
+            className="flex items-center gap-3 text-sm"
+          >
+            <span className="w-4 shrink-0 text-slate-400 dark:text-slate-500">
+              {index + 1}
+            </span>
             <Link
               href={`/trains/${train.trainNumber}`}
-              className="min-w-0 flex-1 truncate font-medium text-slate-900 dark:text-slate-100 hover:text-orange-600"
+              className="min-w-0 flex-1 truncate font-medium text-slate-900 hover:text-orange-600 dark:text-slate-100"
             >
               {train.trainNumber} · {train.trainName}
             </Link>
@@ -56,7 +58,6 @@ function RankedHaltCountList({
     </Card>
   );
 }
-
 function RankedHaltDurationList({
   title,
   icon: Icon,
@@ -69,7 +70,6 @@ function RankedHaltDurationList({
   halts: HaltDurationEntry[];
 }) {
   if (halts.length === 0) return null;
-
   return (
     <Card>
       <div className="mb-3 flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400">
@@ -79,11 +79,16 @@ function RankedHaltDurationList({
 
       <ol className="space-y-2">
         {halts.slice(0, MAX_LIST_ITEMS).map((halt, index) => (
-          <li key={`${halt.trainNumber}-${halt.stationCode}`} className="flex items-center gap-3 text-sm">
-            <span className="w-4 shrink-0 text-slate-400 dark:text-slate-500">{index + 1}</span>
+          <li
+            key={`${halt.trainNumber}-${halt.stationCode}`}
+            className="flex items-center gap-3 text-sm"
+          >
+            <span className="w-4 shrink-0 text-slate-400 dark:text-slate-500">
+              {index + 1}
+            </span>
             <Link
               href={`/trains/${halt.trainNumber}`}
-              className="min-w-0 flex-1 truncate font-medium text-slate-900 dark:text-slate-100 hover:text-orange-600"
+              className="min-w-0 flex-1 truncate font-medium text-slate-900 hover:text-orange-600 dark:text-slate-100"
             >
               {halt.trainNumber} at {halt.stationCode}
             </Link>
@@ -96,7 +101,6 @@ function RankedHaltDurationList({
     </Card>
   );
 }
-
 function RankedStationCountList({
   title,
   icon: Icon,
@@ -111,7 +115,6 @@ function RankedStationCountList({
   unitLabel: string;
 }) {
   if (stations.length === 0) return null;
-
   return (
     <Card>
       <div className="mb-3 flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400">
@@ -121,11 +124,16 @@ function RankedStationCountList({
 
       <ol className="space-y-2">
         {stations.slice(0, MAX_LIST_ITEMS).map((station, index) => (
-          <li key={station.stationCode} className="flex items-center gap-3 text-sm">
-            <span className="w-4 shrink-0 text-slate-400 dark:text-slate-500">{index + 1}</span>
+          <li
+            key={station.stationCode}
+            className="flex items-center gap-3 text-sm"
+          >
+            <span className="w-4 shrink-0 text-slate-400 dark:text-slate-500">
+              {index + 1}
+            </span>
             <Link
               href={`/stations/${station.stationCode}`}
-              className="min-w-0 flex-1 truncate font-medium text-slate-900 dark:text-slate-100 hover:text-orange-600"
+              className="min-w-0 flex-1 truncate font-medium text-slate-900 hover:text-orange-600 dark:text-slate-100"
             >
               {station.stationCode} · {station.stationName}
             </Link>
@@ -138,8 +146,11 @@ function RankedStationCountList({
     </Card>
   );
 }
-
-export default function RankingsGrid({ rankings }: { rankings: RankingsResponse }) {
+export default function RankingsGrid({
+  rankings,
+}: {
+  rankings: RankingsResponse;
+}) {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       <RankedHaltCountList

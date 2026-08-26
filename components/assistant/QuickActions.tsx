@@ -1,5 +1,4 @@
 'use client';
-
 import {
   CircleHelp,
   History,
@@ -9,9 +8,7 @@ import {
   Star,
   Train,
 } from 'lucide-react';
-
 import ActionChips, { type ActionChip } from './ActionChips';
-
 export type QuickAction =
   | 'home'
   | 'trains'
@@ -23,11 +20,9 @@ export type QuickAction =
   | 'favorites'
   | 'recent'
   | 'help';
-
 interface QuickActionProps {
   onAction: (action: QuickAction) => void;
 }
-
 const actions: ActionChip[] = [
   {
     icon: Home,
@@ -80,7 +75,6 @@ const actions: ActionChip[] = [
     action: 'help',
   },
 ];
-
 export default function QuickActions({ onAction }: QuickActionProps) {
   return (
     <ActionChips title="Quick Actions" actions={actions} onAction={onAction} />

@@ -1,14 +1,11 @@
 import Container from '@/components/layout/Container';
-
 export default function Loading() {
   return (
-    <div className="bg-slate-50 dark:bg-slate-800 py-5">
+    <div className="bg-slate-50 py-5 dark:bg-slate-800">
       <Container>
-        {/* Breadcrumb */}
         <div className="mb-6 h-5 w-56 animate-pulse rounded bg-slate-200 dark:bg-slate-700" />
 
-        {/* Train Header */}
-        <div className="mb-6 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-5 py-4 shadow-sm">
+        <div className="mb-6 rounded-lg border border-slate-200 bg-white px-5 py-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
           <div className="mb-4 h-8 w-64 animate-pulse rounded bg-slate-200 dark:bg-slate-700" />
 
           <div className="flex flex-wrap gap-3">
@@ -18,23 +15,19 @@ export default function Loading() {
           </div>
         </div>
 
-        {/* Route / Timeline */}
-        <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-5 py-4 shadow-sm">
+        <div className="rounded-lg border border-slate-200 bg-white px-5 py-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
           <div className="mb-4 h-7 w-40 animate-pulse rounded bg-slate-200 dark:bg-slate-700" />
 
           <div className="space-y-4">
             {[1, 2, 3, 4, 5, 6].map((station) => (
               <div key={station} className="flex items-start gap-5">
-                {/* Timeline dot */}
                 <div className="mt-2 h-4 w-4 rounded-full bg-slate-200 dark:bg-slate-700" />
 
-                {/* Station info */}
                 <div className="flex-1 space-y-2">
                   <div className="h-5 w-48 animate-pulse rounded bg-slate-200 dark:bg-slate-700" />
                   <div className="h-4 w-28 animate-pulse rounded bg-slate-200 dark:bg-slate-700" />
                 </div>
 
-                {/* Time */}
                 <div className="h-5 w-20 animate-pulse rounded bg-slate-200 dark:bg-slate-700" />
               </div>
             ))}

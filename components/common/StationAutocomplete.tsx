@@ -1,5 +1,4 @@
 'use client';
-
 import {
   forwardRef,
   useCallback,
@@ -11,33 +10,30 @@ import {
   useState,
 } from 'react';
 import { Search, X } from 'lucide-react';
-
 import { searchStations } from '@/services/stationService';
 import { ApiError } from '@/services/api';
 import { StationSearchResponse } from '@/types/station';
-
 export interface StationAutocompleteRef {
   focus(): void;
   clear(): void;
   setStation(station: StationSearchResponse | null): void;
 }
-
 interface StationAutocompleteProps {
   label: string;
   placeholder?: string;
   onSelect: (station: StationSearchResponse | null) => void;
-  // Marks this instance as the target of the global "/" search shortcut
-  // (see hooks/useGlobalSearchShortcut.ts). Only pass this on one
-  // StationAutocomplete per page - e.g. JourneySearchForm's "From" field,
-  // not "To" as well - so "/" has one unambiguous target.
   shortcutTarget?: boolean;
 }
-
 const StationAutocomplete = forwardRef<
   StationAutocompleteRef,
   StationAutocompleteProps
 >(function StationAutocomplete(
-  { label, placeholder = 'Search station...', onSelect, shortcutTarget = false },
+  {
+    label,
+    placeholder = 'Search station...',
+    onSelect,
+    shortcutTarget = false,
+  },
   ref
 ) {
   const [query, setQuery] = useState('');
@@ -47,43 +43,31 @@ const StationAutocomplete = forwardRef<
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [focused, setFocused] = useState(false);
   const [retryToken, setRetryToken] = useState(0);
-
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [selectedStation, setSelectedStation] =
     useState<StationSearchResponse | null>(null);
-
-  // Unique per-instance ids so this component can be mounted multiple times
-  // on one page (e.g. journey search's "From"/"To" fields) without ARIA
-  // references colliding.
   const instanceId = useId();
   const inputId = `${instanceId}-input`;
   const listboxId = `${instanceId}-listbox`;
   const optionId = (index: number) => `${instanceId}-option-${index}`;
-
   const trimmedQuery = query.trim();
-
   useEffect(() => {
     if (selectedStation) {
       return;
     }
-
     if (trimmedQuery.length < 2) {
       setStations([]);
       setLoading(false);
       return;
     }
-
     const controller = new AbortController();
-
     const timeout = setTimeout(async () => {
       try {
         setLoading(true);
         setError(null);
-
         const results = await searchStations(trimmedQuery);
-
         if (!controller.signal.aborted) {
           setStations(results);
           setSelectedIndex(-1);
@@ -103,13 +87,11 @@ const StationAutocomplete = forwardRef<
         }
       }
     }, 300);
-
     return () => {
       controller.abort();
       clearTimeout(timeout);
     };
   }, [trimmedQuery, selectedStation, retryToken]);
-
   useEffect(() => {
     function handleOutsideClick(event: MouseEvent) {
       if (
@@ -120,33 +102,25 @@ const StationAutocomplete = forwardRef<
         setSelectedIndex(-1);
       }
     }
-
     document.addEventListener('mousedown', handleOutsideClick);
-
     return () => {
       document.removeEventListener('mousedown', handleOutsideClick);
     };
   }, []);
-
   useEffect(() => {
     if (selectedIndex < 0) return;
-
     optionRefs.current[selectedIndex]?.scrollIntoView({
       block: 'nearest',
       behavior: 'smooth',
     });
   }, [selectedIndex]);
-
   const visibleStations = useMemo(() => {
     if (trimmedQuery.length < 2) {
       return [];
     }
-
     return stations;
   }, [stations, trimmedQuery]);
-
   const showDropdown = focused && trimmedQuery.length >= 2;
-
   const clearSelection = useCallback(() => {
     setQuery('');
     setSelectedStation(null);
@@ -154,84 +128,66 @@ const StationAutocomplete = forwardRef<
     setSelectedIndex(-1);
     setFocused(false);
     setError(null);
-
     onSelect(null);
-
     inputRef.current?.focus();
   }, [onSelect]);
-
   const selectStation = useCallback(
     (station: StationSearchResponse) => {
       setQuery(`${station.stationName} (${station.stationCode})`);
       setSelectedStation(station);
-
       setStations([]);
       setSelectedIndex(-1);
       setFocused(false);
-
       onSelect(station);
     },
     [onSelect]
   );
-
   useImperativeHandle(
     ref,
     () => ({
       focus() {
         inputRef.current?.focus();
       },
-
       clear: clearSelection,
-
       setStation(station) {
         if (!station) {
           clearSelection();
           return;
         }
-
         selectStation(station);
       },
     }),
     [clearSelection, selectStation]
   );
-
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (!showDropdown) {
       return;
     }
-
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-
         setSelectedIndex((prev) =>
           prev >= visibleStations.length - 1 ? 0 : prev + 1
         );
         break;
-
       case 'ArrowUp':
         e.preventDefault();
-
         setSelectedIndex((prev) =>
           prev <= 0 ? visibleStations.length - 1 : prev - 1
         );
         break;
-
       case 'Enter':
         e.preventDefault();
-
         if (selectedIndex >= 0) {
           selectStation(visibleStations[selectedIndex]);
         }
         break;
-
       case 'Escape':
         setFocused(false);
         setSelectedIndex(-1);
         break;
     }
   }
-
   return (
     <div ref={containerRef} className="relative">
       <label
@@ -266,7 +222,6 @@ const StationAutocomplete = forwardRef<
         }
         onFocus={() => {
           setFocused(true);
-
           if (trimmedQuery.length >= 2) {
             setSelectedIndex(-1);
           }
@@ -277,11 +232,7 @@ const StationAutocomplete = forwardRef<
           onSelect(null);
         }}
         onKeyDown={handleKeyDown}
-        // text-base (16px) below sm: iOS Safari auto-zooms the viewport on
-        // focusing any input smaller than 16px, which is jarring on mobile.
-        // Drops back to text-sm at the sm breakpoint to match the desktop
-        // design.
-        className="h-10 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 pr-10 pl-10 text-base sm:text-sm text-slate-900 dark:text-slate-100 transition-colors placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-orange-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+        className="h-10 w-full rounded-lg border border-slate-300 bg-slate-50 pr-10 pl-10 text-base text-slate-900 transition-colors placeholder:text-slate-400 focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-100 focus:outline-none sm:text-sm dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-900"
       />
 
       {query && (
@@ -289,7 +240,7 @@ const StationAutocomplete = forwardRef<
           type="button"
           onClick={clearSelection}
           aria-label={`Clear ${label}`}
-          className="absolute top-[38px] right-3 -translate-y-1/2 rounded p-1 text-slate-400 dark:text-slate-500 transition hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-600"
+          className="absolute top-[38px] right-3 -translate-y-1/2 rounded p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 dark:text-slate-500 dark:hover:bg-slate-700"
         >
           <X className="h-4 w-4" aria-hidden="true" />
         </button>
@@ -300,10 +251,13 @@ const StationAutocomplete = forwardRef<
           id={listboxId}
           role="listbox"
           aria-label={`${label} suggestions`}
-          className="absolute z-50 mt-1 w-full overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-md"
+          className="absolute z-50 mt-1 w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-md dark:border-slate-700 dark:bg-slate-900"
         >
           {loading ? (
-            <div className="px-4 py-3 text-sm text-slate-500 dark:text-slate-400" role="status">
+            <div
+              className="px-4 py-3 text-sm text-slate-500 dark:text-slate-400"
+              role="status"
+            >
               Searching stations…
             </div>
           ) : error ? (
@@ -342,7 +296,7 @@ const StationAutocomplete = forwardRef<
                   role="option"
                   aria-selected={selectedIndex === index}
                   onClick={() => selectStation(station)}
-                  className={`w-full border-b border-slate-100 dark:border-slate-800 px-4 py-2.5 text-left transition last:border-b-0 ${
+                  className={`w-full border-b border-slate-100 px-4 py-2.5 text-left transition last:border-b-0 dark:border-slate-800 ${
                     selectedIndex === index
                       ? 'bg-orange-50 dark:bg-orange-500/15'
                       : 'hover:bg-slate-50 dark:hover:bg-slate-800'
@@ -364,7 +318,5 @@ const StationAutocomplete = forwardRef<
     </div>
   );
 });
-
 StationAutocomplete.displayName = 'StationAutocomplete';
-
 export default StationAutocomplete;

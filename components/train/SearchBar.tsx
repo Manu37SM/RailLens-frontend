@@ -1,14 +1,11 @@
 'use client';
-
 import { Search, X } from 'lucide-react';
-
 interface SearchBarProps {
   query: string;
   onQueryChange: (query: string) => void;
   onSearch: (query?: string) => void | Promise<void>;
   loading: boolean;
 }
-
 export default function SearchBar({
   query,
   onQueryChange,
@@ -37,7 +34,7 @@ export default function SearchBar({
               onSearch();
             }
           }}
-          className="h-11 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 pr-10 pl-10 text-base shadow-sm transition-all outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-orange-500 focus:ring-4 focus:ring-orange-100"
+          className="h-11 w-full rounded-lg border border-slate-200 bg-white pr-10 pl-10 text-base shadow-sm transition-all outline-none placeholder:text-slate-400 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 dark:border-slate-700 dark:bg-slate-900 dark:placeholder:text-slate-500"
         />
 
         {query && (
@@ -45,7 +42,7 @@ export default function SearchBar({
             type="button"
             onClick={() => onQueryChange('')}
             aria-label="Clear search"
-            className="absolute top-1/2 right-4 -translate-y-1/2 rounded-full p-1 text-slate-400 dark:text-slate-500 transition hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-600"
+            className="absolute top-1/2 right-4 -translate-y-1/2 rounded-full p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 dark:text-slate-500 dark:hover:bg-slate-700"
           >
             <X size={18} aria-hidden="true" />
           </button>

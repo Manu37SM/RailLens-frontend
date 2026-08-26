@@ -1,21 +1,19 @@
 'use client';
-
 import { useEffect } from 'react';
-
 import Container from '@/components/layout/Container';
 import ErrorState from '@/components/common/ErrorState';
-
 export default function TrainDetailsError({
   error,
   reset,
 }: {
-  error: Error & { digest?: string };
+  error: Error & {
+    digest?: string;
+  };
   reset: () => void;
 }) {
   useEffect(() => {
     console.error(error);
   }, [error]);
-
   return (
     <div className="bg-background py-5">
       <Container>

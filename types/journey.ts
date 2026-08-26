@@ -5,7 +5,6 @@ export interface JourneyTrainResponse {
   arrivalTime: string;
   duration: string;
   distance: number;
-
   movingMinutes: number;
   haltedMinutes: number;
   numHalts: number;
@@ -14,7 +13,6 @@ export interface JourneyTrainResponse {
   nightTravelPercent: number | null;
   dayTravelPercent: number | null;
 }
-
 export interface JourneySearchResponse {
   from: string;
   to: string;

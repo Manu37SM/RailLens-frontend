@@ -1,81 +1,60 @@
 'use client';
-
 import { SubmitEvent, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { UserPlus } from 'lucide-react';
-
 import { register } from '@/services/authService';
 import { ApiError } from '@/services/api';
 import { setSession } from '@/stores/authStore';
 import { inputClasses, labelClasses } from '@/lib/formStyles';
-
-// Mirrors train-db's RegisterRequest bean validation (see
-// train-db/.../model/RegisterRequest.java) so obvious mistakes are caught
-// client-side before a round trip, without duplicating the source of truth
-// - the backend still re-validates and is the final word.
 const USERNAME_PATTERN = /^[a-zA-Z0-9_]+$/;
 const PASSWORD_PATTERN = /^(?=.*[A-Za-z])(?=.*\d).+$/;
-
 export default function RegisterForm() {
   const router = useRouter();
-
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   function validate(): string | null {
     if (username.trim().length < 3 || username.trim().length > 30) {
       return 'Username must be between 3 and 30 characters.';
     }
-
     if (!USERNAME_PATTERN.test(username.trim())) {
       return 'Username may only contain letters, numbers and underscores.';
     }
-
     if (!email.trim()) {
       return 'Email is required.';
     }
-
     if (password.length < 8) {
       return 'Password must be at least 8 characters.';
     }
-
     if (!PASSWORD_PATTERN.test(password)) {
       return 'Password must contain at least one letter and one number.';
     }
-
     return null;
   }
-
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-
     const validationError = validate();
     if (validationError) {
       setError(validationError);
       return;
     }
-
     setSubmitting(true);
     setError(null);
-
     try {
       const response = await register({
         username: username.trim(),
         email: email.trim(),
         password,
       });
-
       setSession({
         token: response.token,
         refreshToken: response.refreshToken,
         username: response.username,
         email: response.email,
       });
-
       router.push('/');
       router.refresh();
     } catch (err) {
@@ -88,11 +67,10 @@ export default function RegisterForm() {
       setSubmitting(false);
     }
   }
-
   return (
     <form
       onSubmit={handleSubmit}
-      className="mx-auto w-full max-w-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm"
+      className="mx-auto w-full max-w-sm rounded-lg border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900"
       noValidate
     >
       <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
@@ -154,7 +132,10 @@ export default function RegisterForm() {
         </div>
 
         {error && (
-          <p role="alert" className="text-sm font-medium text-red-600 dark:text-red-400">
+          <p
+            role="alert"
+            className="text-sm font-medium text-red-600 dark:text-red-400"
+          >
             {error}
           </p>
         )}
@@ -171,7 +152,10 @@ export default function RegisterForm() {
 
       <p className="mt-5 text-center text-sm text-slate-500 dark:text-slate-400">
         Already have an account?{' '}
-        <Link href="/login" className="font-medium text-orange-600 hover:text-orange-700 dark:text-orange-400">
+        <Link
+          href="/login"
+          className="font-medium text-orange-600 hover:text-orange-700 dark:text-orange-400"
+        >
           Log in
         </Link>
       </p>

@@ -1,18 +1,14 @@
 'use client';
-
 import Link from 'next/link';
 import { useState } from 'react';
 import { Heart, MapPin, Route, Trash2, TrainFront, X } from 'lucide-react';
-
 import Card from '@/components/layout/Card';
-import { clearFavorites, toggleFavorite, useFavorites } from '@/stores/favoritesStore';
+import {
+  clearFavorites,
+  toggleFavorite,
+  useFavorites,
+} from '@/stores/favoritesStore';
 import { Favorite } from '@/types/favorite';
-
-// Mirrors components/history/SearchHistoryList.tsx's structure (href/key/
-// icon/title/subtitle switches, confirm-before-clear-all) so favorites and
-// search history - the app's two localStorage-backed list features - look
-// and behave the same way rather than each inventing its own layout.
-
 function favoriteHref(favorite: Favorite): string {
   switch (favorite.type) {
     case 'train':
@@ -23,7 +19,6 @@ function favoriteHref(favorite: Favorite): string {
       return `/journeys?from=${favorite.fromStationCode}&to=${favorite.toStationCode}`;
   }
 }
-
 function favoriteKey(favorite: Favorite): string {
   switch (favorite.type) {
     case 'train':
@@ -34,7 +29,6 @@ function favoriteKey(favorite: Favorite): string {
       return `route-${favorite.fromStationCode}-${favorite.toStationCode}`;
   }
 }
-
 function favoriteTitle(favorite: Favorite): string {
   switch (favorite.type) {
     case 'train':
@@ -45,7 +39,6 @@ function favoriteTitle(favorite: Favorite): string {
       return `${favorite.fromStationCode} → ${favorite.toStationCode}`;
   }
 }
-
 function favoriteSubtitle(favorite: Favorite): string {
   switch (favorite.type) {
     case 'train':
@@ -56,18 +49,17 @@ function favoriteSubtitle(favorite: Favorite): string {
       return `${favorite.fromStationName} to ${favorite.toStationName}`;
   }
 }
-
 function FavoriteIcon({ type }: { type: Favorite['type'] }) {
   const className = 'h-5 w-5 text-orange-600';
-  if (type === 'train') return <TrainFront className={className} aria-hidden="true" />;
-  if (type === 'station') return <MapPin className={className} aria-hidden="true" />;
+  if (type === 'train')
+    return <TrainFront className={className} aria-hidden="true" />;
+  if (type === 'station')
+    return <MapPin className={className} aria-hidden="true" />;
   return <Route className={className} aria-hidden="true" />;
 }
-
 export default function FavoritesList() {
   const favorites = useFavorites();
   const [confirmingClear, setConfirmingClear] = useState(false);
-
   if (favorites.length === 0) {
     return (
       <Card className="py-10">
@@ -93,14 +85,14 @@ export default function FavoritesList() {
       </Card>
     );
   }
-
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-end">
         {confirmingClear ? (
           <div className="flex items-center gap-2 text-sm">
             <span className="text-slate-600 dark:text-slate-300">
-              Remove all {favorites.length} favorite{favorites.length !== 1 ? 's' : ''}?
+              Remove all {favorites.length} favorite
+              {favorites.length !== 1 ? 's' : ''}?
             </span>
             <button
               type="button"
@@ -115,7 +107,7 @@ export default function FavoritesList() {
             <button
               type="button"
               onClick={() => setConfirmingClear(false)}
-              className="rounded-md border border-slate-300 dark:border-slate-600 px-3 py-1.5 font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+              className="rounded-md border border-slate-300 px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800"
             >
               Cancel
             </button>
@@ -124,7 +116,7 @@ export default function FavoritesList() {
           <button
             type="button"
             onClick={() => setConfirmingClear(true)}
-            className="flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-red-600"
+            className="flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-red-600 dark:text-slate-400"
           >
             <Trash2 className="h-4 w-4" aria-hidden="true" />
             Clear all
@@ -155,7 +147,7 @@ export default function FavoritesList() {
               type="button"
               onClick={() => toggleFavorite(favorite)}
               aria-label={`Remove ${favoriteTitle(favorite)} from favorites`}
-              className="shrink-0 rounded-md p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-red-600"
+              className="shrink-0 rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-red-600 dark:hover:bg-slate-800"
             >
               <X className="h-4 w-4" aria-hidden="true" />
             </button>

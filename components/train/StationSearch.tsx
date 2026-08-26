@@ -1,10 +1,8 @@
 import { Search } from 'lucide-react';
-
 interface StationSearchProps {
   value: string;
   onChange: (value: string) => void;
 }
-
 export default function StationSearch({ value, onChange }: StationSearchProps) {
   return (
     <div className="relative">
@@ -21,7 +19,7 @@ export default function StationSearch({ value, onChange }: StationSearchProps) {
         aria-label="Search station"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-10 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 pr-3 pl-10 text-base sm:text-sm text-slate-900 dark:text-slate-100 transition placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-orange-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+        className="h-10 w-full rounded-lg border border-slate-300 bg-slate-50 pr-3 pl-10 text-base text-slate-900 transition placeholder:text-slate-400 focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-100 focus:outline-none sm:text-sm dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-900"
       />
     </div>
   );

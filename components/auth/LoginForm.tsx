@@ -1,44 +1,37 @@
 'use client';
-
 import { SubmitEvent, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { LogIn } from 'lucide-react';
-
 import { login } from '@/services/authService';
 import { ApiError } from '@/services/api';
 import { setSession } from '@/stores/authStore';
 import { inputClasses, labelClasses } from '@/lib/formStyles';
-
 export default function LoginForm() {
   const router = useRouter();
-
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-
     if (!usernameOrEmail.trim() || !password) {
       setError('Enter your username/email and password.');
       return;
     }
-
     setSubmitting(true);
     setError(null);
-
     try {
-      const response = await login({ usernameOrEmail: usernameOrEmail.trim(), password });
-
+      const response = await login({
+        usernameOrEmail: usernameOrEmail.trim(),
+        password,
+      });
       setSession({
         token: response.token,
         refreshToken: response.refreshToken,
         username: response.username,
         email: response.email,
       });
-
       router.push('/');
       router.refresh();
     } catch (err) {
@@ -51,11 +44,10 @@ export default function LoginForm() {
       setSubmitting(false);
     }
   }
-
   return (
     <form
       onSubmit={handleSubmit}
-      className="mx-auto w-full max-w-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm"
+      className="mx-auto w-full max-w-sm rounded-lg border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900"
       noValidate
     >
       <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
@@ -98,7 +90,10 @@ export default function LoginForm() {
         </div>
 
         {error && (
-          <p role="alert" className="text-sm font-medium text-red-600 dark:text-red-400">
+          <p
+            role="alert"
+            className="text-sm font-medium text-red-600 dark:text-red-400"
+          >
             {error}
           </p>
         )}
@@ -115,7 +110,10 @@ export default function LoginForm() {
 
       <p className="mt-5 text-center text-sm text-slate-500 dark:text-slate-400">
         Don&apos;t have an account?{' '}
-        <Link href="/register" className="font-medium text-orange-600 hover:text-orange-700 dark:text-orange-400">
+        <Link
+          href="/register"
+          className="font-medium text-orange-600 hover:text-orange-700 dark:text-orange-400"
+        >
           Register
         </Link>
       </p>

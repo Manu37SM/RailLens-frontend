@@ -3,13 +3,11 @@ export interface RouteDistanceProjection {
   trainName: string;
   distanceKm: number;
 }
-
 export interface StationTrafficProjection {
   stationCode: string;
   stationName: string;
   trainCount: number;
 }
-
 export interface TrainSpeedProjection {
   trainNumber: string;
   trainName: string;
@@ -17,7 +15,6 @@ export interface TrainSpeedProjection {
   distanceKm: number;
   durationMinutes: number;
 }
-
 export interface StatsResponse {
   totalTrains: number;
   totalStations: number;
