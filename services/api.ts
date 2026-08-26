@@ -19,7 +19,10 @@ export async function apiFetch<T>(
 ): Promise<T> {
   let response: Response;
   try {
-    response = await fetch(`${BASE_URL}${endpoint}`, init);
+    response = await fetch(`${BASE_URL}${endpoint}`, {
+      ...init,
+      signal: init?.signal ?? AbortSignal.timeout(10000),
+    });
   } catch {
     throw new ApiError(
       0,
