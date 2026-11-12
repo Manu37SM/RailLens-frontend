@@ -1,5 +1,7 @@
 # RailLens Frontend
 
+> **Going live?** Follow [`DEPLOYMENT.md`](DEPLOYMENT.md): one step-by-step guide for the backend, website, Android app and RailOps, with a tracker of what's merged vs. live.
+
 RailLens Frontend is the Next.js (App Router) client for RailLens, a railway-information system for Indian Railways. It talks exclusively to the `train-db` Spring Boot backend over REST — no external/live railway APIs are used anywhere in the app, by design (see "Known Gaps" below).
 
 The app covers:
