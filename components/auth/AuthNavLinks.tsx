@@ -1,7 +1,8 @@
 'use client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { LogOut, User } from 'lucide-react';
+import { LogOut, Ticket, User } from 'lucide-react';
+import { bookingEnabled } from '@/lib/booking/config';
 import { clearSession, useAuthSession } from '@/stores/authStore';
 import { logout as logoutRequest } from '@/services/authService';
 const linkClasses =
@@ -33,6 +34,17 @@ export default function AuthNavLinks() {
   }
   return (
     <>
+      {bookingEnabled() && (
+        <Link
+          href="/bookings"
+          aria-label="My bookings"
+          className={`${linkClasses} flex items-center gap-1.5`}
+        >
+          <Ticket size={16} aria-hidden="true" />
+          <span className="hidden sm:inline">Bookings</span>
+        </Link>
+      )}
+
       <Link
         href="/account"
         className="hover:text-primary hidden items-center gap-1.5 text-sm font-medium text-slate-600 transition-colors sm:flex dark:text-slate-300"

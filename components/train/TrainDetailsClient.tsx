@@ -6,6 +6,7 @@ import TrainHeader from './TrainHeader';
 import JourneyTable from './JourneyStop';
 import TrainIntelligenceCard from './TrainIntelligenceCard';
 import RouteComparisonCard from './RouteComparisonCard';
+import BookTrainCard from '@/components/booking/BookTrainCard';
 interface Props {
   train: TrainDetailsResponse;
 }
@@ -75,6 +76,8 @@ export default function TrainDetailsClient({ train }: Props) {
         minutes={train.journeyMinutes}
         speed={train.averageSpeed}
       />
+
+      <BookTrainCard trainNumber={train.trainNumber} route={train.route} />
 
       <TrainIntelligenceCard trainNumber={train.trainNumber} />
 

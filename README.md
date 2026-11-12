@@ -56,6 +56,8 @@ cp .env.example .env.local
 | `NEXT_PUBLIC_RAILLENS_LOGIN_PROVIDER` | Who handles sign-in (single login, Phase 4D): `raillens` or `railops`. Read at build time, so changing it needs a redeploy. Any other value means `raillens`. | `raillens` |
 | `RAILOPS_API_URL` | **Server-only.** RailOps gateway address; used only when the provider is `railops`. | unset: sign-in answers 503 in `railops` mode |
 | `RAILOPS_PROXY_SECRET` | **Server-only secret.** Equals the RailOps gateway's `RAILOPS_EDGE_PROXY_SECRET` (32+ characters), so RailOps' login rate limits stay per visitor. | unset: all sign-ins share one RailOps rate-limit bucket |
+| `NEXT_PUBLIC_RAILOPS_API_URL` | RailOps gateway address the **browser** calls for booking (Phase 5). Booking shows only when this is set **and** the login provider is `railops`. | unset: no booking |
+| `NEXT_PUBLIC_RAILOPS_PAYMENT_HOSTS` | Only for a real payment gateway later: https hosts its checkout may be on. The website refuses to redirect anywhere else. | empty (demo uses the simulated payment, no redirect) |
 
 In production (e.g. Vercel), set these in the platform's project environment variable settings rather than committing a `.env` file.
 
@@ -193,6 +195,17 @@ Since Phase 2B, calls that start or end a session (`login`, `register`, `refresh
 - Sessions from before 2B (with tokens in `localStorage`) are moved into the cookie on the first refresh, so nobody is logged out by the upgrade.
 - These routes only accept requests whose `Origin` is this site. They pass the visitor's IP to the backend with `RAILLENS_PROXY_SECRET`.
 - All other API calls (search, account, admin) still go directly to the backend with `Authorization: Bearer`.
+
+### Booking (Phase 5)
+
+When booking is on (see the two settings above), RailLens sells RailOps tickets:
+
+- **Train page → Book this train:** pick a date and stations; the card finds the RailOps run (`GET /api/v1/runs?trainNo&date`), maps RailLens station codes to RailOps stop numbers and shows seats per class (general quota).
+- **`/book`:** up to 6 passengers and a contact number, then "Hold seats for 10 minutes". One idempotency key per attempt, so a retry never books twice.
+- **`/bookings/[pnr]`:** fare, passengers and status; **Pay (simulated)** calls RailOps' demo-only `simulated-payment` and waits for the booking to turn *Booked*. Cancel shows the refund first. Where RailOps uses a real gateway, it falls back to the gateway's checkout, but only on an allow-listed https host.
+- **`/bookings`:** my bookings.
+
+The browser calls the RailOps gateway directly with the signed-in person's RailOps access token (the same in-memory token as everything else). The RailOps gateway must allow this site (`RAILLENS_WEB_ORIGIN` in RailOps' `render.env`). Prices always come from RailOps; the website never sends an amount. Code: `services/bookingService.ts`, `components/booking/`.
 
 ### Single login (Phase 4D)
 
