@@ -4,13 +4,17 @@ interface ApiErrorBody {
   timestamp: string;
   status: number;
   error: string;
+  /** Stable reason for errors the UI reacts to, e.g. MFA_REQUIRED. */
+  code?: string;
 }
 export class ApiError extends Error {
   readonly status: number;
-  constructor(status: number, message: string) {
+  readonly code?: string;
+  constructor(status: number, message: string, code?: string) {
     super(message);
     this.name = 'ApiError';
     this.status = status;
+    this.code = code;
   }
 }
 export async function apiFetch<T>(
@@ -31,13 +35,17 @@ export async function apiFetch<T>(
   }
   if (!response.ok) {
     let message = `Request failed with status ${response.status}`;
+    let code: string | undefined;
     try {
       const body = (await response.json()) as ApiErrorBody;
       if (body?.error) {
         message = body.error;
       }
+      if (typeof body?.code === 'string') {
+        code = body.code;
+      }
     } catch {}
-    throw new ApiError(response.status, message);
+    throw new ApiError(response.status, message, code);
   }
   if (response.status === 204) {
     return undefined as T;
@@ -94,20 +102,12 @@ export async function apiDeleteAuthed<T>(
     body: JSON.stringify(body),
   });
 }
-export async function apiGetWithAdminKey<T>(
+export async function apiPostAuthedNoBody<T>(
   endpoint: string,
-  adminKey: string
-): Promise<T> {
-  return apiFetch<T>(endpoint, {
-    headers: { 'X-Admin-Key': adminKey },
-  });
-}
-export async function apiPostWithAdminKey<T>(
-  endpoint: string,
-  adminKey: string
+  token: string
 ): Promise<T> {
   return apiFetch<T>(endpoint, {
     method: 'POST',
-    headers: { 'X-Admin-Key': adminKey },
+    headers: { Authorization: `Bearer ${token}` },
   });
 }

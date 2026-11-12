@@ -5,6 +5,24 @@ export interface AuthSession {
   refreshToken: string;
   username: string;
   email: string;
+  /** From the server at sign-in/refresh. Only decides which screens to show; the API enforces access. */
+  role?: 'USER' | 'ADMIN';
+}
+/** Builds the stored session from a login/refresh/MFA response that carries tokens. */
+export function sessionFromResponse(response: {
+  token: string | null;
+  refreshToken: string | null;
+  username: string;
+  email: string;
+  role?: 'USER' | 'ADMIN';
+}): AuthSession {
+  return {
+    token: response.token ?? '',
+    refreshToken: response.refreshToken ?? '',
+    username: response.username,
+    email: response.email,
+    role: response.role === 'ADMIN' ? 'ADMIN' : 'USER',
+  };
 }
 function parseStoredSession(raw: string | null): AuthSession | null {
   if (!raw) return null;

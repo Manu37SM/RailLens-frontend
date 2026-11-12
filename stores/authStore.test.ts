@@ -4,6 +4,7 @@ import {
   AuthSession,
   clearSession,
   getSession,
+  sessionFromResponse,
   setSession,
   useAuthSession,
 } from './authStore';
@@ -68,5 +69,15 @@ describe('authStore', () => {
       clearSession();
     });
     expect(result.current).toBeNull();
+  });
+  it('sessionFromResponse() keeps ADMIN and treats anything else (or an older server) as USER', () => {
+    const base = { token: 't', refreshToken: 'r', username: 'u', email: 'e' };
+    expect(sessionFromResponse({ ...base, role: 'ADMIN' }).role).toBe('ADMIN');
+    expect(sessionFromResponse(base).role).toBe('USER');
+  });
+  it('a session stored before roles existed still loads (role is optional)', () => {
+    window.localStorage.setItem('raillens-auth', JSON.stringify(session));
+    expect(getSession()?.username).toBe('manish');
+    expect(getSession()?.role).toBeUndefined();
   });
 });
