@@ -3,16 +3,24 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import {
   AuthSession,
   clearSession,
+  getAccessToken,
   getSession,
+  peekLegacyRefreshToken,
   sessionFromResponse,
   setSession,
+  signIn,
   useAuthSession,
 } from './authStore';
 const session: AuthSession = {
-  token: 'access-token-abc',
-  refreshToken: 'refresh-token-xyz',
   username: 'manish',
   email: 'manish@example.com',
+  role: 'USER',
+};
+const response = {
+  token: 'access-token-abc',
+  username: 'manish',
+  email: 'manish@example.com',
+  role: 'USER' as const,
 };
 describe('authStore', () => {
   beforeEach(() => {
@@ -21,20 +29,27 @@ describe('authStore', () => {
   });
   it('starts logged out', () => {
     expect(getSession()).toBeNull();
+    expect(getAccessToken()).toBeNull();
   });
-  it('setSession() persists the session and getSession() reads it back', () => {
-    setSession(session);
+  it('signIn() keeps the access token in memory only, and persists just the profile', () => {
+    signIn(response);
+    expect(getAccessToken()).toBe('access-token-abc');
     expect(getSession()).toEqual(session);
+    const stored = window.localStorage.getItem('raillens-auth')!;
+    expect(JSON.parse(stored)).toEqual(session);
+    expect(stored).not.toContain('access-token-abc');
   });
-  it('clearSession() logs the user out', () => {
-    setSession(session);
+  it('setSession() never writes tokens even if given extra fields', () => {
+    setSession({ ...session, token: 'x', refreshToken: 'y' } as AuthSession);
+    const stored = window.localStorage.getItem('raillens-auth')!;
+    expect(stored).not.toContain('"token"');
+    expect(stored).not.toContain('refreshToken');
+  });
+  it('clearSession() logs the user out and forgets the access token', () => {
+    signIn(response);
     clearSession();
     expect(getSession()).toBeNull();
-  });
-  it('persists to localStorage under the "raillens-auth" key', () => {
-    setSession(session);
-    const stored = JSON.parse(window.localStorage.getItem('raillens-auth')!);
-    expect(stored).toEqual(session);
+    expect(getAccessToken()).toBeNull();
   });
   it('treats corrupt stored JSON as logged out rather than throwing', () => {
     window.localStorage.setItem('raillens-auth', '{not valid json');
@@ -47,37 +62,38 @@ describe('authStore', () => {
     );
     expect(getSession()).toBeNull();
   });
-  it('backward-compat: a session stored before refreshToken existed is still treated as logged in, with an empty refreshToken', () => {
+  it('a pre-2B session (tokens in storage) still counts as signed in, and its refresh token is offered for migration once', () => {
     window.localStorage.setItem(
       'raillens-auth',
       JSON.stringify({
-        token: session.token,
-        username: session.username,
-        email: session.email,
+        token: 'old',
+        refreshToken: 'legacy-refresh',
+        username: 'manish',
+        email: 'manish@example.com',
       })
     );
-    expect(getSession()).toEqual({ ...session, refreshToken: '' });
-  });
-  it('useAuthSession() re-renders subscribed components when setSession()/clearSession() are called', () => {
-    const { result } = renderHook(() => useAuthSession());
-    expect(result.current).toBeNull();
-    act(() => {
-      setSession(session);
+    expect(getSession()).toEqual({
+      username: 'manish',
+      email: 'manish@example.com',
     });
-    expect(result.current).toEqual(session);
-    act(() => {
-      clearSession();
-    });
-    expect(result.current).toBeNull();
+    expect(peekLegacyRefreshToken()).toBe('legacy-refresh');
+    signIn(response); // after the proxy moved it into the cookie
+    expect(peekLegacyRefreshToken()).toBeNull();
   });
   it('sessionFromResponse() keeps ADMIN and treats anything else (or an older server) as USER', () => {
-    const base = { token: 't', refreshToken: 'r', username: 'u', email: 'e' };
-    expect(sessionFromResponse({ ...base, role: 'ADMIN' }).role).toBe('ADMIN');
-    expect(sessionFromResponse(base).role).toBe('USER');
+    expect(sessionFromResponse({ ...response, role: 'ADMIN' }).role).toBe(
+      'ADMIN'
+    );
+    expect(
+      sessionFromResponse({ token: null, username: 'u', email: 'e' }).role
+    ).toBe('USER');
   });
-  it('a session stored before roles existed still loads (role is optional)', () => {
-    window.localStorage.setItem('raillens-auth', JSON.stringify(session));
-    expect(getSession()?.username).toBe('manish');
-    expect(getSession()?.role).toBeUndefined();
+  it('useAuthSession() re-renders subscribed components on sign-in and sign-out', () => {
+    const { result } = renderHook(() => useAuthSession());
+    expect(result.current).toBeNull();
+    act(() => signIn(response));
+    expect(result.current).toEqual(session);
+    act(() => clearSession());
+    expect(result.current).toBeNull();
   });
 });

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { UserPlus } from 'lucide-react';
 import { register } from '@/services/authService';
 import { ApiError } from '@/services/api';
-import { sessionFromResponse, setSession } from '@/stores/authStore';
+import { signIn } from '@/stores/authStore';
 import { inputClasses, labelClasses } from '@/lib/formStyles';
 const USERNAME_PATTERN = /^[a-zA-Z0-9_]+$/;
 const PASSWORD_PATTERN = /^(?=.*[A-Za-z])(?=.*\d).+$/;
@@ -49,7 +49,7 @@ export default function RegisterForm() {
         email: email.trim(),
         password,
       });
-      setSession(sessionFromResponse(response));
+      signIn(response);
       router.push('/');
       router.refresh();
     } catch (err) {

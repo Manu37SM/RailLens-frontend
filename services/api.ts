@@ -21,11 +21,37 @@ export async function apiFetch<T>(
   endpoint: string,
   init?: RequestInit
 ): Promise<T> {
+  return requestJson<T>(`${BASE_URL}${endpoint}`, init, 10000);
+}
+/**
+ * POST to this website's own sign-in routes (app/api/auth/*), which keep the refresh token in an HttpOnly cookie.
+ * Longer timeout: the first request after the free backend has been asleep can take up to a minute.
+ */
+export async function sameOriginPost<T>(
+  path: string,
+  body: unknown
+): Promise<T> {
+  return requestJson<T>(
+    path,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      credentials: 'same-origin',
+    },
+    65000
+  );
+}
+async function requestJson<T>(
+  url: string,
+  init: RequestInit | undefined,
+  timeoutMs: number
+): Promise<T> {
   let response: Response;
   try {
-    response = await fetch(`${BASE_URL}${endpoint}`, {
+    response = await fetch(url, {
       ...init,
-      signal: init?.signal ?? AbortSignal.timeout(10000),
+      signal: init?.signal ?? AbortSignal.timeout(timeoutMs),
     });
   } catch {
     throw new ApiError(

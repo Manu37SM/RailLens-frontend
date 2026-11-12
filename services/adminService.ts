@@ -20,7 +20,10 @@ export async function getAdminStats(): Promise<AdminStatsResponse> {
   return apiGetAuthed<AdminStatsResponse>('/admin/stats', await adminToken());
 }
 export async function getDatasetHealth(): Promise<DatasetHealthResponse> {
-  return apiGetAuthed<DatasetHealthResponse>('/admin/health', await adminToken());
+  return apiGetAuthed<DatasetHealthResponse>(
+    '/admin/health',
+    await adminToken()
+  );
 }
 export async function triggerImport(): Promise<ImportResult> {
   return apiPostAuthedNoBody<ImportResult>('/admin/import', await adminToken());

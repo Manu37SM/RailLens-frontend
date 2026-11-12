@@ -26,9 +26,7 @@ export default function AuthNavLinks() {
     );
   }
   function handleLogout() {
-    if (session?.refreshToken) {
-      logoutRequest({ refreshToken: session.refreshToken }).catch(() => {});
-    }
+    logoutRequest().catch(() => {});
     clearSession();
     router.push('/');
     router.refresh();

@@ -9,7 +9,7 @@ import {
   startMfaEnrolment,
 } from '@/services/authService';
 import { ApiError } from '@/services/api';
-import { sessionFromResponse, setSession } from '@/stores/authStore';
+import { signIn } from '@/stores/authStore';
 import { inputClasses, labelClasses } from '@/lib/formStyles';
 import { AuthResponse, MfaEnrolmentResponse } from '@/types/auth';
 /**
@@ -34,7 +34,7 @@ export default function LoginForm() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   function finish(response: AuthResponse) {
-    setSession(sessionFromResponse(response));
+    signIn(response);
     router.push(response.role === 'ADMIN' ? '/admin' : '/');
     router.refresh();
   }
@@ -198,7 +198,7 @@ export default function LoginForm() {
                 Account: <strong>RailLens</strong>. Key:
                 <code
                   data-testid="mfa-secret"
-                  className="mt-1 block select-all break-all rounded-md bg-slate-100 px-2 py-1.5 font-mono text-sm text-slate-900 dark:bg-slate-800 dark:text-slate-100"
+                  className="mt-1 block rounded-md bg-slate-100 px-2 py-1.5 font-mono text-sm break-all text-slate-900 select-all dark:bg-slate-800 dark:text-slate-100"
                 >
                   {groupSecret(enrolment.secret)}
                 </code>

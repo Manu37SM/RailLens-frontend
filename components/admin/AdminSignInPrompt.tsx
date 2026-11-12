@@ -6,7 +6,9 @@ interface AdminSignInPromptProps {
   /** Signed in, but as a user account (or a session from before admin rights were granted). */
   signedIn: boolean;
 }
-export default function AdminSignInPrompt({ signedIn }: AdminSignInPromptProps) {
+export default function AdminSignInPrompt({
+  signedIn,
+}: AdminSignInPromptProps) {
   return (
     <Card className="mx-auto max-w-sm">
       <div className="mb-4 flex items-center gap-2">

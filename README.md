@@ -52,6 +52,7 @@ cp .env.example .env.local
 |---|---|---|
 | `NEXT_PUBLIC_API_BASE_URL` | Base URL of the `train-db` backend's REST API, including the `/api/v1` prefix. Read in `services/api.ts`, used from both Server and Client Components (hence `NEXT_PUBLIC_`, which Next.js inlines at build time). | `http://localhost:8080/api/v1` |
 | `NEXT_PUBLIC_SITE_URL` | This site's own public URL, used for `metadataBase` (canonical/Open Graph URLs), `app/robots.ts`, and `app/sitemap.ts`. | `http://localhost:3000` |
+| `RAILLENS_PROXY_SECRET` | **Server-only secret** (never `NEXT_PUBLIC_`). The sign-in routes send it to the backend with the visitor's IP so login rate limits stay per visitor. Must equal the backend's `RAILLENS_CLIENT_IP_PROXY_SECRET`. 32+ characters. | unset: IP not forwarded, all sign-ins share one rate-limit bucket |
 
 In production (e.g. Vercel), set these in the platform's project environment variable settings rather than committing a `.env` file.
 
@@ -87,7 +88,7 @@ npm test
 
 Current coverage (as of this writing) is unit/component-level, not end-to-end:
 
-- Every `localStorage`-backed store (`stores/createLocalStorageStore.test.ts` plus `favoritesStore`, `recentSearchStore`, `savedJourneyStore`, `preferencesStore`, `popularityStore`, `popularSearchStore`, `adminKeyStore`) has a dedicated test file covering hydration/subscribe behavior.
+- Every `localStorage`-backed store (`stores/createLocalStorageStore.test.ts` plus `favoritesStore`, `recentSearchStore`, `savedJourneyStore`, `preferencesStore`, `popularityStore`, `popularSearchStore`) has a dedicated test file covering hydration/subscribe behavior.
 - Pure logic in `lib/` (`jwt`, `partialJourney`, `formatRelativeTime`, `theme`) has test coverage.
 - One component test exists for `components/developers/CodeBlock.tsx`.
 
@@ -178,7 +179,17 @@ Typed wrappers around the backend REST API, all built on a shared `apiFetch` hel
 All client-persisted stores are built on `stores/createLocalStorageStore.ts`, a small primitive using `useSyncExternalStore` with an SSR-safe server snapshot, hydration-after-mount handling, and cross-tab sync via the `storage` event:
 
 - `favoritesStore.ts`, `recentSearchStore.ts`, `savedJourneyStore.ts`, `preferencesStore.ts`, `popularityStore.ts`, `popularSearchStore.ts`, `adminKeyStore.ts`
-- `authStore.ts` — JWT session state (separate from the localStorage-store primitive above, given the sensitivity of holding a token)
+- `authStore.ts` — who is signed in (username, email, role). It holds **no tokens in storage**: the refresh token is an HttpOnly cookie and the access token is kept only in memory (see "Sign-in and tokens").
+
+## Sign-in and tokens
+
+Since Phase 2B, calls that start or end a session (`login`, `register`, `refresh`, `logout`, `mfa/confirm`) go to this site's own server routes in `app/api/auth/*` (`lib/server/authProxy.ts`), not straight to the backend:
+
+- The backend's refresh token is put in an **HttpOnly, SameSite=Strict cookie** (`__Secure-raillens_rt`, path `/api/auth`). Page scripts can't read it, so an injected script can't steal a 30-day session, and other sites can't make the browser send it. The response body carries `refreshToken: null`.
+- The short-lived **access token stays in memory** only. After a page load, `lib/sessionRefresh.ts` gets a new one through the cookie. If two tabs refresh at the same moment, the loser retries once after a second.
+- Sessions from before 2B (with tokens in `localStorage`) are moved into the cookie on the first refresh, so nobody is logged out by the upgrade.
+- These routes only accept requests whose `Origin` is this site. They pass the visitor's IP to the backend with `RAILLENS_PROXY_SECRET`.
+- All other API calls (search, account, admin) still go directly to the backend with `Authorization: Bearer`.
 
 ## Notable Components & Hooks
 
