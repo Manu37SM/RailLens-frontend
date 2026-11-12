@@ -1,6 +1,6 @@
 import { getJwtExpiryMillis } from './jwt';
 import { refreshSession } from '@/services/authService';
-import { getSession, setSession } from '@/stores/authStore';
+import { getSession, sessionFromResponse, setSession } from '@/stores/authStore';
 const EXPIRY_BUFFER_MS = 30000;
 let inFlightRefresh: Promise<string | null> | null = null;
 export async function getValidAccessToken(): Promise<string | null> {
@@ -17,12 +17,8 @@ export async function getValidAccessToken(): Promise<string | null> {
   if (!inFlightRefresh) {
     inFlightRefresh = refreshSession({ refreshToken: session.refreshToken })
       .then((response) => {
-        setSession({
-          token: response.token,
-          refreshToken: response.refreshToken,
-          username: response.username,
-          email: response.email,
-        });
+        // role is re-read by the server on every refresh: a demoted admin drops to USER here.
+        setSession(sessionFromResponse(response));
         return response.token;
       })
       .catch(() => null)

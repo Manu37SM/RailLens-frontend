@@ -5,9 +5,6 @@ import Card from '@/components/layout/Card';
 import { getDatasetHealth } from '@/services/adminService';
 import { ApiError } from '@/services/api';
 import { DatasetHealthResponse } from '@/types/admin';
-interface Props {
-  adminKey: string;
-}
 const CHECKS: {
   key: keyof DatasetHealthResponse;
   countKey: keyof DatasetHealthResponse;
@@ -49,7 +46,7 @@ const CHECKS: {
     label: 'Invalid routes',
   },
 ];
-export default function DatasetHealthPanel({ adminKey }: Props) {
+export default function DatasetHealthPanel() {
   const [health, setHealth] = useState<DatasetHealthResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -58,7 +55,7 @@ export default function DatasetHealthPanel({ adminKey }: Props) {
     setLoading(true);
     setError(null);
     try {
-      setHealth(await getDatasetHealth(adminKey));
+      setHealth(await getDatasetHealth());
     } catch (err) {
       setError(
         err instanceof ApiError

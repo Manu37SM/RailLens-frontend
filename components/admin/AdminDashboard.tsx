@@ -4,16 +4,15 @@ import {
   AlertTriangle,
   CheckCircle2,
   Database,
-  LogOut,
   RefreshCw,
   TrainFront,
   MapPin,
   Route,
 } from 'lucide-react';
 import Card from '@/components/layout/Card';
-import AdminKeyForm from './AdminKeyForm';
+import AdminSignInPrompt from './AdminSignInPrompt';
 import DatasetHealthPanel from './DatasetHealthPanel';
-import { clearAdminKey, useAdminKey } from '@/stores/adminKeyStore';
+import { useAuthSession } from '@/stores/authStore';
 import {
   clearCache,
   getAdminStats,
@@ -47,7 +46,8 @@ function StatCard({
   );
 }
 export default function AdminDashboard() {
-  const adminKey = useAdminKey();
+  const session = useAuthSession();
+  const isAdmin = session?.role === 'ADMIN';
   const [stats, setStats] = useState<AdminStatsResponse | null>(null);
   const [statsError, setStatsError] = useState<string | null>(null);
   const [loadingStats, setLoadingStats] = useState(false);
@@ -58,18 +58,16 @@ export default function AdminDashboard() {
   const [clearingCache, setClearingCache] = useState(false);
   const [cacheCleared, setCacheCleared] = useState(false);
   const [cacheError, setCacheError] = useState<string | null>(null);
-  async function loadStats(key: string) {
+  async function loadStats() {
     setLoadingStats(true);
     setStatsError(null);
     try {
-      setStats(await getAdminStats(key));
+      setStats(await getAdminStats());
     } catch (err) {
-      if (
-        err instanceof ApiError &&
-        (err.status === 401 || err.status === 503)
-      ) {
-        clearAdminKey();
-        setStatsError('Invalid admin key.');
+      if (err instanceof ApiError && err.status === 401) {
+        setStatsError(
+          'Your admin session has ended. Log out and sign in again with your one-time code.'
+        );
       } else {
         setStatsError(
           err instanceof ApiError ? err.message : 'Failed to load admin stats.'
@@ -80,25 +78,24 @@ export default function AdminDashboard() {
     }
   }
   useEffect(() => {
-    if (adminKey) {
+    if (isAdmin) {
       queueMicrotask(() => {
-        loadStats(adminKey);
+        loadStats();
       });
     }
-  }, [adminKey]);
-  if (!adminKey) {
-    return <AdminKeyForm error={statsError} />;
+  }, [isAdmin]);
+  if (!isAdmin) {
+    return <AdminSignInPrompt signedIn={session != null} />;
   }
   async function handleImport() {
-    if (!adminKey) return;
     setImporting(true);
     setImportError(null);
     setImportResult(null);
     try {
-      const result = await triggerImport(adminKey);
+      const result = await triggerImport();
       setImportResult(result);
       if (result.success) {
-        loadStats(adminKey);
+        loadStats();
       }
     } catch (err) {
       setImportError(
@@ -112,12 +109,11 @@ export default function AdminDashboard() {
     }
   }
   async function handleClearCache() {
-    if (!adminKey) return;
     setClearingCache(true);
     setCacheError(null);
     setCacheCleared(false);
     try {
-      await clearCache(adminKey);
+      await clearCache();
       setCacheCleared(true);
     } catch (err) {
       setCacheError(
@@ -135,15 +131,6 @@ export default function AdminDashboard() {
         <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">
           Admin Portal
         </h1>
-
-        <button
-          type="button"
-          onClick={() => clearAdminKey()}
-          className="flex items-center gap-1.5 rounded-md text-sm font-medium text-slate-500 hover:text-red-600 dark:text-slate-400"
-        >
-          <LogOut className="h-4 w-4" aria-hidden="true" />
-          Forget key
-        </button>
       </div>
 
       {statsError && (
@@ -187,7 +174,7 @@ export default function AdminDashboard() {
 
           <button
             type="button"
-            onClick={() => loadStats(adminKey)}
+            onClick={() => loadStats()}
             aria-label="Refresh stats"
             className="shrink-0 rounded-md p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
           >
@@ -309,7 +296,7 @@ export default function AdminDashboard() {
         )}
       </Card>
 
-      <DatasetHealthPanel adminKey={adminKey} />
+      <DatasetHealthPanel />
     </div>
   );
 }

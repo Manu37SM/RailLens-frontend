@@ -1,20 +1,30 @@
-import { apiGetWithAdminKey, apiPostWithAdminKey } from './api';
+import { ApiError, apiGetAuthed, apiPostAuthedNoBody } from './api';
+import { getValidAccessToken } from '@/lib/sessionRefresh';
 import {
   AdminStatsResponse,
   DatasetHealthResponse,
   ImportResult,
 } from '@/types/admin';
-export function getAdminStats(adminKey: string): Promise<AdminStatsResponse> {
-  return apiGetWithAdminKey<AdminStatsResponse>('/admin/stats', adminKey);
+/**
+ * Admin calls use the signed-in admin's own session (password + one-time code). Admin access tokens are short-lived
+ * (15 minutes), so each call goes through getValidAccessToken, which refreshes when needed.
+ */
+async function adminToken(): Promise<string> {
+  const token = await getValidAccessToken();
+  if (!token) {
+    throw new ApiError(401, 'Admin sign-in required');
+  }
+  return token;
 }
-export function getDatasetHealth(
-  adminKey: string
-): Promise<DatasetHealthResponse> {
-  return apiGetWithAdminKey<DatasetHealthResponse>('/admin/health', adminKey);
+export async function getAdminStats(): Promise<AdminStatsResponse> {
+  return apiGetAuthed<AdminStatsResponse>('/admin/stats', await adminToken());
 }
-export function triggerImport(adminKey: string): Promise<ImportResult> {
-  return apiPostWithAdminKey<ImportResult>('/admin/import', adminKey);
+export async function getDatasetHealth(): Promise<DatasetHealthResponse> {
+  return apiGetAuthed<DatasetHealthResponse>('/admin/health', await adminToken());
 }
-export function clearCache(adminKey: string): Promise<void> {
-  return apiPostWithAdminKey<void>('/admin/cache/clear', adminKey);
+export async function triggerImport(): Promise<ImportResult> {
+  return apiPostAuthedNoBody<ImportResult>('/admin/import', await adminToken());
+}
+export async function clearCache(): Promise<void> {
+  return apiPostAuthedNoBody<void>('/admin/cache/clear', await adminToken());
 }

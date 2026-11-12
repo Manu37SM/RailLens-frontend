@@ -6,14 +6,28 @@ export interface RegisterRequest {
 export interface LoginRequest {
   usernameOrEmail: string;
   password: string;
+  /** 6-digit authenticator code; only admin accounts need it. */
+  otp?: string;
 }
+export type UserRole = 'USER' | 'ADMIN';
 export interface AuthResponse {
-  token: string;
+  /** Empty when mfaEnrolmentRequired is true: no session until MFA is set up. */
+  token: string | null;
   tokenType: string;
   expiresInSeconds: number;
-  refreshToken: string;
+  refreshToken: string | null;
   username: string;
   email: string;
+  /** Absent from servers older than Phase 2A. */
+  role?: UserRole;
+  mfaEnrolmentRequired?: boolean;
+  enrolmentToken?: string;
+}
+export interface MfaEnrolmentResponse {
+  /** base32, for typing into an authenticator app by hand */
+  secret: string;
+  /** otpauth:// link; opens the authenticator app on phones */
+  otpauthUri: string;
 }
 export interface RefreshRequest {
   refreshToken: string;
@@ -22,6 +36,8 @@ export interface CurrentUserResponse {
   username: string;
   email: string;
   createdAt: string;
+  role?: UserRole;
+  mfaEnabled?: boolean;
 }
 export interface ChangePasswordRequest {
   currentPassword: string;
