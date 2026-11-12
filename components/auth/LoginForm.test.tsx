@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import LoginForm from './LoginForm';
 import { ApiError } from '@/services/api';
 import { clearSession, getAccessToken, getSession } from '@/stores/authStore';
@@ -115,5 +115,34 @@ describe('LoginForm', () => {
     await waitFor(() => expect(push).toHaveBeenCalledWith('/admin'));
     expect(confirmMfaEnrolment).toHaveBeenCalledWith('enrol-jwt', '654321');
     expect(getAccessToken()).toBe('admin-jwt');
+  });
+  describe('with the RailOps login (Phase 4D)', () => {
+    beforeEach(() =>
+      vi.stubEnv('NEXT_PUBLIC_RAILLENS_LOGIN_PROVIDER', 'railops')
+    );
+    afterEach(() => vi.unstubAllEnvs());
+
+    it('asks for an email, and staff send their code with the password in one step', async () => {
+      login.mockResolvedValue(adminSession);
+      render(<LoginForm />);
+      expect(screen.queryByLabelText('Username or email')).toBeNull();
+      fireEvent.change(screen.getByLabelText('Email'), {
+        target: { value: 'ops@example.com' },
+      });
+      fireEvent.change(screen.getByLabelText('Password'), {
+        target: { value: 'passw0rd-long' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /one-time code/i }));
+      fireEvent.change(screen.getByLabelText('One-time code'), {
+        target: { value: '123456' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /^log in$/i }));
+      await waitFor(() => expect(push).toHaveBeenCalledWith('/admin'));
+      expect(login).toHaveBeenCalledWith({
+        usernameOrEmail: 'ops@example.com',
+        password: 'passw0rd-long',
+        otp: '123456',
+      });
+    });
   });
 });

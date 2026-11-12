@@ -53,6 +53,9 @@ cp .env.example .env.local
 | `NEXT_PUBLIC_API_BASE_URL` | Base URL of the `train-db` backend's REST API, including the `/api/v1` prefix. Read in `services/api.ts`, used from both Server and Client Components (hence `NEXT_PUBLIC_`, which Next.js inlines at build time). | `http://localhost:8080/api/v1` |
 | `NEXT_PUBLIC_SITE_URL` | This site's own public URL, used for `metadataBase` (canonical/Open Graph URLs), `app/robots.ts`, and `app/sitemap.ts`. | `http://localhost:3000` |
 | `RAILLENS_PROXY_SECRET` | **Server-only secret** (never `NEXT_PUBLIC_`). The sign-in routes send it to the backend with the visitor's IP so login rate limits stay per visitor. Must equal the backend's `RAILLENS_CLIENT_IP_PROXY_SECRET`. 32+ characters. | unset: IP not forwarded, all sign-ins share one rate-limit bucket |
+| `NEXT_PUBLIC_RAILLENS_LOGIN_PROVIDER` | Who handles sign-in (single login, Phase 4D): `raillens` or `railops`. Read at build time, so changing it needs a redeploy. Any other value means `raillens`. | `raillens` |
+| `RAILOPS_API_URL` | **Server-only.** RailOps gateway address; used only when the provider is `railops`. | unset: sign-in answers 503 in `railops` mode |
+| `RAILOPS_PROXY_SECRET` | **Server-only secret.** Equals the RailOps gateway's `RAILOPS_EDGE_PROXY_SECRET` (32+ characters), so RailOps' login rate limits stay per visitor. | unset: all sign-ins share one RailOps rate-limit bucket |
 
 In production (e.g. Vercel), set these in the platform's project environment variable settings rather than committing a `.env` file.
 
@@ -190,6 +193,16 @@ Since Phase 2B, calls that start or end a session (`login`, `register`, `refresh
 - Sessions from before 2B (with tokens in `localStorage`) are moved into the cookie on the first refresh, so nobody is logged out by the upgrade.
 - These routes only accept requests whose `Origin` is this site. They pass the visitor's IP to the backend with `RAILLENS_PROXY_SECRET`.
 - All other API calls (search, account, admin) still go directly to the backend with `Authorization: Bearer`.
+
+### Single login (Phase 4D)
+
+With `NEXT_PUBLIC_RAILLENS_LOGIN_PROVIDER=railops` the same routes sign people in through RailOps instead (`lib/server/railopsAuth.ts`):
+
+- Login and register call RailOps' app endpoints (`/api/v1/auth/app/*`, `/api/v1/auth/register`); the RailLens backend's `/auth/me` then links or creates the RailLens profile for that RailOps token and says whether the person is an admin. The browser gets the same answer shape as before.
+- Sign-in is by **email**. New accounts give a **phone number** instead of a username (RailLens makes the username from the email). Passwords need **10+ characters** (RailOps' rule).
+- Staff admins tick "Staff? Add your one-time code" and send the code with the password; MFA setup happens in the RailOps staff app.
+- The RailOps refresh token gets its **own cookie** (`__Secure-raillens_ro_rt`), so tokens never go to the wrong service when the setting is flipped. Everyone signs in once more after a switch (and after a rollback).
+- Change password and delete account are unchanged here: the RailLens backend forwards them to RailOps for linked profiles.
 
 ## Notable Components & Hooks
 

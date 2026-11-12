@@ -27,6 +27,7 @@ import StationAutocomplete, {
 } from '@/components/common/StationAutocomplete';
 import { CurrentUserResponse } from '@/types/auth';
 import { cardClasses, inputClasses, labelClasses } from '@/lib/formStyles';
+import { loginProvider } from '@/lib/loginProvider';
 const PASSWORD_PATTERN = /^(?=.*[A-Za-z])(?=.*\d).+$/;
 export default function AccountClient() {
   const router = useRouter();
@@ -214,8 +215,10 @@ function ChangePasswordCard() {
     if (!currentPassword) {
       return 'Current password is required.';
     }
-    if (newPassword.length < 8) {
-      return 'New password must be at least 8 characters.';
+    // The RailOps login (Phase 4D) asks for at least 10.
+    const minLength = loginProvider() === 'railops' ? 10 : 8;
+    if (newPassword.length < minLength) {
+      return `New password must be at least ${minLength} characters.`;
     }
     if (!PASSWORD_PATTERN.test(newPassword)) {
       return 'New password must contain at least one letter and one number.';

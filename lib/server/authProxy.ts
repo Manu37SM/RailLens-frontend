@@ -26,7 +26,7 @@ const MAX_BODY_BYTES = 8 * 1024;
 /** The free backend can take about a minute to wake up. */
 const BACKEND_TIMEOUT_MS = 60000;
 type Mode = 'issue' | 'refresh' | 'logout';
-function errorBody(status: number, error: string) {
+export function errorBody(status: number, error: string) {
   return NextResponse.json(
     { timestamp: new Date().toISOString(), status, error },
     { status }
@@ -55,7 +55,7 @@ export function visitorIp(request: NextRequest): string | null {
   }
   return null;
 }
-async function readJson(
+export async function readJson(
   request: NextRequest
 ): Promise<Record<string, unknown> | null> {
   const text = await request.text();
