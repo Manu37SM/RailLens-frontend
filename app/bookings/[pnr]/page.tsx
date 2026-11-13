@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 import Container from '@/components/layout/Container';
 import BookingGate from '@/components/booking/BookingGate';
 import BookingDetail from '@/components/booking/BookingDetail';
+import RailOpsWaker from '@/components/RailOpsWaker';
+import { bookingEnabled } from '@/lib/booking/config';
 
 export const metadata: Metadata = {
   title: 'Booking | RailLens',
@@ -19,6 +21,7 @@ export default async function BookingPage({
   return (
     <div className="bg-slate-50 py-12 dark:bg-slate-800">
       <Container>
+        {bookingEnabled() && <RailOpsWaker />}
         <BookingGate>
           <BookingDetail pnr={pnr} />
         </BookingGate>
