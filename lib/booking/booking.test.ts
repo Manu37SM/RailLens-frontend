@@ -75,4 +75,13 @@ describe('booking helpers', () => {
     ).not.toContain('Null');
     expect(toBookingError(429, null).code).toBe('TOO_MANY_REQUESTS');
   });
+
+  it('Razorpay mode allows only rzp.io unless hosts are configured', () => {
+    expect(isAllowedCheckoutUrl('https://rzp.io/i/x')).toBe(false); // simulated mode: nothing allowed
+    vi.stubEnv('NEXT_PUBLIC_RAILOPS_PAYMENTS', 'razorpay');
+    expect(isAllowedCheckoutUrl('https://rzp.io/i/x')).toBe(true);
+    expect(isAllowedCheckoutUrl('https://rzp.io.evil.in/i/x')).toBe(false);
+    vi.stubEnv('NEXT_PUBLIC_RAILOPS_PAYMENT_HOSTS', 'pay.example');
+    expect(isAllowedCheckoutUrl('https://rzp.io/i/x')).toBe(false);
+  });
 });

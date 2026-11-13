@@ -57,7 +57,8 @@ cp .env.example .env.local
 | `RAILOPS_API_URL` | **Server-only.** RailOps gateway address; used only when the provider is `railops`. | unset: sign-in answers 503 in `railops` mode |
 | `RAILOPS_PROXY_SECRET` | **Server-only secret.** Equals the RailOps gateway's `RAILOPS_EDGE_PROXY_SECRET` (32+ characters), so RailOps' login rate limits stay per visitor. | unset: all sign-ins share one RailOps rate-limit bucket |
 | `NEXT_PUBLIC_RAILOPS_API_URL` | RailOps gateway address the **browser** calls for booking (Phase 5). Booking shows only when this is set **and** the login provider is `railops`. | unset: no booking |
-| `NEXT_PUBLIC_RAILOPS_PAYMENT_HOSTS` | Only for a real payment gateway later: https hosts its checkout may be on. The website refuses to redirect anywhere else. | empty (demo uses the simulated payment, no redirect) |
+| `NEXT_PUBLIC_RAILOPS_PAYMENTS` | How RailOps takes payment (Phase 6): `simulated` (a demo button) or `razorpay` (Razorpay test mode: the booking page opens Razorpay's hosted page, then waits for the confirmation when the passenger comes back). | `simulated` |
+| `NEXT_PUBLIC_RAILOPS_PAYMENT_HOSTS` | https hosts the payment page may be on. The website refuses to redirect anywhere else. | empty: `rzp.io` in Razorpay mode, nothing otherwise |
 
 In production (e.g. Vercel), set these in the platform's project environment variable settings rather than committing a `.env` file.
 
@@ -196,6 +197,10 @@ Since Phase 2B, calls that start or end a session (`login`, `register`, `refresh
 - These routes only accept requests whose `Origin` is this site. They pass the visitor's IP to the backend with `RAILLENS_PROXY_SECRET`.
 - All other API calls (search, account, admin) still go directly to the backend with `Authorization: Bearer`.
 
+### Security headers (Phase 6)
+
+`next.config.ts` sends a **Content-Security-Policy** on every page (`lib/csp.ts`): scripts, styles, fonts and workers only from this site; the browser may only talk to this site, the RailLens API and the RailOps gateway (taken from the two `NEXT_PUBLIC_*_URL` settings at build time); no plugins, no `<base>` hijacking, forms only post here, no framing. It still allows inline scripts, because Next.js puts page data in inline scripts and most pages are static; a nonce-based policy would need every page rendered per request. Checked in headless Chrome: no violations on the home, login, register and booking pages.
+
 ### Booking (Phase 5)
 
 When booking is on (see the two settings above), RailLens sells RailOps tickets:
@@ -204,6 +209,7 @@ When booking is on (see the two settings above), RailLens sells RailOps tickets:
 - **`/book`:** up to 6 passengers and a contact number, then "Hold seats for 10 minutes". One idempotency key per attempt, so a retry never books twice.
 - **`/bookings/[pnr]`:** fare, passengers and status; **Pay (simulated)** calls RailOps' demo-only `simulated-payment` and waits for the booking to turn *Booked*. Cancel shows the refund first. Where RailOps uses a real gateway, it falls back to the gateway's checkout, but only on an allow-listed https host.
 - **`/bookings`:** my bookings.
+- **Phase 6:** the booking form shows a **live seat map** for the class and journey (`GET /api/v1/runs/{id}/seat-map`, refreshed every 15 s, never names anyone) and a berth or seat **preference** per passenger (side lowers aren't offered: RailOps keeps them for RAC). With `NEXT_PUBLIC_RAILOPS_PAYMENTS=razorpay` the Pay button opens Razorpay's test-mode page.
 
 The browser calls the RailOps gateway directly with the signed-in person's RailOps access token (the same in-memory token as everything else). The RailOps gateway must allow this site (`RAILLENS_WEB_ORIGIN` in RailOps' `render.env`). Prices always come from RailOps; the website never sends an amount. Code: `services/bookingService.ts`, `components/booking/`.
 

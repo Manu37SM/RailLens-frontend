@@ -3,6 +3,7 @@ import { SubmitEvent, useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Plus, Trash2 } from 'lucide-react';
 import { CLASS_NAMES, formatIst } from '@/lib/booking/format';
+import SeatMapView, { BERTH_NAMES } from './SeatMapView';
 import { stationLabel, useStationNames } from '@/lib/booking/useStationNames';
 import { cardClasses, inputClasses, labelClasses } from '@/lib/formStyles';
 import {
@@ -32,9 +33,19 @@ interface PassengerRow {
   name: string;
   age: string;
   gender: 'M' | 'F' | 'T' | '';
+  /** Phase 6: berth or seat type wanted ('' = no preference). RailOps honours it where it can. */
+  pref?: string;
 }
 
-const EMPTY: PassengerRow = { name: '', age: '', gender: '' };
+const EMPTY: PassengerRow = { name: '', age: '', gender: '', pref: '' };
+const SEATED = new Set<TravelClass>(['CC', 'EC', '2S']);
+export function preferenceOptions(cls: TravelClass): string[] {
+  if (SEATED.has(cls)) return cls === 'EC' ? ['WS', 'AS'] : ['WS', 'MS', 'AS'];
+  if (cls === '1A') return ['LB', 'UB'];
+  // No side lower: RailOps keeps those for RAC passengers, so asking for one could never be met.
+  if (cls === '2A') return ['LB', 'UB', 'SU'];
+  return ['LB', 'MB', 'UB', 'SU'];
+}
 
 /** Reads run, from, to and class from the address, as set by the "Book" buttons on a train page. */
 function useJourney() {
@@ -170,6 +181,7 @@ export default function BookingForm() {
             name: p.name.trim(),
             age: Number(p.age),
             gender: p.gender as 'M' | 'F' | 'T',
+            berthPreference: p.pref || null,
           })),
           onlyIfConfirmed,
           contactPhone: phone.trim(),
@@ -213,12 +225,22 @@ export default function BookingForm() {
         </p>
       </div>
 
+      <SeatMapView
+        runId={run.runId}
+        travelClass={journey.cls}
+        fromSeq={journey.from}
+        toSeq={journey.to}
+      />
+
       <fieldset className="space-y-4">
         <legend className="text-base font-semibold text-slate-900 dark:text-slate-100">
           Passengers
         </legend>
         {passengers.map((p, i) => (
-          <div key={i} className="grid gap-3 sm:grid-cols-[1fr_6rem_8rem_auto]">
+          <div
+            key={i}
+            className="grid gap-3 sm:grid-cols-[1fr_6rem_8rem_9rem_auto]"
+          >
             <div>
               <label htmlFor={`p${i}-name`} className={labelClasses}>
                 Name {passengers.length > 1 ? i + 1 : ''}
@@ -266,6 +288,24 @@ export default function BookingForm() {
                 <option value="F">Female</option>
                 <option value="M">Male</option>
                 <option value="T">Transgender</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor={`p${i}-pref`} className={labelClasses}>
+                Preference
+              </label>
+              <select
+                id={`p${i}-pref`}
+                value={p.pref ?? ''}
+                onChange={(e) => update(i, { pref: e.target.value })}
+                className={inputClasses}
+              >
+                <option value="">Any</option>
+                {preferenceOptions(journey.cls).map((t) => (
+                  <option key={t} value={t}>
+                    {BERTH_NAMES[t]}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="flex items-end">

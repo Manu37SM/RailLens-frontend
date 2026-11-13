@@ -9,6 +9,8 @@ import {
   PaymentIntent,
   RunAvailability,
   RunSummary,
+  SeatMap,
+  TravelClass,
 } from '@/types/booking';
 
 /**
@@ -131,6 +133,18 @@ export function findRun(trainNo: string, date: string): Promise<RunSummary> {
 
 export function getRun(runId: number): Promise<RunSummary> {
   return call(`/api/v1/runs/${runId}`, { auth: false });
+}
+
+export function getSeatMap(
+  runId: number,
+  travelClass: TravelClass,
+  fromSeq: number,
+  toSeq: number
+): Promise<SeatMap> {
+  return call(
+    `/api/v1/runs/${runId}/seat-map?class=${encodeURIComponent(travelClass)}&from=${fromSeq}&to=${toSeq}`,
+    { auth: false }
+  );
 }
 
 export function getAvailability(

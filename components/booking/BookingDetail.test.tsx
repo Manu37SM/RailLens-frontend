@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import BookingDetail from './BookingDetail';
 import { ApiError } from '@/services/api';
 
@@ -135,5 +135,55 @@ describe('BookingDetail', () => {
       'first-key-123456789',
       'first-key-123456789',
     ]);
+  });
+
+  describe('Razorpay test mode (Phase 6)', () => {
+    afterEach(() => {
+      vi.unstubAllEnvs();
+      vi.unstubAllGlobals();
+    });
+
+    it('sends the passenger to the Razorpay link (allowed host) and offers no fake buttons', async () => {
+      vi.stubEnv('NEXT_PUBLIC_RAILOPS_PAYMENTS', 'razorpay');
+      api.getBooking.mockResolvedValue(pending);
+      api.paymentIntent.mockResolvedValue({
+        checkoutUrl: 'https://rzp.io/i/AbC',
+        amount: 845,
+        paymentId: 'p',
+        status: 'PENDING',
+      });
+      const assign = vi.fn();
+      vi.stubGlobal('location', { ...window.location, search: '', assign });
+      render(<BookingDetail pnr="4123456789" />);
+      fireEvent.click(
+        await screen.findByRole('button', { name: /on Razorpay \(test mode\)/ })
+      );
+      await waitFor(() =>
+        expect(assign).toHaveBeenCalledWith('https://rzp.io/i/AbC')
+      );
+      expect(api.paySimulated).not.toHaveBeenCalled();
+      expect(
+        screen.queryByRole('button', { name: /failed payment/ })
+      ).toBeNull();
+    });
+
+    it('back from Razorpay with status=paid, it waits for the confirmation by itself', async () => {
+      vi.stubEnv('NEXT_PUBLIC_RAILOPS_PAYMENTS', 'razorpay');
+      vi.stubGlobal('location', {
+        ...window.location,
+        search: '?razorpay_payment_link_status=paid',
+      });
+      api.getBooking
+        .mockResolvedValueOnce(pending)
+        .mockResolvedValue({ ...base, status: 'CONFIRMED' });
+      render(<BookingDetail pnr="4123456789" />);
+      await waitFor(
+        () =>
+          expect(screen.getByTestId('booking-status')).toHaveTextContent(
+            'Booked'
+          ),
+        { timeout: 5000 }
+      );
+    });
   });
 });

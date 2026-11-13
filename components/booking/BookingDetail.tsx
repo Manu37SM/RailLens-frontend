@@ -7,7 +7,7 @@ import {
   formatIst,
   STATUS_LABELS,
 } from '@/lib/booking/format';
-import { isAllowedCheckoutUrl } from '@/lib/booking/config';
+import { isAllowedCheckoutUrl, paymentMode } from '@/lib/booking/config';
 import { stationLabel, useStationNames } from '@/lib/booking/useStationNames';
 import { cardClasses } from '@/lib/formStyles';
 import {
@@ -59,11 +59,24 @@ export default function BookingDetail({ pnr }: { pnr: string }) {
     return b;
   }, [pnr]);
 
+  // Back from Razorpay's page (?razorpay_payment_link_status=paid): the booking turns Booked once the webhook lands.
+  const returnedPaid = useRef<boolean | null>(null);
+
   useEffect(() => {
     let alive = true;
+    returnedPaid.current ??=
+      new URLSearchParams(window.location.search).get(
+        'razorpay_payment_link_status'
+      ) === 'paid';
     // eslint-disable-next-line react-hooks/set-state-in-effect -- loading on open, same as the account page
     load()
-      .then((b) => getRun(b.trainRunId))
+      .then((b) => {
+        if (returnedPaid.current && b.status === 'PENDING_PAYMENT') {
+          returnedPaid.current = false;
+          void waitForStatusChange();
+        }
+        return getRun(b.trainRunId);
+      })
       .then((r) => alive && setRun(r))
       .catch(
         (err) =>
@@ -99,6 +112,10 @@ export default function BookingDetail({ pnr }: { pnr: string }) {
     setError(null);
     setBusy(true);
     try {
+      if (paymentMode() === 'razorpay') {
+        await payAtGateway();
+        return;
+      }
       await paySimulated(pnr, outcome);
       await waitForStatusChange();
     } catch (err) {
@@ -256,8 +273,18 @@ export default function BookingDetail({ pnr }: { pnr: string }) {
               {Math.floor((secondsLeft ?? 0) / 60)}:
               {String((secondsLeft ?? 0) % 60).padStart(2, '0')}
             </strong>
-            . This is a demo: the payment is <strong>simulated</strong> and no
-            money moves.
+            .{' '}
+            {paymentMode() === 'razorpay' ? (
+              <>
+                You’ll pay on Razorpay’s page in <strong>test mode</strong>: use
+                a test card or UPI ID. No real money moves.
+              </>
+            ) : (
+              <>
+                This is a demo: the payment is <strong>simulated</strong> and no
+                money moves.
+              </>
+            )}
           </p>
           <div className="flex flex-wrap gap-3">
             <button
@@ -268,16 +295,20 @@ export default function BookingDetail({ pnr }: { pnr: string }) {
             >
               {waiting
                 ? 'Confirming…'
-                : `Pay ${formatInr(booking.totalFare)} (simulated)`}
+                : paymentMode() === 'razorpay'
+                  ? `Pay ${formatInr(booking.totalFare)} on Razorpay (test mode)`
+                  : `Pay ${formatInr(booking.totalFare)} (simulated)`}
             </button>
-            <button
-              type="button"
-              disabled={busy || waiting}
-              onClick={() => pay('FAILURE')}
-              className={`${buttonClasses} border border-slate-300 text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700`}
-            >
-              Try a failed payment
-            </button>
+            {paymentMode() === 'simulated' && (
+              <button
+                type="button"
+                disabled={busy || waiting}
+                onClick={() => pay('FAILURE')}
+                className={`${buttonClasses} border border-slate-300 text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700`}
+              >
+                Try a failed payment
+              </button>
+            )}
           </div>
         </div>
       )}
