@@ -14,7 +14,11 @@ function respond(status: number, body: unknown) {
 describe('apiFetch errors', () => {
   afterEach(() => vi.unstubAllGlobals());
   it('carries the server message and machine-readable code', async () => {
-    respond(401, { status: 401, error: 'One-time code required', code: 'MFA_REQUIRED' });
+    respond(401, {
+      status: 401,
+      error: 'One-time code required',
+      code: 'MFA_REQUIRED',
+    });
     const err = (await apiFetch('/auth/login').catch((e) => e)) as ApiError;
     expect(err).toBeInstanceOf(ApiError);
     expect(err.status).toBe(401);

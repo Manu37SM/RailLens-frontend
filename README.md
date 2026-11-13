@@ -1,5 +1,7 @@
 # RailLens Frontend
 
+> **Going live?** Follow [`DEPLOYMENT.md`](DEPLOYMENT.md): one step-by-step guide for the backend, website, Android app and RailOps, with a tracker of what's merged vs. live.
+
 RailLens Frontend is the Next.js (App Router) client for RailLens, a railway-information system for Indian Railways. It talks exclusively to the `train-db` Spring Boot backend over REST — no external/live railway APIs are used anywhere in the app, by design (see "Known Gaps" below).
 
 The app covers:
@@ -50,6 +52,13 @@ cp .env.example .env.local
 |---|---|---|
 | `NEXT_PUBLIC_API_BASE_URL` | Base URL of the `train-db` backend's REST API, including the `/api/v1` prefix. Read in `services/api.ts`, used from both Server and Client Components (hence `NEXT_PUBLIC_`, which Next.js inlines at build time). | `http://localhost:8080/api/v1` |
 | `NEXT_PUBLIC_SITE_URL` | This site's own public URL, used for `metadataBase` (canonical/Open Graph URLs), `app/robots.ts`, and `app/sitemap.ts`. | `http://localhost:3000` |
+| `RAILLENS_PROXY_SECRET` | **Server-only secret** (never `NEXT_PUBLIC_`). The sign-in routes send it to the backend with the visitor's IP so login rate limits stay per visitor. Must equal the backend's `RAILLENS_CLIENT_IP_PROXY_SECRET`. 32+ characters. | unset: IP not forwarded, all sign-ins share one rate-limit bucket |
+| `NEXT_PUBLIC_RAILLENS_LOGIN_PROVIDER` | Who handles sign-in (single login, Phase 4D): `raillens` or `railops`. Read at build time, so changing it needs a redeploy. Any other value means `raillens`. | `raillens` |
+| `RAILOPS_API_URL` | **Server-only.** RailOps gateway address; used only when the provider is `railops`. | unset: sign-in answers 503 in `railops` mode |
+| `RAILOPS_PROXY_SECRET` | **Server-only secret.** Equals the RailOps gateway's `RAILOPS_EDGE_PROXY_SECRET` (32+ characters), so RailOps' login rate limits stay per visitor. | unset: all sign-ins share one RailOps rate-limit bucket |
+| `NEXT_PUBLIC_RAILOPS_API_URL` | RailOps gateway address the **browser** calls for booking (Phase 5). Booking shows only when this is set **and** the login provider is `railops`. | unset: no booking |
+| `NEXT_PUBLIC_RAILOPS_PAYMENTS` | How RailOps takes payment (Phase 6): `simulated` (a demo button) or `razorpay` (Razorpay test mode: the booking page opens Razorpay's hosted page, then waits for the confirmation when the passenger comes back). | `simulated` |
+| `NEXT_PUBLIC_RAILOPS_PAYMENT_HOSTS` | https hosts the payment page may be on. The website refuses to redirect anywhere else. | empty: `rzp.io` in Razorpay mode, nothing otherwise |
 
 In production (e.g. Vercel), set these in the platform's project environment variable settings rather than committing a `.env` file.
 
@@ -85,7 +94,7 @@ npm test
 
 Current coverage (as of this writing) is unit/component-level, not end-to-end:
 
-- Every `localStorage`-backed store (`stores/createLocalStorageStore.test.ts` plus `favoritesStore`, `recentSearchStore`, `savedJourneyStore`, `preferencesStore`, `popularityStore`, `popularSearchStore`, `adminKeyStore`) has a dedicated test file covering hydration/subscribe behavior.
+- Every `localStorage`-backed store (`stores/createLocalStorageStore.test.ts` plus `favoritesStore`, `recentSearchStore`, `savedJourneyStore`, `preferencesStore`, `popularityStore`, `popularSearchStore`) has a dedicated test file covering hydration/subscribe behavior.
 - Pure logic in `lib/` (`jwt`, `partialJourney`, `formatRelativeTime`, `theme`) has test coverage.
 - One component test exists for `components/developers/CodeBlock.tsx`.
 
@@ -176,7 +185,43 @@ Typed wrappers around the backend REST API, all built on a shared `apiFetch` hel
 All client-persisted stores are built on `stores/createLocalStorageStore.ts`, a small primitive using `useSyncExternalStore` with an SSR-safe server snapshot, hydration-after-mount handling, and cross-tab sync via the `storage` event:
 
 - `favoritesStore.ts`, `recentSearchStore.ts`, `savedJourneyStore.ts`, `preferencesStore.ts`, `popularityStore.ts`, `popularSearchStore.ts`, `adminKeyStore.ts`
-- `authStore.ts` — JWT session state (separate from the localStorage-store primitive above, given the sensitivity of holding a token)
+- `authStore.ts` — who is signed in (username, email, role). It holds **no tokens in storage**: the refresh token is an HttpOnly cookie and the access token is kept only in memory (see "Sign-in and tokens").
+
+## Sign-in and tokens
+
+Since Phase 2B, calls that start or end a session (`login`, `register`, `refresh`, `logout`, `mfa/confirm`) go to this site's own server routes in `app/api/auth/*` (`lib/server/authProxy.ts`), not straight to the backend:
+
+- The backend's refresh token is put in an **HttpOnly, SameSite=Strict cookie** (`__Secure-raillens_rt`, path `/api/auth`). Page scripts can't read it, so an injected script can't steal a 30-day session, and other sites can't make the browser send it. The response body carries `refreshToken: null`.
+- The short-lived **access token stays in memory** only. After a page load, `lib/sessionRefresh.ts` gets a new one through the cookie. If two tabs refresh at the same moment, the loser retries once after a second.
+- Sessions from before 2B (with tokens in `localStorage`) are moved into the cookie on the first refresh, so nobody is logged out by the upgrade.
+- These routes only accept requests whose `Origin` is this site. They pass the visitor's IP to the backend with `RAILLENS_PROXY_SECRET`.
+- All other API calls (search, account, admin) still go directly to the backend with `Authorization: Bearer`.
+
+### Security headers (Phase 6)
+
+`next.config.ts` sends a **Content-Security-Policy** on every page (`lib/csp.ts`): scripts, styles, fonts and workers only from this site; the browser may only talk to this site, the RailLens API and the RailOps gateway (taken from the two `NEXT_PUBLIC_*_URL` settings at build time); no plugins, no `<base>` hijacking, forms only post here, no framing. It still allows inline scripts, because Next.js puts page data in inline scripts and most pages are static; a nonce-based policy would need every page rendered per request. Checked in headless Chrome: no violations on the home, login, register and booking pages.
+
+### Booking (Phase 5)
+
+When booking is on (see the two settings above), RailLens sells RailOps tickets:
+
+- **Train page → Book this train:** pick a date and stations; the card finds the RailOps run (`GET /api/v1/runs?trainNo&date`), maps RailLens station codes to RailOps stop numbers and shows seats per class (general quota).
+- **`/book`:** up to 6 passengers and a contact number, then "Hold seats for 10 minutes". One idempotency key per attempt, so a retry never books twice.
+- **`/bookings/[pnr]`:** fare, passengers and status; **Pay (simulated)** calls RailOps' demo-only `simulated-payment` and waits for the booking to turn *Booked*. Cancel shows the refund first. Where RailOps uses a real gateway, it falls back to the gateway's checkout, but only on an allow-listed https host.
+- **`/bookings`:** my bookings.
+- **Phase 6:** the booking form shows a **live seat map** for the class and journey (`GET /api/v1/runs/{id}/seat-map`, refreshed every 15 s, never names anyone) and a berth or seat **preference** per passenger (side lowers aren't offered: RailOps keeps them for RAC). With `NEXT_PUBLIC_RAILOPS_PAYMENTS=razorpay` the Pay button opens Razorpay's test-mode page.
+
+The browser calls the RailOps gateway directly with the signed-in person's RailOps access token (the same in-memory token as everything else). The RailOps gateway must allow this site (`RAILLENS_WEB_ORIGIN` in RailOps' `render.env`). Prices always come from RailOps; the website never sends an amount. Code: `services/bookingService.ts`, `components/booking/`.
+
+### Single login (Phase 4D)
+
+With `NEXT_PUBLIC_RAILLENS_LOGIN_PROVIDER=railops` the same routes sign people in through RailOps instead (`lib/server/railopsAuth.ts`):
+
+- Login and register call RailOps' app endpoints (`/api/v1/auth/app/*`, `/api/v1/auth/register`); the RailLens backend's `/auth/me` then links or creates the RailLens profile for that RailOps token and says whether the person is an admin. The browser gets the same answer shape as before.
+- Sign-in is by **email**. New accounts give a **phone number** instead of a username (RailLens makes the username from the email). Passwords need **10+ characters** (RailOps' rule).
+- Staff admins tick "Staff? Add your one-time code" and send the code with the password; MFA setup happens in the RailOps staff app.
+- The RailOps refresh token gets its **own cookie** (`__Secure-raillens_ro_rt`), so tokens never go to the wrong service when the setting is flipped. Everyone signs in once more after a switch (and after a rollback).
+- Change password and delete account are unchanged here: the RailLens backend forwards them to RailOps for linked profiles.
 
 ## Notable Components & Hooks
 

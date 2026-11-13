@@ -1,7 +1,10 @@
 export interface RegisterRequest {
-  username: string;
+  /** RailLens login only; with the RailOps login a username is made from the email. */
+  username?: string;
   email: string;
   password: string;
+  /** RailOps login only (required there). */
+  phone?: string;
 }
 export interface LoginRequest {
   usernameOrEmail: string;

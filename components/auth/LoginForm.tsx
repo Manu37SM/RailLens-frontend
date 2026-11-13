@@ -9,9 +9,10 @@ import {
   startMfaEnrolment,
 } from '@/services/authService';
 import { ApiError } from '@/services/api';
-import { sessionFromResponse, setSession } from '@/stores/authStore';
+import { signIn } from '@/stores/authStore';
 import { inputClasses, labelClasses } from '@/lib/formStyles';
 import { AuthResponse, MfaEnrolmentResponse } from '@/types/auth';
+import { loginProvider } from '@/lib/loginProvider';
 /**
  * password: everyone. otp: admin accounts with MFA (the server answered MFA_REQUIRED).
  * enrol: an admin's first sign-in - set up an authenticator app, then confirm with its first code.
@@ -24,6 +25,9 @@ function groupSecret(secret: string): string {
 }
 export default function LoginForm() {
   const router = useRouter();
+  /** RailOps login (Phase 4D): email only; staff admins send their code with the password, there is no second step. */
+  const railOps = loginProvider() === 'railops';
+  const [staffCode, setStaffCode] = useState(false);
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
@@ -34,7 +38,7 @@ export default function LoginForm() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   function finish(response: AuthResponse) {
-    setSession(sessionFromResponse(response));
+    signIn(response);
     router.push(response.role === 'ADMIN' ? '/admin' : '/');
     router.refresh();
   }
@@ -46,17 +50,22 @@ export default function LoginForm() {
   }
   async function submitCredentials() {
     if (!usernameOrEmail.trim() || !password) {
-      setError('Enter your username/email and password.');
+      setError(
+        railOps
+          ? 'Enter your email and password.'
+          : 'Enter your username/email and password.'
+      );
       return;
     }
-    if (step === 'otp' && !OTP_PATTERN.test(otp)) {
+    const sendOtp = step === 'otp' || (railOps && staffCode);
+    if (sendOtp && !OTP_PATTERN.test(otp)) {
       setError('Enter the 6-digit code from your authenticator app.');
       return;
     }
     const response = await login({
       usernameOrEmail: usernameOrEmail.trim(),
       password,
-      ...(step === 'otp' ? { otp } : {}),
+      ...(sendOtp ? { otp } : {}),
     });
     if (response.mfaEnrolmentRequired && response.enrolmentToken) {
       const started = await startMfaEnrolment(response.enrolmentToken);
@@ -153,13 +162,13 @@ export default function LoginForm() {
           <>
             <div>
               <label htmlFor="usernameOrEmail" className={labelClasses}>
-                Username or email
+                {railOps ? 'Email' : 'Username or email'}
               </label>
 
               <input
                 id="usernameOrEmail"
-                type="text"
-                autoComplete="username"
+                type={railOps ? 'email' : 'text'}
+                autoComplete={railOps ? 'email' : 'username'}
                 value={usernameOrEmail}
                 readOnly={step === 'otp'}
                 onChange={(e) => setUsernameOrEmail(e.target.value)}
@@ -187,6 +196,23 @@ export default function LoginForm() {
 
         {step === 'otp' && otpField}
 
+        {railOps && step === 'password' && staffCode && otpField}
+
+        {railOps && step === 'password' && (
+          <button
+            type="button"
+            onClick={() => {
+              setStaffCode((on) => !on);
+              setOtp('');
+            }}
+            className="text-sm font-medium text-orange-600 hover:text-orange-700 dark:text-orange-400"
+          >
+            {staffCode
+              ? 'I don’t use a one-time code'
+              : 'Staff? Add your one-time code'}
+          </button>
+        )}
+
         {step === 'enrol' && enrolment && (
           <>
             <ol className="list-decimal space-y-2 pl-5 text-sm text-slate-600 dark:text-slate-300">
@@ -198,7 +224,7 @@ export default function LoginForm() {
                 Account: <strong>RailLens</strong>. Key:
                 <code
                   data-testid="mfa-secret"
-                  className="mt-1 block select-all break-all rounded-md bg-slate-100 px-2 py-1.5 font-mono text-sm text-slate-900 dark:bg-slate-800 dark:text-slate-100"
+                  className="mt-1 block rounded-md bg-slate-100 px-2 py-1.5 font-mono text-sm break-all text-slate-900 select-all dark:bg-slate-800 dark:text-slate-100"
                 >
                   {groupSecret(enrolment.secret)}
                 </code>
