@@ -5,6 +5,11 @@ import ErrorState from '@/components/common/ErrorState';
 import StatsGrid from '@/components/stats/StatsGrid';
 import { getStats } from '@/services/statsService';
 import { ApiError } from '@/services/api';
+// Rendered on request (not at build time): a build while the backend slept used to bake "Unable to reach the
+// server" into the page until the next deploy. The data itself is cached for an hour (services/api.ts datasetFetch).
+export const dynamic = 'force-dynamic';
+// Room for a sleeping backend to wake up (the fetch waits up to 50 s).
+export const maxDuration = 60;
 export const metadata: Metadata = {
   title: 'Statistics | RailLens',
   description:
@@ -12,10 +17,12 @@ export const metadata: Metadata = {
 };
 export default async function StatsPage() {
   let statsError: string | null = null;
+  let errorStatus: number | undefined;
   let stats;
   try {
     stats = await getStats();
   } catch (err) {
+    errorStatus = err instanceof ApiError ? err.status : 0;
     statsError =
       err instanceof ApiError ? err.message : 'Failed to load statistics.';
   }
@@ -38,7 +45,10 @@ export default async function StatsPage() {
         {stats ? (
           <StatsGrid stats={stats} />
         ) : (
-          <ErrorState message={statsError ?? 'Failed to load statistics.'} />
+          <ErrorState
+            status={errorStatus}
+            message={statsError ?? 'Failed to load statistics.'}
+          />
         )}
       </Container>
     </div>

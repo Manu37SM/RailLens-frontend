@@ -87,6 +87,23 @@ describe('BookingDetail', () => {
     expect(api.paySimulated).toHaveBeenCalledWith('4123456789', 'SUCCESS');
   }, 10000);
 
+  it('a failed simulated payment says so at once and keeps the Pay button (seats stay held)', async () => {
+    api.getBooking.mockResolvedValue(pending);
+    api.paySimulated.mockResolvedValue({});
+    render(<BookingDetail pnr="4123456789" />);
+    fireEvent.click(
+      await screen.findByRole('button', { name: /failed payment/ })
+    );
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'payment failed'
+    );
+    expect(screen.getByRole('alert')).not.toHaveTextContent('longer');
+    expect(api.paySimulated).toHaveBeenCalledWith('4123456789', 'FAILURE');
+    expect(
+      screen.getByRole('button', { name: /Pay ₹845.00 \(simulated\)/ })
+    ).toBeEnabled();
+  });
+
   it('with a real gateway, refuses to open a checkout page on a host that is not allowed', async () => {
     api.getBooking.mockResolvedValue(pending);
     api.paySimulated.mockRejectedValue(

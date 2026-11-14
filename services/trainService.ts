@@ -1,4 +1,4 @@
-import { apiFetch } from './api';
+import { apiFetch, datasetFetch } from './api';
 import { TrainDetailsResponse, TrainSearchResponse } from '../types/train';
 import { TrainIntelligenceResponse } from '../types/trainIntelligence';
 import { RouteComparisonResponse } from '../types/routeComparison';
@@ -15,7 +15,8 @@ export async function searchTrains(
 export async function getTrainDetails(
   trainNumber: string
 ): Promise<TrainDetailsResponse> {
-  return apiFetch<TrainDetailsResponse>(`/trains/${trainNumber}`);
+  // Server pages only (page + its metadata): one cached call instead of two backend round trips per view.
+  return datasetFetch<TrainDetailsResponse>(`/trains/${trainNumber}`);
 }
 export async function getTrainIntelligence(
   trainNumber: string

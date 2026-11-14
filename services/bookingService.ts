@@ -1,4 +1,5 @@
 import { ApiError } from './api';
+import { reportBackendTrouble } from '@/lib/backendStatus/store';
 import { railOpsApiUrl } from '@/lib/booking/config';
 import { getValidAccessToken } from '@/lib/sessionRefresh';
 import {
@@ -108,11 +109,13 @@ async function call<T>(path: string, options: CallOptions = {}): Promise<T> {
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });
   } catch {
+    reportBackendTrouble('railops', 0);
     throw new ApiError(
       0,
       'Can’t reach the booking service. Check your connection and try again.'
     );
   }
+  reportBackendTrouble('railops', res.status);
   const text = await res.text();
   let json: unknown = null;
   try {

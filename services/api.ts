@@ -1,3 +1,9 @@
+import {
+  BackendService,
+  reportBackendTrouble,
+} from '@/lib/backendStatus/store';
+import { loginProvider } from '@/lib/loginProvider';
+
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:8080/api/v1';
 interface ApiErrorBody {
@@ -19,9 +25,26 @@ export class ApiError extends Error {
 }
 export async function apiFetch<T>(
   endpoint: string,
-  init?: RequestInit
+  init?: RequestInit,
+  timeoutMs = 10000
 ): Promise<T> {
-  return requestJson<T>(`${BASE_URL}${endpoint}`, init, 10000);
+  return requestJson<T>(`${BASE_URL}${endpoint}`, init, timeoutMs);
+}
+
+/** How long the server keeps a successful dataset answer (stats, rankings, network...). The timetable rarely changes. */
+export const DATASET_REVALIDATE_SECONDS = 3600;
+
+/**
+ * GET for the dataset pages, called from server components only. A successful answer is kept in Next's data cache
+ * for an hour and refreshed in the background, so visitors get it instantly even while the free backend sleeps.
+ * Failures are never cached. The long timeout lets a sleeping backend wake up (about a minute at worst).
+ */
+export function datasetFetch<T>(endpoint: string): Promise<T> {
+  return apiFetch<T>(
+    endpoint,
+    { next: { revalidate: DATASET_REVALIDATE_SECONDS } },
+    50000
+  );
 }
 /**
  * POST to this website's own sign-in routes (app/api/auth/*), which keep the refresh token in an HttpOnly cookie.
@@ -39,13 +62,16 @@ export async function sameOriginPost<T>(
       body: JSON.stringify(body),
       credentials: 'same-origin',
     },
-    65000
+    65000,
+    // These routes sign in through RailOps once the login switch is on; report trouble against the right backend.
+    loginProvider() === 'railops' ? 'railops' : 'raillens'
   );
 }
 async function requestJson<T>(
   url: string,
   init: RequestInit | undefined,
-  timeoutMs: number
+  timeoutMs: number,
+  service: BackendService = 'raillens'
 ): Promise<T> {
   let response: Response;
   try {
@@ -54,12 +80,14 @@ async function requestJson<T>(
       signal: init?.signal ?? AbortSignal.timeout(timeoutMs),
     });
   } catch {
+    reportBackendTrouble(service, 0);
     throw new ApiError(
       0,
       'Unable to reach the server. Check your connection and try again.'
     );
   }
   if (!response.ok) {
+    reportBackendTrouble(service, response.status);
     let message = `Request failed with status ${response.status}`;
     let code: string | undefined;
     try {

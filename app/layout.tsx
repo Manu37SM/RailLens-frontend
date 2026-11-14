@@ -6,6 +6,7 @@ import Footer from '@/components/layout/Footer';
 import AssistantFab from '@/components/assistant/AssistantFab';
 import ServiceWorkerRegister from '@/components/pwa/ServiceWorkerRegister';
 import GlobalSearchShortcut from '@/components/common/GlobalSearchShortcut';
+import BackendStatusBanner from '@/components/common/BackendStatusBanner';
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -79,6 +80,7 @@ export default function RootLayout({
         </a>
 
         <Navbar />
+        <BackendStatusBanner />
 
         <main id="main-content" className="flex-1">
           {children} <AssistantFab />

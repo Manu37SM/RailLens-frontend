@@ -6,14 +6,14 @@ const directive = (csp: string, name: string) =>
 
 describe('Content-Security-Policy (Phase 6)', () => {
   const prod = contentSecurityPolicy({
-    apiBaseUrl: 'https://raillens-train-db.onrender.com/api/v1',
+    apiBaseUrl: 'https://raillens-api.onrender.com/api/v1',
     railOpsApiUrl: 'https://railops-gateway.onrender.com/',
     production: true,
   });
 
   it('lets the browser talk only to this site, the RailLens API and the RailOps gateway', () => {
     expect(directive(prod, 'connect-src')).toBe(
-      "connect-src 'self' https://raillens-train-db.onrender.com https://railops-gateway.onrender.com"
+      "connect-src 'self' https://raillens-api.onrender.com https://railops-gateway.onrender.com"
     );
   });
 

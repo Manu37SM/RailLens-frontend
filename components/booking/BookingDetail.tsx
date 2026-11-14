@@ -117,6 +117,15 @@ export default function BookingDetail({ pnr }: { pnr: string }) {
         return;
       }
       await paySimulated(pnr, outcome);
+      if (outcome === 'FAILURE') {
+        // A failed payment doesn't change the booking: RailOps keeps the seats held so the passenger can retry.
+        // Waiting for a status change here would time out with a misleading "taking longer" message.
+        await load();
+        setError(
+          'The payment failed (simulated). Your seats are still held: you can pay again before the hold runs out.'
+        );
+        return;
+      }
       await waitForStatusChange();
     } catch (err) {
       if (

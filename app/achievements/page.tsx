@@ -5,6 +5,11 @@ import ErrorState from '@/components/common/ErrorState';
 import AchievementsGrid from '@/components/achievements/AchievementsGrid';
 import { getAchievements } from '@/services/statsService';
 import { ApiError } from '@/services/api';
+// Rendered on request (not at build time): a build while the backend slept used to bake "Unable to reach the
+// server" into the page until the next deploy. The data itself is cached for an hour (services/api.ts datasetFetch).
+export const dynamic = 'force-dynamic';
+// Room for a sleeping backend to wake up (the fetch waits up to 50 s).
+export const maxDuration = 60;
 export const metadata: Metadata = {
   title: 'Achievements | RailLens',
   description:
@@ -12,10 +17,12 @@ export const metadata: Metadata = {
 };
 export default async function AchievementsPage() {
   let achievementsError: string | null = null;
+  let errorStatus: number | undefined;
   let achievements;
   try {
     achievements = await getAchievements();
   } catch (err) {
+    errorStatus = err instanceof ApiError ? err.status : 0;
     achievementsError =
       err instanceof ApiError ? err.message : 'Failed to load achievements.';
   }
@@ -40,6 +47,7 @@ export default async function AchievementsPage() {
           <AchievementsGrid achievements={achievements} />
         ) : (
           <ErrorState
+            status={errorStatus}
             message={achievementsError ?? 'Failed to load achievements.'}
           />
         )}

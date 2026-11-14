@@ -1,5 +1,10 @@
 'use client';
+import { useEffect } from 'react';
 import Link from 'next/link';
+import {
+  BackendService,
+  reportBackendTrouble,
+} from '@/lib/backendStatus/store';
 import { AlertTriangle } from 'lucide-react';
 interface ErrorStateProps {
   title?: string;
@@ -7,6 +12,12 @@ interface ErrorStateProps {
   onRetry?: () => void;
   homeHref?: string;
   homeLabel?: string;
+  /**
+   * HTTP status of the failed request (0 = no answer). When it means the backend is unreachable, the page-wide
+   * banner starts watching it and tells the visitor when to try again.
+   */
+  status?: number;
+  service?: BackendService;
 }
 export default function ErrorState({
   title = 'Something went wrong',
@@ -14,7 +25,12 @@ export default function ErrorState({
   onRetry,
   homeHref = '/',
   homeLabel = 'Go home',
+  status,
+  service = 'raillens',
 }: ErrorStateProps) {
+  useEffect(() => {
+    if (status !== undefined) reportBackendTrouble(service, status);
+  }, [status, service]);
   return (
     <div className="flex flex-col items-center rounded-lg border border-slate-200 bg-white px-6 py-12 text-center shadow-sm dark:border-slate-700 dark:bg-slate-900">
       <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600">

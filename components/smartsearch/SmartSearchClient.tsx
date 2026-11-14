@@ -8,6 +8,7 @@ import { ApiError } from '@/services/api';
 import { SmartSearchResponse } from '@/types/smartSearch';
 const EXAMPLES = [
   'trains that stop at both NDLS and HWH',
+  'delhi to mumbai',
   'trains from NDLS to HWH',
   'trains longer than 1000km',
   'trains with more than 20 halts',

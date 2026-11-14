@@ -1,10 +1,11 @@
-import { apiFetch } from './api';
+import { apiFetch, datasetFetch } from './api';
 import { StationResponse, StationSearchResponse } from '@/types/station';
 import { StationIntelligenceResponse } from '@/types/stationIntelligence';
 export async function getStation(
   stationCode: string
 ): Promise<StationResponse> {
-  return apiFetch<StationResponse>(`/stations/${stationCode}`);
+  // Server pages only (page + its metadata): one cached call instead of two backend round trips per view.
+  return datasetFetch<StationResponse>(`/stations/${stationCode}`);
 }
 export async function getStationIntelligence(
   stationCode: string

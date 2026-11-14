@@ -10,6 +10,8 @@ interface StationPageProps {
     stationCode: string;
   }>;
 }
+// Room for a sleeping backend to wake up (the cached fetch waits up to 50 s).
+export const maxDuration = 60;
 export async function generateMetadata({
   params,
 }: StationPageProps): Promise<Metadata> {

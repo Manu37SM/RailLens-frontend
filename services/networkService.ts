@@ -1,5 +1,5 @@
-import { apiFetch } from './api';
+import { datasetFetch } from './api';
 import { NetworkStatsResponse } from '../types/network';
 export function getNetworkStats(): Promise<NetworkStatsResponse> {
-  return apiFetch<NetworkStatsResponse>('/network/stats');
+  return datasetFetch<NetworkStatsResponse>('/network/stats');
 }
